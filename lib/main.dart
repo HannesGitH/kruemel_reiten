@@ -155,10 +155,21 @@ class SetGroupsState extends State<SetGroups> {
   Future<void> _addGroup() async {
     final SharedPreferences prefs = await _prefs;
     final int counter = (prefs.getInt('groupAmount_t') ?? 0) + 1;
+    List<List<String>> groupsi=[[]];
+    var j=prefs.getInt('groupAmount_t') ?? 0;
+    for (var i=j;i>0;i--){
+      groupsi.add(prefs.getStringList('group'+i.toString()+'names_t') ?? new List<String>(3));
+    }
+
+    var newGroup=["uebi", "bubi", "bebi"];
 
     setState(() {
       _counter = prefs.setInt("groupAmount_t", counter).then((bool success) {
         return counter;
+      });
+      _groups = prefs.setStringList('group'+(j+1).toString()+'names_t', newGroup).then((bool success) {
+        groupsi.add(newGroup);
+        return groupsi;
       });
     });
   }
@@ -170,11 +181,11 @@ class SetGroupsState extends State<SetGroups> {
       return (prefs.getInt('groupAmount_t') ?? 0);
     });
     _groups  = _prefs.then((SharedPreferences prefs) {
-      List<List<String>> groups;
+      List<List<String>> groupsi=[[]];
       for (var i=prefs.getInt('groupAmount_t') ?? 0;i>0;i--){
-
+          groupsi.add(prefs.getStringList('group'+i.toString()+'names_t') ?? new List<String>(3));
       }
-      return "ahoi";
+      return groupsi;
     });
   }
 
@@ -199,11 +210,12 @@ class SetGroupsState extends State<SetGroups> {
                       return Container(
                         padding: EdgeInsets.all(20.0),
                         child: Column(
+
                           children: <Widget>[
                             Text("Du unterrichtest momentan ${snapshot.data} Gruppe${snapshot.data == 1 ? '' : 'n'}"),
-                            FutureBuilder<int>(
+                            FutureBuilder<List<List<String>>>(
                                 future: _groups,
-                                builder: (BuildContext context, AsyncSnapshot<int> snapshot) {
+                                builder: (BuildContext context, AsyncSnapshot<List<List<String>>> snapshot) {
                                   switch (snapshot.connectionState) {
                                     case ConnectionState.waiting:
                                       return const CircularProgressIndicator();
@@ -211,7 +223,19 @@ class SetGroupsState extends State<SetGroups> {
                                       if (snapshot.hasError) {
                                         return Text('Error: ${snapshot.error}');
                                       } else {
-                                        return Container(
+                                        List<Widget> list = new List<Widget>();
+                                        for(var i = 0; i < snapshot.data.length; i++){
+                                          list.add(Row(
+                                              children: snapshot.data[i].map((item) =>
+                                                  Text(item??"no name ")).toList()));
+                                        }
+                                        ///TODO how the hell make the scrollview fill the rest of the parent
+                                        return Expanded(
+                                          child: ListView(
+                                            shrinkWrap: true,
+                                            children: list,),
+                                        );
+                                        Container(
                                           padding: EdgeInsets.all(20.0),
                                           child: Column(
                                             children: <Widget>[
