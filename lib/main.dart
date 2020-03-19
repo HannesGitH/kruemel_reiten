@@ -193,11 +193,10 @@ class SetGroupsState extends State<SetGroups> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text("Gruppen verwalten"),
-      ),
-      body: Column(
-        children: <Widget>[
-          FutureBuilder<int>(
+        title: Row(
+          children: <Widget>[
+            Text("Gruppen verwalten"),
+            FutureBuilder<int>(
               future: _counter,
               builder: (BuildContext context, AsyncSnapshot<int> snapshot) {
                 switch (snapshot.connectionState) {
@@ -208,52 +207,52 @@ class SetGroupsState extends State<SetGroups> {
                       return Text('Error: ${snapshot.error}');
                     } else {
                       return Container(
-                        padding: EdgeInsets.all(20.0),
-                        child: Column(
-
-                          children: <Widget>[
-                            Text("Du unterrichtest momentan ${snapshot.data} Gruppe${snapshot.data == 1 ? '' : 'n'}"),
-                            FutureBuilder<List<List<String>>>(
-                                future: _groups,
-                                builder: (BuildContext context, AsyncSnapshot<List<List<String>>> snapshot) {
-                                  switch (snapshot.connectionState) {
-                                    case ConnectionState.waiting:
-                                      return const CircularProgressIndicator();
-                                    default:
-                                      if (snapshot.hasError) {
-                                        return Text('Error: ${snapshot.error}');
-                                      } else {
-                                        List<Widget> list = new List<Widget>();
-                                        for(var i = 0; i < snapshot.data.length; i++){
-                                          list.add(Row(
-                                              children: snapshot.data[i].map((item) =>
-                                                  Text(item??"no name ")).toList()));
-                                        }
-                                        ///TODO how the hell make the scrollview fill the rest of the parent
-                                        return Expanded(
-                                          child: ListView(
-                                            shrinkWrap: true,
-                                            children: list,),
-                                        );
-                                        Container(
-                                          padding: EdgeInsets.all(20.0),
-                                          child: Column(
-                                            children: <Widget>[
-                                              Text("Du unterrichtest momentan ${snapshot.data} Gruppe${snapshot.data == 1 ? '' : 'n'}"),
-                                            ],
-                                          ),
-                                        );
-                                      }
-                                  }
-                                }
-                            ),
-                          ],
-                        ),
+                          padding: EdgeInsets.all(0),
+                          child: Column(
+                              children: <Widget>[
+                                Text(" (${snapshot.data})"),
+                                //ScrollView für gruppen
+                              ]
+                          )
                       );
                     }
                 }
               }
+            )
+          ],
+        ),
+      ),
+      body: Column(
+        children: <Widget>[
+          Expanded(
+            child: FutureBuilder<List<List<String>>>(
+                future: _groups,
+                builder: (BuildContext context, AsyncSnapshot<List<List<String>>> snapshot) {
+                  switch (snapshot.connectionState) {
+                    case ConnectionState.waiting:
+                      return const CircularProgressIndicator();
+                    default:
+                      if (snapshot.hasError) {
+                        return Text('Error: ${snapshot.error}');
+                      } else {
+                        List<Widget> list = new List<Widget>();
+                        for(var i = 0; i < snapshot.data.length; i++){
+                          list.add(Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                              children: snapshot.data[i].map((item) =>
+                                  Container(
+                                      padding: EdgeInsets.all(20),
+                                      child: Text(item??"no name "),
+                                  )
+                              ).toList()));
+                        }
+                        return ListView(
+                          children: list,);
+                      }
+                  }
+                }
             ),
+          ),
         ],
       ),
       floatingActionButton: FloatingActionButton(
