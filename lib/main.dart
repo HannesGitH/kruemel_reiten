@@ -236,15 +236,48 @@ class SetGroupsState extends State<SetGroups> {
                         return Text('Error: ${snapshot.error}');
                       } else {
                         List<Widget> list = new List<Widget>();
+
+                        //Hier sind die Reihen für jede Gruppe
                         for(var i = 0; i < snapshot.data.length; i++){
-                          list.add(Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                              children: snapshot.data[i].map((item) =>
-                                  Container(
-                                      padding: EdgeInsets.all(20),
-                                      child: Text(item??"no name "),
-                                  )
-                              ).toList()));
+                          list.add(
+                              Container(
+                                padding: EdgeInsets.all(15),
+                                child: ClipRRect(
+                                  borderRadius: BorderRadius.circular(20),
+                                  child: Container(
+                                    padding: EdgeInsets.all(5),
+                                    color: Colors.blueGrey[200],
+                                    child: Column(
+                                      children: <Widget>[
+                                        Container(
+                                            padding: EdgeInsets.all(10),
+                                            child: Text("Gruppe $i :",style: TextStyle(fontSize: 20,color: Colors.white,fontWeight: FontWeight.bold),)
+                                        ),
+                                        Row(
+                                        mainAxisAlignment: MainAxisAlignment.spaceAround,
+                                          children: snapshot.data[i].map((item) =>
+                                              Container(
+                                                  padding: EdgeInsets.all(5),
+                                                  child: GestureDetector(
+                                                    onTap: (){},
+                                                    child: ClipRRect(
+                                                      borderRadius: BorderRadius.circular(20),
+                                                      child: Container(
+                                                        padding: EdgeInsets.all(15),
+                                                        color: Colors.white,
+                                                        child: Text(
+                                                          item.toUpperCase()??"no name ",
+                                                          style: TextStyle(fontSize: 16,color: Colors.blue, ),),
+                                                      ),
+                                                    ),
+                                                  ),
+                                              )
+                                        ).toList()),
+                                      ],
+                                    ),
+                                  ),
+                                ),
+                              ));
                         }
                         return ListView(
                           children: list,);
