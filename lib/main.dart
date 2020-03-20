@@ -152,28 +152,6 @@ class SetGroupsState extends State<SetGroups> {
   Future<int> _counter;
   Future<List<List<String>>> _groups;
 
-  Future<void> _addGroup() async {
-    final SharedPreferences prefs = await _prefs;
-    final int counter = (prefs.getInt('groupAmount_t') ?? 0) + 1;
-    List<List<String>> groupsi=[[]];
-    var j=prefs.getInt('groupAmount_t') ?? 0;
-    for (var i=j;i>0;i--){
-      groupsi.add(prefs.getStringList('group'+i.toString()+'names_t') ?? new List<String>(3));
-    }
-
-    var newGroup=["uebi", "bubi", "bebi"];
-
-    setState(() {
-      _counter = prefs.setInt("groupAmount_t", counter).then((bool success) {
-        return counter;
-      });
-      _groups = prefs.setStringList('group'+(j+1).toString()+'names_t', newGroup).then((bool success) {
-        groupsi.add(newGroup);
-        return groupsi;
-      });
-    });
-  }
-
   @override
   void initState() {
     super.initState();
@@ -238,7 +216,7 @@ class SetGroupsState extends State<SetGroups> {
                         List<Widget> list = new List<Widget>();
 
                         //Hier sind die Reihen für jede Gruppe
-                        for(var i = 0; i < snapshot.data.length; i++){
+                        for(var i = 1; i < snapshot.data.length; i++){
                           list.add(
                               Container(
                                 padding: EdgeInsets.all(15),
@@ -258,19 +236,22 @@ class SetGroupsState extends State<SetGroups> {
                                           children: snapshot.data[i].map((item) =>
                                               Container(
                                                   padding: EdgeInsets.all(5),
-                                                  child: GestureDetector(
-                                                    onTap: (){},
-                                                    child: ClipRRect(
-                                                      borderRadius: BorderRadius.circular(20),
-                                                      child: Container(
+                                                  child: ClipRRect(
+                                                    borderRadius: BorderRadius.circular(20),
+                                                    child:RaisedButton(
+                                                      highlightColor: Colors.blueGrey[200].withAlpha(100),
+                                                      splashColor: Colors.blueGrey[200],
+                                                      color: Colors.white,
+                                                      onPressed: (){},
+                                                      child:  Container(
                                                         padding: EdgeInsets.all(15),
-                                                        color: Colors.white,
                                                         child: Text(
                                                           item.toUpperCase()??"no name ",
-                                                          style: TextStyle(fontSize: 16,color: Colors.blue, ),),
+                                                          style: TextStyle(fontSize: 16,color: Colors.blue, ),
+                                                        ),
                                                       ),
-                                                    ),
                                                   ),
+                                                ),
                                               )
                                         ).toList()),
                                       ],
@@ -288,11 +269,120 @@ class SetGroupsState extends State<SetGroups> {
           ),
         ],
       ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: _addGroup,
-        tooltip: 'Increment',
-        child: const Icon(Icons.add),
+      floatingActionButton: AddGroupActionbutton()
+    );
+  }
+}
+
+
+class AddGroupActionbutton extends StatefulWidget {
+  AddGroupActionbutton({Key key}) : super(key: key);
+
+  @override
+  AddGroupActionbuttonState createState() => AddGroupActionbuttonState();
+}
+
+class AddGroupActionbuttonState extends State<AddGroupActionbutton> {
+
+  Future<SharedPreferences> _prefs = SharedPreferences.getInstance();
+  Future<int> _counter;
+  Future<List<List<String>>> _groups;
+
+  Future<void> _addGroup_sub() async {
+    final SharedPreferences prefs = await _prefs;
+    final int counter = (prefs.getInt('groupAmount_t') ?? 0) + 1;
+    List<List<String>> groupsi=[[]];
+    var j=prefs.getInt('groupAmount_t') ?? 0;
+    for (var i=j;i>0;i--){
+      groupsi.add(prefs.getStringList('group'+i.toString()+'names_t') ?? new List<String>(3));
+    }
+
+    var newGroup=["uebi", "bubi", "bebi"];
+
+    setState(() {
+      _counter = prefs.setInt("groupAmount_t", counter).then((bool success) {
+        return counter;
+      });
+      _groups = prefs.setStringList('group'+(j+1).toString()+'names_t', newGroup).then((bool success) {
+        groupsi.add(newGroup);
+        return groupsi;
+      });
+    });
+  }
+
+  Future<void> _addGroup() async {
+    return showDialog<void>(
+      context: context,
+      barrierDismissible: false, // user must tap button!
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text('Rewind and remember'),
+          content: SingleChildScrollView(
+            child: ListBody(
+              children: <Widget>[
+                Text('You will never be satisfied.'),
+                Text('You\’re like me. I’m never satisfied.'),
+              ],
+            ),
+          ),
+          actions: <Widget>[
+            FlatButton(
+              child: Text('Regret'),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  bool isClicked=false;
+  bool wasClicked=false;
+
+  void popupGroup(){
+    setState(() {
+      isClicked=!isClicked;
+    });
+    Future.delayed(Duration(milliseconds: 400), (){setState(() {
+      wasClicked=!wasClicked;
+    });});
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      onTap: popupGroup,
+      child: AnimatedContainer(
+        decoration: BoxDecoration(
+          boxShadow: isClicked?
+            [BoxShadow(color: Colors.white, blurRadius: 25 ,spreadRadius: 10)]:
+            [BoxShadow(color: Colors.black, blurRadius: 15, offset: Offset.fromDirection(1.3,7),spreadRadius: -4)],
+          color: isClicked?Colors.blueGrey[500]:Colors.blue,
+          borderRadius: isClicked?BorderRadius.circular(20):BorderRadius.circular(30),
+        ),
+        curve: Curves.easeOutCubic,
+        duration: Duration(milliseconds: 400),
+        height: isClicked? 200: 60,
+        width: isClicked? MediaQuery.of(context).size.width-30: 60,
+          child: wasClicked?
+            Container(
+              child: GroupEditor(),
+            ):
+            Icon(Icons.add,color: Colors.white,),
       ),
     );
+  }
+}
+
+class GroupEditor extends StatelessWidget{
+
+
+
+
+  @override
+  Widget build(BuildContext context) {
+    return null;
   }
 }
