@@ -152,6 +152,32 @@ class SetGroupsState extends State<SetGroups> {
   Future<int> _counter;
   Future<List<List<String>>> _groups;
 
+  void update(newGroup){
+    _addGroup(newGroup);
+  }
+
+  Future<void> _addGroup(newGroup) async {
+    final SharedPreferences prefs = await _prefs;
+    final int counter = (prefs.getInt('groupAmount_t') ?? 0) + 1;
+    List<List<String>> groupsi=[[]];
+    var j=prefs.getInt('groupAmount_t') ?? 0;
+    for (var i=j;i>0;i--){
+      groupsi.add(prefs.getStringList('group'+i.toString()+'names_t') ?? new List<String>(3));
+    }
+
+    //var newGroup=["uebi", "bubi", "bebi"];
+
+    setState(() {
+      _counter = prefs.setInt("groupAmount_t", counter).then((bool success) {
+        return counter;
+      });
+      _groups = prefs.setStringList('group'+(j+1).toString()+'names_t', newGroup).then((bool success) {
+        groupsi.add(newGroup);
+        return groupsi;
+      });
+    });
+  }
+
   @override
   void initState() {
     super.initState();
@@ -208,7 +234,7 @@ class SetGroupsState extends State<SetGroups> {
                 builder: (BuildContext context, AsyncSnapshot<List<List<String>>> snapshot) {
                   switch (snapshot.connectionState) {
                     case ConnectionState.waiting:
-                      return const CircularProgressIndicator();
+                      return Center(child: CircularProgressIndicator());
                     default:
                       if (snapshot.hasError) {
                         return Text('Error: ${snapshot.error}');
@@ -269,74 +295,23 @@ class SetGroupsState extends State<SetGroups> {
           ),
         ],
       ),
-      floatingActionButton: AddGroupActionbutton()
+      floatingActionButton: AddGroupActionbutton(update: update,)
     );
   }
 }
 
 
 class AddGroupActionbutton extends StatefulWidget {
-  AddGroupActionbutton({Key key}) : super(key: key);
+
+  Function(List<String>) update;
+
+  AddGroupActionbutton({Key key, this.update}) : super(key: key);
 
   @override
   AddGroupActionbuttonState createState() => AddGroupActionbuttonState();
 }
 
 class AddGroupActionbuttonState extends State<AddGroupActionbutton> {
-
-  Future<SharedPreferences> _prefs = SharedPreferences.getInstance();
-  Future<int> _counter;
-  Future<List<List<String>>> _groups;
-
-  Future<void> _addGroup_sub() async {
-    final SharedPreferences prefs = await _prefs;
-    final int counter = (prefs.getInt('groupAmount_t') ?? 0) + 1;
-    List<List<String>> groupsi=[[]];
-    var j=prefs.getInt('groupAmount_t') ?? 0;
-    for (var i=j;i>0;i--){
-      groupsi.add(prefs.getStringList('group'+i.toString()+'names_t') ?? new List<String>(3));
-    }
-
-    var newGroup=["uebi", "bubi", "bebi"];
-
-    setState(() {
-      _counter = prefs.setInt("groupAmount_t", counter).then((bool success) {
-        return counter;
-      });
-      _groups = prefs.setStringList('group'+(j+1).toString()+'names_t', newGroup).then((bool success) {
-        groupsi.add(newGroup);
-        return groupsi;
-      });
-    });
-  }
-
-  Future<void> _addGroup() async {
-    return showDialog<void>(
-      context: context,
-      barrierDismissible: false, // user must tap button!
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: Text('Rewind and remember'),
-          content: SingleChildScrollView(
-            child: ListBody(
-              children: <Widget>[
-                Text('You will never be satisfied.'),
-                Text('You\’re like me. I’m never satisfied.'),
-              ],
-            ),
-          ),
-          actions: <Widget>[
-            FlatButton(
-              child: Text('Regret'),
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
-            ),
-          ],
-        );
-      },
-    );
-  }
 
   bool isClicked=false;
   bool wasClicked=false;
@@ -366,9 +341,9 @@ class AddGroupActionbuttonState extends State<AddGroupActionbutton> {
         duration: Duration(milliseconds: 400),
         height: isClicked? 200: 60,
         width: isClicked? MediaQuery.of(context).size.width-30: 60,
-          child: wasClicked?
+          child: wasClicked&&isClicked?
             Container(
-              child: GroupEditor(),
+              child: GroupEditor(update: (group){widget.update(group);popupGroup();}),
             ):
             Icon(Icons.add,color: Colors.white,),
       ),
@@ -378,11 +353,19 @@ class AddGroupActionbuttonState extends State<AddGroupActionbutton> {
 
 class GroupEditor extends StatelessWidget{
 
+  Function(List<String>) update;
 
-
+  GroupEditor({this.update});
 
   @override
   Widget build(BuildContext context) {
-    return null;
+    return FlatButton(
+      onPressed: (){
+        update(["uebsi"]);
+        print("updated");},
+      child: Text("test yo"),
+    );
   }
+
+
 }
