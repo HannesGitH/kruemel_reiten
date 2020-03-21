@@ -58,7 +58,7 @@ class SetGroupsState extends State<SetGroups> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        backgroundColor: Theme.of(context).backgroundColor,
+        backgroundColor: Theme.of(context).canvasColor,
         appBar: AppBar(
           backgroundColor: Theme.of(context).primaryColor,
           title: Row(
@@ -118,7 +118,7 @@ class SetGroupsState extends State<SetGroups> {
                                     children: <Widget>[
                                       Container(
                                           padding: EdgeInsets.only(top:20,bottom: 10),
-                                          child: Text("Gruppe $i :",style: TextStyle(fontSize: 20,color: Theme.of(context).backgroundColor,fontWeight: FontWeight.bold),)
+                                          child: Text("Gruppe $i :",style: TextStyle(fontSize: 20,color: Colors.white,fontWeight: FontWeight.bold),)
                                       ),
                                       Row(
                                           mainAxisAlignment: MainAxisAlignment.spaceAround,
@@ -133,7 +133,7 @@ class SetGroupsState extends State<SetGroups> {
                                                     ),
                                                     highlightColor: Theme.of(context).cardColor.withAlpha(100),
                                                     splashColor: Theme.of(context).cardColor,
-                                                    color: Theme.of(context).backgroundColor,
+                                                    color: Theme.of(context).canvasColor,
                                                     onPressed: (){},
                                                     child:  Text(
                                                       item.toUpperCase()??"no name ",
@@ -198,7 +198,7 @@ class AddGroupActionbuttonState extends State<AddGroupActionbutton> {
           color: isClicked?Colors.blueGrey[500]:Theme.of(context).primaryColor,
           borderRadius: isClicked?BorderRadius.circular(20):BorderRadius.circular(30),
         ),
-        curve: Curves.easeOutCubic,
+        curve: Curves.easeInOutCubic,
         duration: Duration(milliseconds: 400),
         height: isClicked? 200: 60,
         width: isClicked? MediaQuery.of(context).size.width-30: 60,

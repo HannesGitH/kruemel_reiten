@@ -33,6 +33,7 @@ class MyApp extends StatelessWidget {
         backgroundColor: Colors.black,
         cardColor: Colors.blueGrey[700],
         primaryColor: Colors.tealAccent,
+
         //highlightColor: Colors.amberAccent,
       ),
       home: MyHomePage(title: 'Krümel Reiten'),

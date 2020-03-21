@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:kruemelreiten/Widgets/BetterListTile.dart';
 import 'package:kruemelreiten/pages/GroupAdd.dart';
+import 'package:kruemelreiten/pages/Settings.dart';
 
 class MainDrawer extends StatelessWidget{
 
@@ -22,14 +23,16 @@ class MainDrawer extends StatelessWidget{
             icon: Icons.group,
             text:'Gruppen eintragen',
             onTap: () {
+              Navigator.pop(context);
               Navigator.push(context, MaterialPageRoute(builder: (context) => SetGroups()),);
             },
           ),
           BetterListTile(
-            text: 'Item 2',
+            icon:Icons.settings,
+            text: 'Einstellungen',
             onTap: () {
-              // Update the state of the app.
-              // ...
+              Navigator.pop(context);
+              Navigator.push(context, MaterialPageRoute(builder: (context) => Settings()),);
             },
           ),
         ],
