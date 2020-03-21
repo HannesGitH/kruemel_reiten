@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:kruemelreiten/Widgets/BetterListTile.dart';
+import 'package:kruemelreiten/pages/DatabaseDevTestPage.dart';
 import 'package:kruemelreiten/pages/GroupAdd.dart';
 import 'package:kruemelreiten/pages/Settings.dart';
 
@@ -33,6 +34,14 @@ class MainDrawer extends StatelessWidget{
             onTap: () {
               Navigator.pop(context);
               Navigator.push(context, MaterialPageRoute(builder: (context) => Settings()),);
+            },
+          ),
+          BetterListTile(
+            icon:Icons.developer_board,
+            text: 'DataBaseTests',
+            onTap: () {
+              Navigator.pop(context);
+              Navigator.push(context, MaterialPageRoute(builder: (context) => DatabaseTestPage()),);
             },
           ),
         ],

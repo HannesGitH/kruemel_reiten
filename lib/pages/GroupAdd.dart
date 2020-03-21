@@ -280,6 +280,7 @@ class GroupEditor extends StatelessWidget {
       }
     }
 
+
     Widget Input({onDone,fn,c}){
       return Container(
         padding: EdgeInsets.only(top: 10,left: 20,right:20),
