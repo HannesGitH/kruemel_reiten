@@ -108,45 +108,42 @@ class SetGroupsState extends State<SetGroups> {
                           //Hier sind die Reihen für jede Gruppe
                           for(var i = 1; i < snapshot.data.length; i++){
                             list.add(
-                                Container(
-                                  padding: EdgeInsets.all(15),
-                                  child: ClipRRect(
-                                    borderRadius: BorderRadius.circular(20),
-                                    child: Container(
-                                      padding: EdgeInsets.all(5),
-                                      color: Theme.of(context).cardColor,
-                                      child: Column(
-                                        children: <Widget>[
-                                          Container(
-                                              padding: EdgeInsets.all(10),
-                                              child: Text("Gruppe $i :",style: TextStyle(fontSize: 20,color: Theme.of(context).backgroundColor,fontWeight: FontWeight.bold),)
-                                          ),
-                                          Row(
-                                              mainAxisAlignment: MainAxisAlignment.spaceAround,
-                                              children: snapshot.data[i].map((item) =>
-                                                  Container(
-                                                    padding: EdgeInsets.all(5),
-                                                    child: ClipRRect(
-                                                      borderRadius: BorderRadius.circular(20),
-                                                      child:RaisedButton(
-                                                        highlightColor: Theme.of(context).cardColor.withAlpha(100),
-                                                        splashColor: Theme.of(context).cardColor,
-                                                        color: Theme.of(context).backgroundColor,
-                                                        onPressed: (){},
-                                                        child:  Container(
-                                                          padding: EdgeInsets.all(15),
-                                                          child: Text(
-                                                            item.toUpperCase()??"no name ",
-                                                            style: TextStyle(fontSize: 16,color: Theme.of(context).primaryColor, ),
-                                                          ),
-                                                        ),
-                                                      ),
-                                                    ),
-                                                  )
-                                              ).toList()),
-                                        ],
+                                Card(
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(20.0),
+                                  ),
+                                  elevation: 8.0,
+                                  margin: new EdgeInsets.all(15),
+                                  child: Column(
+                                    children: <Widget>[
+                                      Container(
+                                          padding: EdgeInsets.only(top:20,bottom: 10),
+                                          child: Text("Gruppe $i :",style: TextStyle(fontSize: 20,color: Theme.of(context).backgroundColor,fontWeight: FontWeight.bold),)
                                       ),
-                                    ),
+                                      Row(
+                                          mainAxisAlignment: MainAxisAlignment.spaceAround,
+                                          children: snapshot.data[i].map((item) =>
+                                              Container(
+                                                padding: EdgeInsets.all(5),
+                                                child: ClipRRect(
+                                                  borderRadius: BorderRadius.circular(20),
+                                                  child:FlatButton(
+                                                    shape: RoundedRectangleBorder(
+                                                      borderRadius: BorderRadius.circular(20.0),
+                                                    ),
+                                                    highlightColor: Theme.of(context).cardColor.withAlpha(100),
+                                                    splashColor: Theme.of(context).cardColor,
+                                                    color: Theme.of(context).backgroundColor,
+                                                    onPressed: (){},
+                                                    child:  Text(
+                                                      item.toUpperCase()??"no name ",
+                                                      style: TextStyle(fontSize: 16,color: Theme.of(context).primaryColor, ),
+                                                    ),
+                                                  ),
+                                                ),
+                                              )
+                                          ).toList()),
+                                    ],
                                   ),
                                 ));
                           }
@@ -209,7 +206,7 @@ class AddGroupActionbuttonState extends State<AddGroupActionbutton> {
         Container(
           child: GroupEditor(update: (group){widget.update(group);popupGroup();}),
         ):
-        Icon(Icons.add,color: Theme.of(context).backgroundColor,),
+        Icon(Icons.group_add,color: Theme.of(context).backgroundColor,),
       ),
     );
   }

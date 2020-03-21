@@ -24,14 +24,16 @@ class MyApp extends StatelessWidget {
         //primarySwatch: Colors.blue,
         //accentColor: Colors.white,
         backgroundColor: Colors.white,
-        cardColor: Colors.blueGrey[200],
+        cardColor: Colors.blueGrey[400],
         primaryColor: Colors.blue,
+        //highlightColor: Colors.amberAccent,
       ),
       darkTheme: ThemeData(
         brightness: Brightness.dark,
         backgroundColor: Colors.black,
         cardColor: Colors.blueGrey[700],
         primaryColor: Colors.tealAccent,
+        //highlightColor: Colors.amberAccent,
       ),
       home: MyHomePage(title: 'Krümel Reiten'),
     );

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:kruemelreiten/Widgets/BetterListTile.dart';
 import 'package:kruemelreiten/pages/GroupAdd.dart';
 
 class MainDrawer extends StatelessWidget{
@@ -11,19 +12,21 @@ class MainDrawer extends StatelessWidget{
         padding: EdgeInsets.zero,
         children: <Widget>[
           DrawerHeader(
-            child: Text('Sarahs App',style: TextStyle(fontSize:22, color:  Theme.of(context).backgroundColor),),
+            child: Center(child: Text('Sarah\'s App',style: TextStyle(fontSize:32, color:  Theme.of(context).backgroundColor),)),
             decoration: BoxDecoration(
-              color: Theme.of(context).primaryColor,
+              gradient: LinearGradient(begin: Alignment.topLeft,colors:[Theme.of(context).primaryColor,Colors.cyanAccent]),
+              //color: Theme.of(context).primaryColor,
             ),
           ),
-          ListTile(
-            title: Text('Namen eintragen'),
+          BetterListTile(
+            icon: Icons.group,
+            text:'Gruppen eintragen',
             onTap: () {
               Navigator.push(context, MaterialPageRoute(builder: (context) => SetGroups()),);
             },
           ),
-          ListTile(
-            title: Text('Item 2'),
+          BetterListTile(
+            text: 'Item 2',
             onTap: () {
               // Update the state of the app.
               // ...
