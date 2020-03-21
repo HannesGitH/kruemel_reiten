@@ -20,7 +20,11 @@ class MyApp extends StatelessWidget {
         // or simply save your changes to "hot reload" in a Flutter IDE).
         // Notice that the counter didn't reset back to zero; the application
         // is not restarted.
-        primarySwatch: Colors.blue,
+        //primarySwatch: Colors.blue,
+        //accentColor: Colors.white,
+        backgroundColor: Colors.white,
+        cardColor: Colors.blueGrey[200],
+        primaryColor: Colors.blue,
       ),
       home: MyHomePage(title: 'Krümel Reiten'),
     );
@@ -74,9 +78,9 @@ class _MyHomePageState extends State<MyHomePage> {
             padding: EdgeInsets.zero,
             children: <Widget>[
               DrawerHeader(
-                child: Text('Sarahs App',style: TextStyle(fontSize:22, color:  Colors.white),),
+                child: Text('Sarahs App',style: TextStyle(fontSize:22, color:  Theme.of(context).backgroundColor),),
                 decoration: BoxDecoration(
-                  color: Colors.blue,
+                  color: Theme.of(context).primaryColor,
                 ),
               ),
               ListTile(
@@ -250,12 +254,12 @@ class SetGroupsState extends State<SetGroups> {
                                   borderRadius: BorderRadius.circular(20),
                                   child: Container(
                                     padding: EdgeInsets.all(5),
-                                    color: Colors.blueGrey[200],
+                                    color: Theme.of(context).cardColor,
                                     child: Column(
                                       children: <Widget>[
                                         Container(
                                             padding: EdgeInsets.all(10),
-                                            child: Text("Gruppe $i :",style: TextStyle(fontSize: 20,color: Colors.white,fontWeight: FontWeight.bold),)
+                                            child: Text("Gruppe $i :",style: TextStyle(fontSize: 20,color: Theme.of(context).backgroundColor,fontWeight: FontWeight.bold),)
                                         ),
                                         Row(
                                         mainAxisAlignment: MainAxisAlignment.spaceAround,
@@ -265,15 +269,15 @@ class SetGroupsState extends State<SetGroups> {
                                                   child: ClipRRect(
                                                     borderRadius: BorderRadius.circular(20),
                                                     child:RaisedButton(
-                                                      highlightColor: Colors.blueGrey[200].withAlpha(100),
-                                                      splashColor: Colors.blueGrey[200],
-                                                      color: Colors.white,
+                                                      highlightColor: Theme.of(context).cardColor.withAlpha(100),
+                                                      splashColor: Theme.of(context).cardColor,
+                                                      color: Theme.of(context).backgroundColor,
                                                       onPressed: (){},
                                                       child:  Container(
                                                         padding: EdgeInsets.all(15),
                                                         child: Text(
                                                           item.toUpperCase()??"no name ",
-                                                          style: TextStyle(fontSize: 16,color: Colors.blue, ),
+                                                          style: TextStyle(fontSize: 16,color: Theme.of(context).primaryColor, ),
                                                         ),
                                                       ),
                                                   ),
@@ -332,9 +336,9 @@ class AddGroupActionbuttonState extends State<AddGroupActionbutton> {
       child: AnimatedContainer(
         decoration: BoxDecoration(
           boxShadow: isClicked?
-            [BoxShadow(color: Colors.white, blurRadius: 25 ,spreadRadius: 10)]:
+            [BoxShadow(color: Theme.of(context).backgroundColor, blurRadius: 25 ,spreadRadius: 10)]:
             [BoxShadow(color: Colors.black, blurRadius: 15, offset: Offset.fromDirection(1.3,7),spreadRadius: -4)],
-          color: isClicked?Colors.blueGrey[500]:Colors.blue,
+          color: isClicked?Colors.blueGrey[500]:Theme.of(context).primaryColor,
           borderRadius: isClicked?BorderRadius.circular(20):BorderRadius.circular(30),
         ),
         curve: Curves.easeOutCubic,
@@ -345,7 +349,7 @@ class AddGroupActionbuttonState extends State<AddGroupActionbutton> {
             Container(
               child: GroupEditor(update: (group){widget.update(group);popupGroup();}),
             ):
-            Icon(Icons.add,color: Colors.white,),
+            Icon(Icons.add,color: Theme.of(context).backgroundColor,),
       ),
     );
   }
@@ -359,11 +363,12 @@ class GroupEditor extends StatelessWidget{
 
   @override
   Widget build(BuildContext context) {
-    return FlatButton(
+    return RaisedButton(
+      shape: CircleBorder(),
       onPressed: (){
         update(["uebsi"]);
         print("updated");},
-      child: Text("test yo"),
+      child: Icon(Icons.check_circle, color: Theme.of(context).primaryColor,),
     );
   }
 
