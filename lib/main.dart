@@ -26,6 +26,12 @@ class MyApp extends StatelessWidget {
         cardColor: Colors.blueGrey[200],
         primaryColor: Colors.blue,
       ),
+      darkTheme: ThemeData(
+        brightness: Brightness.dark,
+        backgroundColor: Colors.black,
+        cardColor: Colors.blueGrey[700],
+        primaryColor: Colors.tealAccent,
+      ),
       home: MyHomePage(title: 'Krümel Reiten'),
     );
   }
@@ -72,6 +78,7 @@ class _MyHomePageState extends State<MyHomePage> {
     // fast, so that you can just rebuild anything that needs updating rather
     // than having to individually change instances of widgets.
     return Scaffold(
+      backgroundColor: Theme.of(context).backgroundColor,
       drawer: Drawer(
           child: ListView(
             // Important: Remove any padding from the ListView.
@@ -200,7 +207,9 @@ class SetGroupsState extends State<SetGroups> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Theme.of(context).backgroundColor,
       appBar: AppBar(
+        backgroundColor: Theme.of(context).primaryColor,
         title: Row(
           children: <Widget>[
             Text("Gruppen verwalten"),
