@@ -220,15 +220,36 @@ class GroupEditor extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return RaisedButton(
-      shape: CircleBorder(),
-      onPressed: () {
-        update(["uebsi"]);
-        print("updated");
-      },
-      child: Icon(Icons.check_circle, color: Theme
-          .of(context)
-          .primaryColor,),
+    Widget Input({onChanged}){
+      return TextField(
+        onChanged: onChanged,
+      );
+    }
+
+
+    return Column(
+      children: <Widget>[
+        Input(
+            onChanged: (name){},
+        ),
+        //Container(height: 100),
+        Align(
+          alignment: Alignment.bottomRight,
+          child: RaisedButton(
+            elevation: 8,
+            padding: EdgeInsets.all(15),
+            color: Theme.of(context).canvasColor,
+            shape: CircleBorder(),
+            onPressed: () {
+              update(["uebsi"]);
+              print("updated");
+            },
+            child: Icon(Icons.check_circle, color: Theme
+                .of(context)
+                .primaryColor,),
+          ),
+        ),
+      ],
     );
   }
 
