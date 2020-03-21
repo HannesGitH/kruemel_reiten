@@ -179,11 +179,18 @@ class AddGroupActionbuttonState extends State<AddGroupActionbutton> {
 
   void popupGroup(){
     setState(() {
-      isClicked=!isClicked;
+      isClicked=true;
     });
     Future.delayed(Duration(milliseconds: 400), (){setState(() {
-      wasClicked=!wasClicked;
+      wasClicked=true;
     });});
+  }
+
+  void cancel(){
+    setState(() {
+      wasClicked=false;
+      isClicked=false;
+    });
   }
 
   @override
@@ -200,11 +207,11 @@ class AddGroupActionbuttonState extends State<AddGroupActionbutton> {
         ),
         curve: Curves.easeInOutCubic,
         duration: Duration(milliseconds: 400),
-        height: isClicked? 200: 60,
+        height: isClicked? 250: 60,
         width: isClicked? MediaQuery.of(context).size.width-30: 60,
-        child: wasClicked&&isClicked?
+        child: wasClicked?
         Container(
-          child: GroupEditor(update: (group){widget.update(group);popupGroup();}),
+          child: GroupEditor(update: (group){widget.update(group);cancel();},abort: cancel,),
         ):
         Icon(Icons.group_add,color: Theme.of(context).backgroundColor,),
       ),
@@ -214,40 +221,138 @@ class AddGroupActionbuttonState extends State<AddGroupActionbutton> {
 
 class GroupEditor extends StatelessWidget {
 
-  Function(List<String>) update;
+  FocusNode name2 = FocusNode();
+  FocusNode name3 = FocusNode();
 
-  GroupEditor({this.update});
+  final name1C= TextEditingController();
+  final name2C= TextEditingController();
+  final name3C= TextEditingController();
+
+  Function(List<String>) update;
+  Function()abort;
+
+  List<String> names=[];
+
+  GroupEditor({this.update, this.abort});
 
   @override
   Widget build(BuildContext context) {
-    Widget Input({onChanged}){
-      return TextField(
-        onChanged: onChanged,
+
+    Future<void> _fillNames() async {
+      return showDialog<void>(
+        context: context,
+        //barrierDismissible: false, // user must tap button!
+        builder: (BuildContext context) {
+          return AlertDialog(
+            shape:  RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(20.0),
+            ),
+            title: Text('Da fehlt wohl jemand'),
+            content: SingleChildScrollView(
+              child: ListBody(
+                children: <Widget>[
+                  Text('Es sind doch immer 3 in einer Gruppe'),
+                  Text('Du hast wohl nicht genug eingegeben.'),
+                ],
+              ),
+            ),
+            actions: <Widget>[
+              FlatButton(
+                child: Text('Oops',style: TextStyle(color: Theme.of(context).primaryColor),),
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+              ),
+            ],
+          );
+        },
       );
     }
 
+    void set(){
+      bool bedingung=name1C.text.length>0&&name2C.text.length>0&&name3C.text.length>0;
+      if (bedingung) {
+        names=[name1C.text,name2C.text,name3C.text];
+        update(names);
+      }else{
+        _fillNames();
+        print(names.length);
+      }
+    }
+
+    Widget Input({onDone,fn,c}){
+      return Container(
+        padding: EdgeInsets.only(top: 10,left: 20,right:20),
+        child: TextField(
+          focusNode: fn,
+          textInputAction: TextInputAction.next,
+          textCapitalization: TextCapitalization.words,
+          decoration: InputDecoration(
+            hintText: "Name",
+          ),
+          style: TextStyle(
+            fontWeight: FontWeight.bold,
+            fontSize: 18,
+          ),
+          textAlign: TextAlign.center,
+          onSubmitted: onDone,
+          controller: c,
+        ),
+      );
+    }
 
     return Column(
       children: <Widget>[
         Input(
-            onChanged: (name){},
+          onDone: (name){
+            FocusScope.of(context).requestFocus(name2);
+          },
+          c:name1C,
         ),
-        //Container(height: 100),
-        Align(
-          alignment: Alignment.bottomRight,
-          child: RaisedButton(
-            elevation: 8,
-            padding: EdgeInsets.all(15),
-            color: Theme.of(context).canvasColor,
-            shape: CircleBorder(),
-            onPressed: () {
-              update(["uebsi"]);
-              print("updated");
-            },
-            child: Icon(Icons.check_circle, color: Theme
-                .of(context)
-                .primaryColor,),
-          ),
+        Input(
+          onDone: (name){
+            FocusScope.of(context).requestFocus(name3);
+          },
+          fn: name2,
+          c:name2C,
+        ),
+        Input(
+          onDone: (name){
+            set();
+          },
+          fn: name3,
+          c:name3C,
+        ),
+        Container(height: 10),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: <Widget>[
+            RaisedButton(
+              elevation: 8,
+              padding: EdgeInsets.all(15),
+              color: Theme.of(context).canvasColor,
+              shape: CircleBorder(),
+              onPressed: () {
+                abort();
+                print("aborted");
+              },
+              child: Icon(Icons.cancel, color: Theme
+                  .of(context)
+                  .primaryColor,),
+            ),
+            RaisedButton(
+              elevation: 8,
+              padding: EdgeInsets.all(15),
+              color: Theme.of(context).canvasColor,
+              shape: CircleBorder(),
+              onPressed: () {
+                set();
+              },
+              child: Icon(Icons.check_circle, color: Theme
+                  .of(context)
+                  .primaryColor,),
+            ),
+          ],
         ),
       ],
     );
