@@ -180,6 +180,23 @@ class PaymentD{
   }
 }
 
+class Kid{
+
+  Kid({this.name, this.tel, this.balance});
+
+  String name;
+  String tel;
+  int balance;
+}
+
+class Group{
+
+  Group({this.name, this.kids});
+
+  String name;
+  List<Kid>kids;
+} 
+
 class DataHandler{
   static final DataHandler _instance = DataHandler._();
   static TheDatabase tdb = TheDatabase();
@@ -236,5 +253,66 @@ class DataHandler{
 
     return;
   }
+
+  Future<List<int>> _getGroupMembersByName_id(groupName) async{
+    Database db = await _database;
+
+    Map<String, dynamic> kidsMap = (await db.query(tdb.groups,
+      columns: ['kid1','kid2','kid3'],
+      where: 'name = ?',
+      whereArgs: [groupName],
+    )).first;
+
+    List<int> kids;
+
+    void append(String kidid, dynamic kid) {
+      kids.add(kid);
+    }
+
+    kidsMap.forEach(append);
+
+    return kids;
+  }
+
+  Future<List<String>> getGroupMembersByName_onlyNames(groupName) async{
+    List<Kid> kids = await getGroupMembersByName_noBalance(groupName);
+    return List.generate(kids.length, (i){
+      return kids[i].name;
+    });
+  }
+  
+  Future<List<Kid>> getGroupMembersByName_noBalance(groupName) async{
+    Database db = await _database;
+    List<int> kidIDs = await _getGroupMembersByName_id(groupName);
+
+    List<Kid> kids;
+    void getKid (kidID) async{
+      Map<String, dynamic> kid = (await db.query(tdb.users,
+        where: 'id = ?',
+        whereArgs: [kidID],
+      )).first;
+
+      kids.add(
+        Kid(
+          name: kid['name'],
+          tel: kid['tel'],
+          balance: null, //kid['balance']///this is probably not the correct balance
+        )
+      );
+    }
+    await Future.forEach(kidIDs,getKid);
+    return kids;
+  }
+
+  Future<int> _getBalanceByUserID(int uid){
+    
+  }
+
+  Future<List<String>> getGroupMembersByName_complete(groupName) async{
+    List<Kid> kids = await getGroupMembersByName_noBalance(groupName);
+    //Future
+  }
+
+  
 
 }
