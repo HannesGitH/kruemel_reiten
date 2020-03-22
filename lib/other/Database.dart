@@ -69,6 +69,11 @@ class TheDatabase {
 
   }
 
+  String users = 'user';
+  String groups = 'group';
+  String lessons = 'lesson';
+  String payments = 'payment';
+
   void _onUpgrade(Database db, int oldVersion, int newVersion) {
     // Run migration according database versions
   }
@@ -85,7 +90,7 @@ enum Presence {
 
 class UserD{
   final String name;
-  final int tel;
+  final String tel;
 
   UserD({this.name, this.tel});
 
@@ -173,4 +178,63 @@ class PaymentD{
   String toString() {
     return 'am ${date.day} wurde für Kind Nr $kid $cents bezahlt. ($description)}';
   }
+}
+
+class DataHandler{
+  static final DataHandler _instance = DataHandler._();
+  static TheDatabase tdb = TheDatabase();
+  static Future<Database> _database = tdb.db;
+
+  DataHandler._();
+
+  factory DataHandler() {
+    return _instance;
+  }
+
+  Future<int> _addUser(name) async{
+    Database db = await _database;
+
+    UserD user = new UserD(name: name, tel: "noch keine Nummer");
+
+    int id = await db.insert(tdb.users, 
+      user.toMap(),
+      conflictAlgorithm: ConflictAlgorithm.replace
+    );
+
+    return id;
+  }
+
+  Future<int> _addGroup(List<int> names, {String name, bool isSec}) async{
+
+    Database db = await _database;
+
+    int lastId =(await db.rawQuery('''
+      SELECT *
+      FROM history
+      ORDER BY id DESC
+      LIMIT 1
+    ''')
+    ).first['id']
+    ??0;
+
+    GroupD group = new GroupD(name: name??"Gruppe ${lastId+1}", kid1: names[0], kid2: names[1], kid3: names[2]);
+
+    int id = await db.insert(tdb.groups, 
+      group.toMap(),
+      conflictAlgorithm: ConflictAlgorithm.replace
+    );
+
+    return id;
+  }
+
+  Future<void> addGroup( String name1, String name2, String name3, [String groupName]) async{
+    int id1 = await _addUser(name1);
+    int id2 = await _addUser(name2);
+    int id3 = await _addUser(name3);
+
+    await _addGroup([id1,id2,id3], name: groupName);
+
+    return;
+  }
+
 }
