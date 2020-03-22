@@ -15,7 +15,7 @@ class BetterListTile extends StatelessWidget{
     final makeListTile = ListTile(
         onTap: onTap,
         contentPadding: EdgeInsets.symmetric(horizontal: 20.0, vertical: 5.0),
-        leading: Icon(icon, color: Colors.purpleAccent),
+        leading: Icon(icon, color: Colors.orange[400]),
         title: Text(
           text,
           style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),

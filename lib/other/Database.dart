@@ -52,6 +52,7 @@ class TheDatabase {
     CREATE TABLE lesson(
       id INTEGER PRIMARY KEY AUTOINCREMENT,
       kid INTEGER,
+      date INTEGER,
       presence INTEGER,
       paymentStatus INTEGER,
       description TEXT)
@@ -74,7 +75,7 @@ class TheDatabase {
 
 }
 
-enum presence {
+enum Presence {
   future,
   wasThere,
   canceledInTime,
@@ -123,5 +124,53 @@ class GroupD{
   @override
   String toString() {
     return 'Gruppe: $name: {rythmus: ${isSec?"1":"2"}, KinderNr: {$kid1,$kid2,$kid3} }';
+  }
+}
+
+class LessonD{
+  final String description;
+  final int kid;
+  final DateTime date;
+  final Presence presence;
+  final bool isPaid;
+
+  LessonD({this.description, this.kid, this.date, this.presence,this.isPaid});
+
+  Map<String, dynamic> toMap() {
+    return {
+      'kid':kid,
+      'date':date,
+      'presence':presence,
+      'paymentStatus':isPaid,
+      'description':description,
+    };
+  }
+
+  @override
+  String toString() {
+    return 'Stunde am ${date.day}: {KindNr: $kid: $presence, wurde ${isPaid?'':'nicht'} bezahlt.}';
+  }
+}
+
+class PaymentD{
+  final String description;
+  final int kid;
+  final DateTime date;
+  final int cents;
+
+  PaymentD({this.description, this.kid, this.date, this.cents});
+
+  Map<String, dynamic> toMap() {
+    return {
+      'kid':kid,
+      'date':date,
+      'cents':cents,
+      'extra':description,
+    };
+  }
+
+  @override
+  String toString() {
+    return 'am ${date.day} wurde für Kind Nr $kid $cents bezahlt. ($description)}';
   }
 }
