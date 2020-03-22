@@ -280,32 +280,38 @@ class DataHandler{
       return kids[i].name;
     });
   }
-  
-  Future<List<Kid>> getGroupMembersByName_noBalance(groupName) async{
-    Database db = await _database;
-    List<int> kidIDs = await _getGroupMembersByName_id(groupName);
 
-    List<Kid> kids;
-    void getKid (kidID) async{
-      Map<String, dynamic> kid = (await db.query(tdb.users,
+  Future<Kid> _getKidById(kidID)async{
+    Database db = await _database;
+    Map<String, dynamic> kid = (await db.query(tdb.users,
         where: 'id = ?',
         whereArgs: [kidID],
       )).first;
 
+      
+    return Kid(
+      name: kid['name'],
+      tel: kid['tel'],
+      balance: null, //kid['balance']///this is probably not the correct balance
+    );
+  }
+  
+  Future<List<Kid>> getGroupMembersByName_noBalance(groupName) async{
+    List<int> kidIDs = await _getGroupMembersByName_id(groupName);
+
+    List<Kid> kids;
+    void getKid (kidID) async{
       kids.add(
-        Kid(
-          name: kid['name'],
-          tel: kid['tel'],
-          balance: null, //kid['balance']///this is probably not the correct balance
-        )
+        await _getKidById(kidID)
       );
     }
     await Future.forEach(kidIDs,getKid);
     return kids;
   }
 
-  Future<int> _getBalanceByUserID(int uid){
-    
+  Future<int> _getBalanceByUserID(int uid) async{
+    Database db = await _database;
+    db.query(tdb.payments);
   }
 
   Future<List<String>> getGroupMembersByName_complete(groupName) async{
