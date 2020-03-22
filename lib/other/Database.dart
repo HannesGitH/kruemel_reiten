@@ -254,6 +254,39 @@ class DataHandler{
     return;
   }
 
+   Future<List<List<String>>> getAllGroups_onlyNames() async{
+    //this might be slower than the complete variant 
+    Database db = await _database;
+    List<Map<String,dynamic>> allIds = await db.query(tdb.groups,
+      columns: ['name'],
+    );
+    List<List<String>> groups;
+    for(int i=0 ; i<allIds.length ; i++){
+      Map<String,dynamic> map=allIds[i];
+      String groupName=map['name'];
+      groups.add(await getGroupMembersByName_onlyNames(groupName));
+    }
+    return groups;
+  }
+
+  Future<List<Group>> getAllGroups_noBalance() async{
+    Database db = await _database;
+    List<Map<String,dynamic>> allIds = await db.query(tdb.groups,
+      columns: ['kid1','kid2','kid3','name'],
+    );
+    List<Group> groups;
+    for(int i=0 ; i<allIds.length ; i++){
+      Map<String,dynamic> map=allIds[i];
+      String groupName=map['name'];
+      List<Kid> kids;
+      for(int j=0 ; j<map.length-1 ; j++){
+        kids.add(await _getKidById(map['kid$j']));
+      }
+      groups.add(Group(name: groupName, kids: kids));
+    }
+    return groups;
+  }
+
   Future<List<int>> _getGroupMembersByName_id(groupName) async{
     Database db = await _database;
 

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:kruemelreiten/other/Database.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 
@@ -10,6 +11,10 @@ class SetGroups extends StatefulWidget {
 }
 
 class SetGroupsState extends State<SetGroups> {
+
+
+  DataHandler dataMan;
+
   Future<SharedPreferences> _prefs = SharedPreferences.getInstance();
   Future<int> _counter;
   Future<List<List<String>>> _groups;
@@ -19,25 +24,7 @@ class SetGroupsState extends State<SetGroups> {
   }
 
   Future<void> _addGroup(newGroup) async {
-    final SharedPreferences prefs = await _prefs;
-    final int counter = (prefs.getInt('groupAmount_t') ?? 0) + 1;
-    List<List<String>> groupsi=[[]];
-    var j=prefs.getInt('groupAmount_t') ?? 0;
-    for (var i=j;i>0;i--){
-      groupsi.add(prefs.getStringList('group'+i.toString()+'names_t') ?? new List<String>(3));
-    }
-
-    //var newGroup=["uebi", "bubi", "bebi"];
-
-    setState(() {
-      _counter = prefs.setInt("groupAmount_t", counter).then((bool success) {
-        return counter;
-      });
-      _groups = prefs.setStringList('group'+(j+1).toString()+'names_t', newGroup).then((bool success) {
-        groupsi.add(newGroup);
-        return groupsi;
-      });
-    });
+    return await dataMan.addGroup(newGroup[0], newGroup[1], newGroup[2]); //optional add groupname TODo later
   }
 
   @override
