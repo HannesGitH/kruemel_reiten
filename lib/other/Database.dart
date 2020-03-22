@@ -24,7 +24,7 @@ class TheDatabase {
   }
 
   Future<Database> init() async {
-    String dbPath = join(await getDatabasesPath(), 'calenderDatabase.db');
+    String dbPath = join(await getDatabasesPath(), 'theDatabase.db');
     var database = openDatabase(
         dbPath, version: 1, onCreate: _onCreate, onUpgrade: _onUpgrade);
     return database;
@@ -309,16 +309,54 @@ class DataHandler{
     return kids;
   }
 
-  Future<int> _getBalanceByUserID(int uid) async{
+  Future<int> _getLessonAmountByUserId(int uid) async{
     Database db = await _database;
-    db.query(tdb.payments);
+    return (await db.query(tdb.lessons,
+      columns: ['Count(*)'], 
+      where:'id = ?' , 
+      whereArgs: [1]
+    )).first['Count(*)'];
   }
 
-  Future<List<String>> getGroupMembersByName_complete(groupName) async{
+  Future<int> _getBalanceByUserID(int uid) async{
+
+    int price=2500;//der Preis für eine Reitstunde in cent
+
+    Database db = await _database;
+    List<Map<String, dynamic>> payments = await db.query(tdb.payments,
+      columns: ['cents'],
+      where: 'kid = ?',
+      whereArgs: [uid],
+    );
+
+    List<int> paymentsInCents = List.generate(payments.length, (i){
+      return payments[i]['cents'];
+    });
+
+    int negativeBalance = -(await _getLessonAmountByUserId(uid))*price;
+
+    int balance=paymentsInCents.fold(negativeBalance, (bal,paid){return bal+paid;});
+    
+    return balance;
+
+  }
+
+  Future<List<Kid>> getGroupMembersByName_complete(groupName) async{
     List<Kid> kids = await getGroupMembersByName_noBalance(groupName);
-    //Future
-  }
+    List<int> kidIDs = await _getGroupMembersByName_id(groupName);
+    //ich hab iwie sorge dass die groupmembers nach aufruf von ..._nobalance aufgrund das async forEach nicht mehr sortiert sind ; wird sich in testcases herausfinden
 
-  
+    List<Kid> newKids;
+    for(int i=0;i<kids.length;i++){
+      kids.add(
+        Kid(
+          name: kids[i].name,
+          tel: kids[i].tel,
+          balance: await _getBalanceByUserID(kidIDs[i]),
+        )
+      );
+    }
+    return kids;
+  }
 
 }

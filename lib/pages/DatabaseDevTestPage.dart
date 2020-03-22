@@ -3,13 +3,9 @@ import 'package:path/path.dart';
 import 'package:sqflite/sqflite.dart';
 import 'dart:async';
 
-import 'dart:async';
 
-import 'package:path/path.dart';
-import 'package:sqflite/sqflite.dart';
-
-void main() async {
-  final database = openDatabase(
+class TestBase {
+  Future<Database>database()async{return await openDatabase(
     // Set the path to the database. Note: Using the `join` function from the
     // `path` package is best practice to ensure the path is correctly
     // constructed for each platform.
@@ -24,10 +20,11 @@ void main() async {
     // path to perform database upgrades and downgrades.
     version: 1,
   );
+  }
 
   Future<void> insertDog(Dog dog) async {
     // Get a reference to the database.
-    final Database db = await database;
+    final Database db = await database();
 
     // Insert the Dog into the correct table. Also specify the
     // `conflictAlgorithm`. In this case, if the same dog is inserted
@@ -41,7 +38,7 @@ void main() async {
 
   Future<List<Dog>> dogs() async {
     // Get a reference to the database.
-    final Database db = await database;
+    final Database db = await database();
 
     // Query the table for all The Dogs.
     final List<Map<String, dynamic>> maps = await db.query('dogs');
@@ -58,7 +55,7 @@ void main() async {
 
   Future<void> updateDog(Dog dog) async {
     // Get a reference to the database.
-    final db = await database;
+    final db = await database();
 
     // Update the given Dog.
     await db.update(
@@ -73,7 +70,7 @@ void main() async {
 
   Future<void> deleteDog(int id) async {
     // Get a reference to the database.
-    final db = await database;
+    final db = await database();
 
     // Remove the Dog from the database.
     await db.delete(
@@ -90,7 +87,7 @@ void main() async {
     name: 'Fido',
     age: 35,
   );
-
+/*
   // Insert a dog into the database.
   await insertDog(fido);
 
@@ -112,7 +109,52 @@ void main() async {
   await deleteDog(fido.id);
 
   // Print the list of dogs (empty).
+  print(await dogs());*/
+
+Future<String> test()async{
+   // Insert a dog into the database.
+  await this.insertDog(fido);
+
+  // Print the list of dogs (only Fido for now).
+  print(await this.dogs());
+
+  // Update Fido's age and save it to the database.
+  fido = Dog(
+    id: fido.id,
+    name: fido.name,
+    age: fido.age + 7,
+  );
+
+  var fido2 = Dog(
+    id: 1,
+    name: 'Fido',
+    age: 35,
+  );
+
+   // Insert a dog into the database.
+  await this.insertDog(fido2);
+
+  await updateDog(fido);
+
+  // Print Fido's updated information.
   print(await dogs());
+
+  final db= await database();
+
+  var ret = await db.rawQuery('''
+  SELECT Count(*)
+  FROM dogs
+  ''');
+
+  print(ret);
+
+  var ret2 = await db.query('dogs',columns: ['Count(*)'], where:'id = ?' , whereArgs: [1]);
+
+  print(ret);
+
+  return ret2.first['Count(*)'].toString();
+}
+
 }
 
 class Dog {
@@ -147,6 +189,10 @@ class DatabaseTestPage extends StatelessWidget{
     return Scaffold(
       appBar: AppBar(
         title: Text("Nur Für Hannes"),
+        ),
+        body: FutureBuilder(future: TestBase().test(),builder: (BuildContext context, AsyncSnapshot<String> snapshot) {
+          return Center(child:Text("Anzahl hunde mit id 0: ${snapshot.data}"));
+        },
       ),
     );
   }
