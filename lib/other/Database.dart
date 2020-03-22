@@ -356,7 +356,7 @@ class DataHandler{
         )
       );
     }
-    return kids;
+    return newKids;
   }
 
 }
