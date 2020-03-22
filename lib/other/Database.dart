@@ -81,3 +81,47 @@ enum presence {
   canceledJust,
   canceledNot
 }
+
+class UserD{
+  final String name;
+  final int tel;
+
+  UserD({this.name, this.tel});
+
+  Map<String, dynamic> toMap() {
+    return {
+      'name': name,
+      'tel': tel,
+    };
+  }
+
+  @override
+  String toString() {
+    return 'Kind: $name, nummer: $tel ';
+  }
+}
+
+class GroupD{
+  final String name;
+  final int kid1;
+  final int kid2;
+  final int kid3;
+  final bool isSec;
+
+  GroupD({this.name, this.kid1,this.kid2,this.kid3,this.isSec});
+
+  Map<String, dynamic> toMap() {
+    return {
+      'name': name,
+      'kid1':kid1,
+      'kid2':kid2,
+      'kid3':kid3,
+      'isSec':isSec,
+    };
+  }
+
+  @override
+  String toString() {
+    return 'Gruppe: $name: {rythmus: ${isSec?"1":"2"}, KinderNr: {$kid1,$kid2,$kid3} }';
+  }
+}
