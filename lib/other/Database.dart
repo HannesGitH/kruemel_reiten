@@ -284,8 +284,9 @@ class DataHandler{
     for(int i=0 ; i<allIds.length ; i++){
       Map<String,dynamic> map=allIds[i];
       String groupName=map['name'];
-      List<Kid> kids;
-      for(int j=0 ; j<map.length-1 ; j++){
+      List<Kid> kids=[];
+    print("gettin' all those kids: ${map.toString()}");
+      for(int j=1 ; j<map.length ; j++){//jep my kids index starts at 1, shame on me
         kids.add(await _getKidById(map['kid$j']));
       }
       groups.add(Group(name: groupName, kids: kids));

@@ -94,7 +94,7 @@ class SetGroupsState extends State<SetGroups> {
                   List<Widget> list = new List<Widget>();
 
                   //Hier sind die Reihen für jede Gruppe
-                  for(var i = 1; i < _localGroups.length; i++){
+                  for(var i = 0; i < _localGroups.length; i++){
                     list.add(
                         Card(
                           shape: RoundedRectangleBorder(
