@@ -106,7 +106,7 @@ class SetGroupsState extends State<SetGroups> {
                             children: <Widget>[
                               Container(
                                   padding: EdgeInsets.only(top:20,bottom: 10),
-                                  child: Text(_localGroups[i].name,style: TextStyle(fontSize: 20,color: Colors.white,fontWeight: FontWeight.bold),)
+                                  child: Text(_localGroups[i].name??"Gruppe ohne Namen",style: TextStyle(fontSize: 20,color: Colors.white,fontWeight: FontWeight.bold),)
                               ),
                               Row(
                                   mainAxisAlignment: MainAxisAlignment.spaceAround,

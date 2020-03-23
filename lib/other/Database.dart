@@ -248,6 +248,7 @@ class DataHandler{
   }
 
   Future<void> addGroup(Group group) async{
+    print("adding group: ${group.toString()}");
     int id1 = await _addUser(group.kids[0].name);
     int id2 = await _addUser(group.kids[1].name);
     int id3 = await _addUser(group.kids[2].name);
@@ -258,6 +259,7 @@ class DataHandler{
   }
 
    Future<List<List<String>>> getAllGroups_onlyNames() async{
+    print("getting all group names..");
     //this might be slower than the complete variant 
     Database db = await _database;
     List<Map<String,dynamic>> allIds = await db.query(tdb.groups,
@@ -273,6 +275,7 @@ class DataHandler{
   }
 
   Future<List<Group>> getAllGroups_noBalance() async{
+    print("Getting all Groups..");
     Database db = await _database;
     List<Map<String,dynamic>> allIds = await db.query(tdb.groups,
       columns: ['kid1','kid2','kid3','name'],
@@ -291,6 +294,7 @@ class DataHandler{
   }
 
   Future<List<int>> _getGroupMembersByName_id(groupName) async{
+    print("getting Groupmembers from Group $groupName");
     Database db = await _database;
 
     Map<String, dynamic> kidsMap = (await db.query(tdb.groups,
@@ -311,6 +315,7 @@ class DataHandler{
   }
 
   Future<List<String>> getGroupMembersByName_onlyNames(groupName) async{
+    print("getting GroupmemberNames from Group $groupName");
     List<Kid> kids = await getGroupMembersByName_noBalance(groupName);
     return List.generate(kids.length, (i){
       return kids[i].name;
@@ -318,18 +323,23 @@ class DataHandler{
   }
 
   Future<Kid> _getKidById(kidID)async{
+    print("getting kid from id $kidID .. ");
     Database db = await _database;
-    Map<String, dynamic> kid = (await db.query(tdb.users,
-        where: 'id = ?',
-        whereArgs: [kidID],
-      )).first;
 
-      
-    return Kid(
-      name: kid['name'],
-      tel: kid['tel'],
-      balance: null, //kid['balance']///this is probably not the correct balance
-    );
+    List<Map<String, dynamic>> kids = await db.query(tdb.users,
+        where: 'id = ?',
+        whereArgs: [kidID??0],
+      );
+    if (kids.length>0){
+      var kid=kids.first;
+      return Kid(
+        name: kid['name'],
+        tel: kid['tel'],
+        balance: null, //kid['balance']///this is probably not the correct balance
+      );
+    }
+    return null;
+
   }
   
   Future<List<Kid>> getGroupMembersByName_noBalance(groupName) async{
@@ -350,12 +360,12 @@ class DataHandler{
     return (await db.query(tdb.lessons,
       columns: ['Count(*)'], 
       where:'id = ?' , 
-      whereArgs: [1]
+      whereArgs: [uid]
     )).first['Count(*)'];
   }
 
   Future<int> _getBalanceByUserID(int uid) async{
-
+    print("getbalenceFrom $uid");
     int price=2500;//der Preis für eine Reitstunde in cent
 
     Database db = await _database;
