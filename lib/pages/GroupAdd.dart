@@ -213,6 +213,7 @@ class GroupEditor extends StatelessWidget {
   final name1C= TextEditingController();
   final name2C= TextEditingController();
   final name3C= TextEditingController();
+  final gNameC= TextEditingController();
 
   Function(Group) update;
   Function()abort;
@@ -264,7 +265,7 @@ class GroupEditor extends StatelessWidget {
             name: names[i],
           );
         });
-        update(Group(kids: kids));
+        update(Group(kids: kids,name: gNameC.text));
       }else{
         _fillNames();
         print(names.length);
@@ -280,9 +281,16 @@ class GroupEditor extends StatelessWidget {
           textInputAction: TextInputAction.next,
           textCapitalization: TextCapitalization.words,
           decoration: InputDecoration(
-            hintText: "Name",
+            enabledBorder: UnderlineInputBorder(borderSide: BorderSide(color: Colors.white70,width: 1)),
+            hintText: "Schüler Name",
+            hintStyle: TextStyle(
+              color: Colors.white70,
+              fontWeight: FontWeight.w100,
+              fontSize: 17,
+            ),
           ),
           style: TextStyle(
+            color: Colors.white,
             fontWeight: FontWeight.bold,
             fontSize: 18,
           ),
@@ -331,6 +339,31 @@ class GroupEditor extends StatelessWidget {
               child: Icon(Icons.cancel, color: Theme
                   .of(context)
                   .primaryColor,),
+            ),
+            Container(
+              width: 130,
+              child: TextField(
+                textInputAction: TextInputAction.next,
+                textCapitalization: TextCapitalization.words,
+                decoration: InputDecoration(
+                  focusedBorder: OutlineInputBorder(borderSide: BorderSide(color: Colors.white,width: 2),borderRadius: BorderRadius.circular(15)),
+                  enabledBorder: OutlineInputBorder(borderSide: BorderSide(color: Colors.white54,width: 1),borderRadius: BorderRadius.circular(15)),
+                  hintText: "-Gruppename-",
+                  hintStyle: TextStyle(
+                    color: Colors.white60,
+                    fontWeight: FontWeight.w300,
+                    fontSize: 19,
+                  ),
+                ),
+                style: TextStyle(
+                  color: Colors.white,
+                  fontWeight: FontWeight.bold,
+                  fontSize: 20,
+                ),
+                textAlign: TextAlign.center,
+                onSubmitted: (x){set();},
+                controller: gNameC,
+              ),
             ),
             RaisedButton(
               elevation: 8,
