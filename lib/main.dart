@@ -26,6 +26,7 @@ class MyApp extends StatelessWidget {
         backgroundColor: Colors.white,
         cardColor: Colors.blueGrey[400],
         primaryColor: Colors.blue,
+        hintColor: Colors.white70,
         //highlightColor: Colors.amberAccent,
       ),
       darkTheme: ThemeData(
@@ -33,6 +34,7 @@ class MyApp extends StatelessWidget {
         backgroundColor: Colors.black,
         cardColor: Colors.blueGrey[700],
         primaryColor: Colors.tealAccent,
+        hintColor: Colors.white70,
 
         //highlightColor: Colors.amberAccent,
       ),

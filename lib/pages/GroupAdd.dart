@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:kruemelreiten/other/Database.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 
@@ -10,49 +11,44 @@ class SetGroups extends StatefulWidget {
 }
 
 class SetGroupsState extends State<SetGroups> {
-  Future<SharedPreferences> _prefs = SharedPreferences.getInstance();
-  Future<int> _counter;
-  Future<List<List<String>>> _groups;
 
-  void update(newGroup){
+
+  DataHandler dataMan=DataHandler();
+
+  //Future<SharedPreferences> _prefs = SharedPreferences.getInstance();
+  int _localCounter=0;
+  Future<int> _counter;
+
+  List<Group> _localGroups=[];
+  Future<List<Group>> _groups;
+
+
+  void update(Group newGroup){
     _addGroup(newGroup);
   }
 
   Future<void> _addGroup(newGroup) async {
-    final SharedPreferences prefs = await _prefs;
-    final int counter = (prefs.getInt('groupAmount_t') ?? 0) + 1;
-    List<List<String>> groupsi=[[]];
-    var j=prefs.getInt('groupAmount_t') ?? 0;
-    for (var i=j;i>0;i--){
-      groupsi.add(prefs.getStringList('group'+i.toString()+'names_t') ?? new List<String>(3));
-    }
-
-    //var newGroup=["uebi", "bubi", "bebi"];
-
+    dataMan.addGroup(newGroup); //optional add groupname TODo later
     setState(() {
-      _counter = prefs.setInt("groupAmount_t", counter).then((bool success) {
-        return counter;
-      });
-      _groups = prefs.setStringList('group'+(j+1).toString()+'names_t', newGroup).then((bool success) {
-        groupsi.add(newGroup);
-        return groupsi;
-      });
+      _counter=Future((){return _localCounter+1;});
+      _localGroups.add(newGroup);
+    });
+    return;
+  }
+  Future<void> createLocalCopy(groups)async{
+    _localGroups= await groups;
+    setState(() {
+      _localGroups=_localGroups;
     });
   }
 
   @override
   void initState() {
     super.initState();
-    _counter = _prefs.then((SharedPreferences prefs) {
-      return (prefs.getInt('groupAmount_t') ?? 0);
-    });
-    _groups  = _prefs.then((SharedPreferences prefs) {
-      List<List<String>> groupsi=[[]];
-      for (var i=prefs.getInt('groupAmount_t') ?? 0;i>0;i--){
-        groupsi.add(prefs.getStringList('group'+i.toString()+'names_t') ?? new List<String>(3));
-      }
-      return groupsi;
-    });
+    _groups  = dataMan.getAllGroups_noBalance();
+    createLocalCopy(_groups);
+    _counter = Future<int>(()async{return(await _groups).length;});
+    _counter.then((c){_localCounter=c;});
   }
 
   @override
@@ -93,65 +89,55 @@ class SetGroupsState extends State<SetGroups> {
         body: Column(
           children: <Widget>[
             Expanded(
-              child: FutureBuilder<List<List<String>>>(
-                  future: _groups,
-                  builder: (BuildContext context, AsyncSnapshot<List<List<String>>> snapshot) {
-                    switch (snapshot.connectionState) {
-                      case ConnectionState.waiting:
-                        return Center(child: CircularProgressIndicator());
-                      default:
-                        if (snapshot.hasError) {
-                          return Text('Error: ${snapshot.error}');
-                        } else {
-                          List<Widget> list = new List<Widget>();
+              child: Builder(
+                builder: (BuildContext context) {
+                  List<Widget> list = new List<Widget>();
 
-                          //Hier sind die Reihen für jede Gruppe
-                          for(var i = 1; i < snapshot.data.length; i++){
-                            list.add(
-                                Card(
-                                  shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(20.0),
-                                  ),
-                                  elevation: 8.0,
-                                  margin: new EdgeInsets.all(15),
-                                  child: Column(
-                                    children: <Widget>[
+                  //Hier sind die Reihen für jede Gruppe
+                  for(var i = 0; i < _localGroups.length; i++){
+                    list.add(
+                        Card(
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(20.0),
+                          ),
+                          elevation: 8.0,
+                          margin: new EdgeInsets.all(15),
+                          child: Column(
+                            children: <Widget>[
+                              Container(
+                                  padding: EdgeInsets.only(top:20,bottom: 10),
+                                  child: Text(_localGroups[i].name??"Gruppe ohne Namen",style: TextStyle(fontSize: 20,color: Colors.white,fontWeight: FontWeight.bold),)
+                              ),
+                              Row(
+                                  mainAxisAlignment: MainAxisAlignment.spaceAround,
+                                  children: _localGroups[i].kids.map((kid) =>
                                       Container(
-                                          padding: EdgeInsets.only(top:20,bottom: 10),
-                                          child: Text("Gruppe $i :",style: TextStyle(fontSize: 20,color: Colors.white,fontWeight: FontWeight.bold),)
-                                      ),
-                                      Row(
-                                          mainAxisAlignment: MainAxisAlignment.spaceAround,
-                                          children: snapshot.data[i].map((item) =>
-                                              Container(
-                                                padding: EdgeInsets.all(5),
-                                                child: ClipRRect(
-                                                  borderRadius: BorderRadius.circular(20),
-                                                  child:FlatButton(
-                                                    shape: RoundedRectangleBorder(
-                                                      borderRadius: BorderRadius.circular(20.0),
-                                                    ),
-                                                    highlightColor: Theme.of(context).cardColor.withAlpha(100),
-                                                    splashColor: Theme.of(context).cardColor,
-                                                    color: Theme.of(context).canvasColor,
-                                                    onPressed: (){},
-                                                    child:  Text(
-                                                      item.toUpperCase()??"no name ",
-                                                      style: TextStyle(fontSize: 16,color: Theme.of(context).primaryColor, ),
-                                                    ),
-                                                  ),
-                                                ),
-                                              )
-                                          ).toList()),
-                                    ],
-                                  ),
-                                ));
-                          }
-                          return ListView(
-                            children: list,);
-                        }
-                    }
+                                        padding: EdgeInsets.all(5),
+                                        child: ClipRRect(
+                                          borderRadius: BorderRadius.circular(20),
+                                          child:FlatButton(
+                                            shape: RoundedRectangleBorder(
+                                              borderRadius: BorderRadius.circular(20.0),
+                                            ),
+                                            highlightColor: Theme.of(context).cardColor.withAlpha(100),
+                                            splashColor: Theme.of(context).cardColor,
+                                            color: Theme.of(context).canvasColor,
+                                            onPressed: (){},
+                                            child:  Text(
+                                              kid.name.toUpperCase()??"no name ",
+                                              style: TextStyle(fontSize: 16,color: Theme.of(context).primaryColor, ),
+                                            ),
+                                          ),
+                                        ),
+                                      )
+                                  ).toList()),
+                            ],
+                          ),
+                        ));
                   }
+                  return ListView(
+                    children: list,);
+                }
               ),
             ),
           ],
@@ -164,7 +150,7 @@ class SetGroupsState extends State<SetGroups> {
 
 class AddGroupActionbutton extends StatefulWidget {
 
-  Function(List<String>) update;
+  Function(Group) update;
 
   AddGroupActionbutton({Key key, this.update}) : super(key: key);
 
@@ -227,8 +213,9 @@ class GroupEditor extends StatelessWidget {
   final name1C= TextEditingController();
   final name2C= TextEditingController();
   final name3C= TextEditingController();
+  final gNameC= TextEditingController();
 
-  Function(List<String>) update;
+  Function(Group) update;
   Function()abort;
 
   List<String> names=[];
@@ -273,7 +260,12 @@ class GroupEditor extends StatelessWidget {
       bool bedingung=name1C.text.length>0&&name2C.text.length>0&&name3C.text.length>0;
       if (bedingung) {
         names=[name1C.text,name2C.text,name3C.text];
-        update(names);
+        List<Kid> kids= List.generate(names.length, (i){
+          return Kid(
+            name: names[i],
+          );
+        });
+        update(Group(kids: kids,name: gNameC.text));
       }else{
         _fillNames();
         print(names.length);
@@ -289,9 +281,16 @@ class GroupEditor extends StatelessWidget {
           textInputAction: TextInputAction.next,
           textCapitalization: TextCapitalization.words,
           decoration: InputDecoration(
-            hintText: "Name",
+            enabledBorder: UnderlineInputBorder(borderSide: BorderSide(color: Colors.white70,width: 1)),
+            hintText: "Schüler Name",
+            hintStyle: TextStyle(
+              color: Colors.white70,
+              fontWeight: FontWeight.w100,
+              fontSize: 17,
+            ),
           ),
           style: TextStyle(
+            color: Colors.white,
             fontWeight: FontWeight.bold,
             fontSize: 18,
           ),
@@ -340,6 +339,31 @@ class GroupEditor extends StatelessWidget {
               child: Icon(Icons.cancel, color: Theme
                   .of(context)
                   .primaryColor,),
+            ),
+            Container(
+              width: 130,
+              child: TextField(
+                textInputAction: TextInputAction.next,
+                textCapitalization: TextCapitalization.words,
+                decoration: InputDecoration(
+                  focusedBorder: OutlineInputBorder(borderSide: BorderSide(color: Colors.white,width: 2),borderRadius: BorderRadius.circular(15)),
+                  enabledBorder: OutlineInputBorder(borderSide: BorderSide(color: Colors.white54,width: 1),borderRadius: BorderRadius.circular(15)),
+                  hintText: "-Gruppename-",
+                  hintStyle: TextStyle(
+                    color: Colors.white60,
+                    fontWeight: FontWeight.w300,
+                    fontSize: 19,
+                  ),
+                ),
+                style: TextStyle(
+                  color: Colors.white,
+                  fontWeight: FontWeight.bold,
+                  fontSize: 20,
+                ),
+                textAlign: TextAlign.center,
+                onSubmitted: (x){set();},
+                controller: gNameC,
+              ),
             ),
             RaisedButton(
               elevation: 8,

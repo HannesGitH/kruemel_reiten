@@ -24,7 +24,7 @@ class TheDatabase {
   }
 
   Future<Database> init() async {
-    String dbPath = join(await getDatabasesPath(), 'theDatabase.db');
+    String dbPath = join(await getDatabasesPath(), 'theRealDatabase_TT.db');
     var database = openDatabase(
         dbPath, version: 1, onCreate: _onCreate, onUpgrade: _onUpgrade);
     return database;
@@ -39,7 +39,7 @@ class TheDatabase {
     ''');
 
     db.execute('''
-    CREATE TABLE group(
+    CREATE TABLE groupi(
       id INTEGER PRIMARY KEY AUTOINCREMENT,
       kid1 INTEGER,
       kid2 INTEGER,
@@ -70,7 +70,7 @@ class TheDatabase {
   }
 
   String users = 'user';
-  String groups = 'group';
+  String groups = 'groupi';
   String lessons = 'lesson';
   String payments = 'payment';
 
@@ -225,14 +225,17 @@ class DataHandler{
 
     Database db = await _database;
 
-    int lastId =(await db.rawQuery('''
+    var qr = await db.rawQuery('''
       SELECT *
-      FROM history
+      FROM ${tdb.groups}
       ORDER BY id DESC
       LIMIT 1
-    ''')
-    ).first['id']
-    ??0;
+    ''');
+
+    int lastId=0;
+    if (qr.length!=0){
+      lastId =(qr.first??{'id':0})['id'];
+    }
 
     GroupD group = new GroupD(name: name??"Gruppe ${lastId+1}", kid1: names[0], kid2: names[1], kid3: names[2]);
 
@@ -244,17 +247,55 @@ class DataHandler{
     return id;
   }
 
-  Future<void> addGroup( String name1, String name2, String name3, [String groupName]) async{
-    int id1 = await _addUser(name1);
-    int id2 = await _addUser(name2);
-    int id3 = await _addUser(name3);
+  Future<void> addGroup(Group group) async{
+    print("adding group: ${group.toString()}");
+    int id1 = await _addUser(group.kids[0].name);
+    int id2 = await _addUser(group.kids[1].name);
+    int id3 = await _addUser(group.kids[2].name);
 
-    await _addGroup([id1,id2,id3], name: groupName);
+    await _addGroup([id1,id2,id3], name: group.name);
 
     return;
   }
 
+   Future<List<List<String>>> getAllGroups_onlyNames() async{
+    print("getting all group names..");
+    //this might be slower than the complete variant 
+    Database db = await _database;
+    List<Map<String,dynamic>> allIds = await db.query(tdb.groups,
+      columns: ['name'],
+    );
+    List<List<String>> groups=[[]];
+    for(int i=0 ; i<allIds.length ; i++){
+      Map<String,dynamic> map=allIds[i];
+      String groupName=map['name'];
+      groups.add(await getGroupMembersByName_onlyNames(groupName));
+    }
+    return groups;
+  }
+
+  Future<List<Group>> getAllGroups_noBalance() async{
+    print("Getting all Groups..");
+    Database db = await _database;
+    List<Map<String,dynamic>> allIds = await db.query(tdb.groups,
+      columns: ['kid1','kid2','kid3','name'],
+    );
+    List<Group> groups=[];
+    for(int i=0 ; i<allIds.length ; i++){
+      Map<String,dynamic> map=allIds[i];
+      String groupName=map['name'];
+      List<Kid> kids=[];
+    print("gettin' all those kids: ${map.toString()}");
+      for(int j=1 ; j<map.length ; j++){//jep my kids index starts at 1, shame on me
+        kids.add(await _getKidById(map['kid$j']));
+      }
+      groups.add(Group(name: groupName, kids: kids));
+    }
+    return groups;
+  }
+
   Future<List<int>> _getGroupMembersByName_id(groupName) async{
+    print("getting Groupmembers from Group $groupName");
     Database db = await _database;
 
     Map<String, dynamic> kidsMap = (await db.query(tdb.groups,
@@ -263,7 +304,7 @@ class DataHandler{
       whereArgs: [groupName],
     )).first;
 
-    List<int> kids;
+    List<int> kids=[];
 
     void append(String kidid, dynamic kid) {
       kids.add(kid);
@@ -275,6 +316,7 @@ class DataHandler{
   }
 
   Future<List<String>> getGroupMembersByName_onlyNames(groupName) async{
+    print("getting GroupmemberNames from Group $groupName");
     List<Kid> kids = await getGroupMembersByName_noBalance(groupName);
     return List.generate(kids.length, (i){
       return kids[i].name;
@@ -282,24 +324,29 @@ class DataHandler{
   }
 
   Future<Kid> _getKidById(kidID)async{
+    print("getting kid from id $kidID .. ");
     Database db = await _database;
-    Map<String, dynamic> kid = (await db.query(tdb.users,
-        where: 'id = ?',
-        whereArgs: [kidID],
-      )).first;
 
-      
-    return Kid(
-      name: kid['name'],
-      tel: kid['tel'],
-      balance: null, //kid['balance']///this is probably not the correct balance
-    );
+    List<Map<String, dynamic>> kids = await db.query(tdb.users,
+        where: 'id = ?',
+        whereArgs: [kidID??0],
+      );
+    if (kids.length>0){
+      var kid=kids.first;
+      return Kid(
+        name: kid['name'],
+        tel: kid['tel'],
+        balance: null, //kid['balance']///this is probably not the correct balance
+      );
+    }
+    return null;
+
   }
   
   Future<List<Kid>> getGroupMembersByName_noBalance(groupName) async{
     List<int> kidIDs = await _getGroupMembersByName_id(groupName);
 
-    List<Kid> kids;
+    List<Kid> kids=[];
     void getKid (kidID) async{
       kids.add(
         await _getKidById(kidID)
@@ -314,12 +361,12 @@ class DataHandler{
     return (await db.query(tdb.lessons,
       columns: ['Count(*)'], 
       where:'id = ?' , 
-      whereArgs: [1]
+      whereArgs: [uid]
     )).first['Count(*)'];
   }
 
   Future<int> _getBalanceByUserID(int uid) async{
-
+    print("getbalenceFrom $uid");
     int price=2500;//der Preis für eine Reitstunde in cent
 
     Database db = await _database;
@@ -346,7 +393,7 @@ class DataHandler{
     List<int> kidIDs = await _getGroupMembersByName_id(groupName);
     //ich hab iwie sorge dass die groupmembers nach aufruf von ..._nobalance aufgrund das async forEach nicht mehr sortiert sind ; wird sich in testcases herausfinden
 
-    List<Kid> newKids;
+    List<Kid> newKids=[];
     for(int i=0;i<kids.length;i++){
       kids.add(
         Kid(
