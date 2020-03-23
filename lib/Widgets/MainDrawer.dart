@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:kruemelreiten/Widgets/BetterListTile.dart';
 import 'package:kruemelreiten/pages/DatabaseDevTestPage.dart';
-import 'package:kruemelreiten/pages/GroupAdd.dart';
+import 'package:kruemelreiten/homePageWidgets/GroupAdd.dart';
 import 'package:kruemelreiten/pages/Settings.dart';
 
 class MainDrawer extends StatelessWidget{

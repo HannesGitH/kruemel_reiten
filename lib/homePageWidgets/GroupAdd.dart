@@ -8,16 +8,17 @@ class SetGroups extends StatefulWidget {
 
   @override
   SetGroupsState createState() => SetGroupsState();
+
+  var lc=0;
 }
 
 class SetGroupsState extends State<SetGroups> {
-
 
   DataHandler dataMan=DataHandler();
 
   //Future<SharedPreferences> _prefs = SharedPreferences.getInstance();
   int _localCounter=0;
-  Future<int> _counter;
+  static Future<int> counter;
 
   List<Group> _localGroups=[];
   Future<List<Group>> _groups;
@@ -30,7 +31,8 @@ class SetGroupsState extends State<SetGroups> {
   Future<void> _addGroup(newGroup) async {
     dataMan.addGroup(newGroup); //optional add groupname TODo later
     setState(() {
-      _counter=Future((){return _localCounter+1;});
+      widget.lc=_localCounter+1;
+      counter=Future((){return _localCounter+1;});
       _localGroups.add(newGroup);
     });
     return;
@@ -47,21 +49,21 @@ class SetGroupsState extends State<SetGroups> {
     super.initState();
     _groups  = dataMan.getAllGroups_noBalance();
     createLocalCopy(_groups);
-    _counter = Future<int>(()async{return(await _groups).length;});
-    _counter.then((c){_localCounter=c;});
+    counter = Future<int>(()async{return(await _groups).length;});
+    counter.then((c){_localCounter=c;});
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
         backgroundColor: Theme.of(context).canvasColor,
-        appBar: AppBar(
+        /*appBar: AppBar(
           backgroundColor: Theme.of(context).primaryColor,
           title: Row(
             children: <Widget>[
               Text("Gruppen verwalten"),
               FutureBuilder<int>(
-                  future: _counter,
+                  future: counter,
                   builder: (BuildContext context, AsyncSnapshot<int> snapshot) {
                     switch (snapshot.connectionState) {
                       case ConnectionState.waiting:
@@ -85,7 +87,7 @@ class SetGroupsState extends State<SetGroups> {
               )
             ],
           ),
-        ),
+        ),*/
         body: Column(
           children: <Widget>[
             Expanded(
