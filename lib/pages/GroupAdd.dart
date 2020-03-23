@@ -13,33 +13,41 @@ class SetGroups extends StatefulWidget {
 class SetGroupsState extends State<SetGroups> {
 
 
-  DataHandler dataMan;
+  DataHandler dataMan=DataHandler();
 
-  Future<SharedPreferences> _prefs = SharedPreferences.getInstance();
+  //Future<SharedPreferences> _prefs = SharedPreferences.getInstance();
+  int _localCounter=0;
   Future<int> _counter;
-  Future<List<List<String>>> _groups;
+
+  List<Group> _localGroups=[];
+  Future<List<Group>> _groups;
+
 
   void update(newGroup){
     _addGroup(newGroup);
   }
 
   Future<void> _addGroup(newGroup) async {
-    return await dataMan.addGroup(newGroup[0], newGroup[1], newGroup[2]); //optional add groupname TODo later
+    await dataMan.addGroup(newGroup[0], newGroup[1], newGroup[2]); //optional add groupname TODo later
+    setState(() {
+      _counter=Future((){return _localCounter+1;});
+    });
+    return;
+  }
+  Future<void> createLocalCopy(groups)async{
+    _localGroups= await groups;
+    setState(() {
+      _localGroups=_localGroups;
+    });
   }
 
   @override
   void initState() {
     super.initState();
-    _counter = _prefs.then((SharedPreferences prefs) {
-      return (prefs.getInt('groupAmount_t') ?? 0);
-    });
-    _groups  = _prefs.then((SharedPreferences prefs) {
-      List<List<String>> groupsi=[[]];
-      for (var i=prefs.getInt('groupAmount_t') ?? 0;i>0;i--){
-        groupsi.add(prefs.getStringList('group'+i.toString()+'names_t') ?? new List<String>(3));
-      }
-      return groupsi;
-    });
+    _groups  = dataMan.getAllGroups_noBalance();
+    createLocalCopy(_groups);
+    _counter = Future<int>(()async{return(await _groups).length;});
+    _counter.then((c){_localCounter=c;});
   }
 
   @override
@@ -80,65 +88,55 @@ class SetGroupsState extends State<SetGroups> {
         body: Column(
           children: <Widget>[
             Expanded(
-              child: FutureBuilder<List<List<String>>>(
-                  future: _groups,
-                  builder: (BuildContext context, AsyncSnapshot<List<List<String>>> snapshot) {
-                    switch (snapshot.connectionState) {
-                      case ConnectionState.waiting:
-                        return Center(child: CircularProgressIndicator());
-                      default:
-                        if (snapshot.hasError) {
-                          return Text('Error: ${snapshot.error}');
-                        } else {
-                          List<Widget> list = new List<Widget>();
+              child: Builder(
+                builder: (BuildContext context) {
+                  List<Widget> list = new List<Widget>();
 
-                          //Hier sind die Reihen für jede Gruppe
-                          for(var i = 1; i < snapshot.data.length; i++){
-                            list.add(
-                                Card(
-                                  shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(20.0),
-                                  ),
-                                  elevation: 8.0,
-                                  margin: new EdgeInsets.all(15),
-                                  child: Column(
-                                    children: <Widget>[
+                  //Hier sind die Reihen für jede Gruppe
+                  for(var i = 1; i < _localGroups.length; i++){
+                    list.add(
+                        Card(
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(20.0),
+                          ),
+                          elevation: 8.0,
+                          margin: new EdgeInsets.all(15),
+                          child: Column(
+                            children: <Widget>[
+                              Container(
+                                  padding: EdgeInsets.only(top:20,bottom: 10),
+                                  child: Text(_localGroups[i].name,style: TextStyle(fontSize: 20,color: Colors.white,fontWeight: FontWeight.bold),)
+                              ),
+                              Row(
+                                  mainAxisAlignment: MainAxisAlignment.spaceAround,
+                                  children: _localGroups[i].kids.map((kid) =>
                                       Container(
-                                          padding: EdgeInsets.only(top:20,bottom: 10),
-                                          child: Text("Gruppe $i :",style: TextStyle(fontSize: 20,color: Colors.white,fontWeight: FontWeight.bold),)
-                                      ),
-                                      Row(
-                                          mainAxisAlignment: MainAxisAlignment.spaceAround,
-                                          children: snapshot.data[i].map((item) =>
-                                              Container(
-                                                padding: EdgeInsets.all(5),
-                                                child: ClipRRect(
-                                                  borderRadius: BorderRadius.circular(20),
-                                                  child:FlatButton(
-                                                    shape: RoundedRectangleBorder(
-                                                      borderRadius: BorderRadius.circular(20.0),
-                                                    ),
-                                                    highlightColor: Theme.of(context).cardColor.withAlpha(100),
-                                                    splashColor: Theme.of(context).cardColor,
-                                                    color: Theme.of(context).canvasColor,
-                                                    onPressed: (){},
-                                                    child:  Text(
-                                                      item.toUpperCase()??"no name ",
-                                                      style: TextStyle(fontSize: 16,color: Theme.of(context).primaryColor, ),
-                                                    ),
-                                                  ),
-                                                ),
-                                              )
-                                          ).toList()),
-                                    ],
-                                  ),
-                                ));
-                          }
-                          return ListView(
-                            children: list,);
-                        }
-                    }
+                                        padding: EdgeInsets.all(5),
+                                        child: ClipRRect(
+                                          borderRadius: BorderRadius.circular(20),
+                                          child:FlatButton(
+                                            shape: RoundedRectangleBorder(
+                                              borderRadius: BorderRadius.circular(20.0),
+                                            ),
+                                            highlightColor: Theme.of(context).cardColor.withAlpha(100),
+                                            splashColor: Theme.of(context).cardColor,
+                                            color: Theme.of(context).canvasColor,
+                                            onPressed: (){},
+                                            child:  Text(
+                                              kid.name.toUpperCase()??"no name ",
+                                              style: TextStyle(fontSize: 16,color: Theme.of(context).primaryColor, ),
+                                            ),
+                                          ),
+                                        ),
+                                      )
+                                  ).toList()),
+                            ],
+                          ),
+                        ));
                   }
+                  return ListView(
+                    children: list,);
+                }
               ),
             ),
           ],
