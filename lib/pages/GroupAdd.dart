@@ -23,14 +23,15 @@ class SetGroupsState extends State<SetGroups> {
   Future<List<Group>> _groups;
 
 
-  void update(newGroup){
+  void update(Group newGroup){
     _addGroup(newGroup);
   }
 
   Future<void> _addGroup(newGroup) async {
-    await dataMan.addGroup(newGroup[0], newGroup[1], newGroup[2]); //optional add groupname TODo later
+    dataMan.addGroup(newGroup[0], newGroup[1], newGroup[2]); //optional add groupname TODo later
     setState(() {
       _counter=Future((){return _localCounter+1;});
+      _localGroups.add(newGroup);
     });
     return;
   }
@@ -149,7 +150,7 @@ class SetGroupsState extends State<SetGroups> {
 
 class AddGroupActionbutton extends StatefulWidget {
 
-  Function(List<String>) update;
+  Function(Group) update;
 
   AddGroupActionbutton({Key key, this.update}) : super(key: key);
 
@@ -213,7 +214,7 @@ class GroupEditor extends StatelessWidget {
   final name2C= TextEditingController();
   final name3C= TextEditingController();
 
-  Function(List<String>) update;
+  Function(Group) update;
   Function()abort;
 
   List<String> names=[];
@@ -258,7 +259,12 @@ class GroupEditor extends StatelessWidget {
       bool bedingung=name1C.text.length>0&&name2C.text.length>0&&name3C.text.length>0;
       if (bedingung) {
         names=[name1C.text,name2C.text,name3C.text];
-        update(names);
+        List<Kid> kids= List.generate(names.length, (i){
+          return Kid(
+            name: names[i],
+          );
+        });
+        update(Group(kids: kids));
       }else{
         _fillNames();
         print(names.length);
