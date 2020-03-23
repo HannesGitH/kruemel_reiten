@@ -28,7 +28,7 @@ class SetGroupsState extends State<SetGroups> {
   }
 
   Future<void> _addGroup(newGroup) async {
-    dataMan.addGroup(newGroup[0], newGroup[1], newGroup[2]); //optional add groupname TODo later
+    dataMan.addGroup(newGroup); //optional add groupname TODo later
     setState(() {
       _counter=Future((){return _localCounter+1;});
       _localGroups.add(newGroup);
