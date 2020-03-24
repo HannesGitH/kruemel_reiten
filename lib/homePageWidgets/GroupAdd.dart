@@ -98,47 +98,14 @@ class SetGroupsState extends State<SetGroups> {
                   //Hier sind die Reihen für jede Gruppe
                   for(var i = 0; i < _localGroups.length; i++){
                     list.add(
-                        Card(
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(20.0),
-                          ),
-                          elevation: 8.0,
-                          margin: new EdgeInsets.all(15),
-                          child: Column(
-                            children: <Widget>[
-                              Container(
-                                  padding: EdgeInsets.only(top:20,bottom: 10),
-                                  child: Text(_localGroups[i].name??"Gruppe ohne Namen",style: TextStyle(fontSize: 20,color: Colors.white,fontWeight: FontWeight.bold),)
-                              ),
-                              Row(
-                                  mainAxisAlignment: MainAxisAlignment.spaceAround,
-                                  children: _localGroups[i].kids.map((kid) =>
-                                      Container(
-                                        padding: EdgeInsets.all(5),
-                                        child: ClipRRect(
-                                          borderRadius: BorderRadius.circular(20),
-                                          child:FlatButton(
-                                            shape: RoundedRectangleBorder(
-                                              borderRadius: BorderRadius.circular(20.0),
-                                            ),
-                                            highlightColor: Theme.of(context).cardColor.withAlpha(100),
-                                            splashColor: Theme.of(context).cardColor,
-                                            color: Theme.of(context).canvasColor,
-                                            onPressed: (){},
-                                            child:  Text(
-                                              kid.name.toUpperCase()??"no name ",
-                                              style: TextStyle(fontSize: 16,color: Theme.of(context).primaryColor, ),
-                                            ),
-                                          ),
-                                        ),
-                                      )
-                                  ).toList()),
-                            ],
-                          ),
-                        ));
+                      GroupCard(
+                        group: _localGroups[i],
+                      )
+                    );
                   }
                   return ListView(
-                    children: list,);
+                    children: list,
+                  );
                 }
               ),
             ),
@@ -149,10 +116,99 @@ class SetGroupsState extends State<SetGroups> {
   }
 }
 
+class GroupCard extends StatefulWidget{
+  final Group group;
+  final DataHandler dataMan=DataHandler();
+  final Color deletedColor= Colors.red[400];
+
+  GroupCard({@required this.group});
+  _GroupCardS createState() => _GroupCardS();
+}
+class _GroupCardS extends State<GroupCard>{
+  bool _isDeleted=false;
+  void _delete(){
+    widget.dataMan.deleteGroup(widget.group);
+    setState(() {
+      _isDeleted=true;
+    });
+  }
+  void _restore(){
+    widget.dataMan.addGroup(widget.group);
+    setState(() {
+      _isDeleted=false;
+    });
+  }
+  @override
+  Widget build(BuildContext context) {
+    return Card(
+      color: _isDeleted? widget.deletedColor: Theme.of(context).cardColor,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(20.0),
+      ),
+      elevation: 8.0,
+      margin: new EdgeInsets.all(15),
+      child: Column(
+        children: <Widget>[
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: <Widget>[
+              IconButton(
+                highlightColor: Colors.transparent,
+                tooltip: "mehr zeigen",
+                icon: Icon(Icons.more, color: _isDeleted?widget.deletedColor:Theme.of(context).canvasColor,),
+                onPressed: _isDeleted?null:(){
+                  //TODO show Group View
+                }
+
+              ),
+              Container(
+                  padding: EdgeInsets.only(top:20,bottom: 10),
+                  child: Text(widget.group.name??"Gruppe ohne Namen",style: TextStyle(fontSize: 20,color: Colors.white,fontWeight: FontWeight.bold,fontStyle: _isDeleted?FontStyle.italic:FontStyle.normal),)
+              ),
+              IconButton(
+                highlightColor: Colors.transparent,
+                tooltip: _isDeleted?"wiederherstellen":"Löschen",
+                icon: Icon(_isDeleted?Icons.restore_from_trash:Icons.delete_forever, color: Theme.of(context).canvasColor,),
+                onPressed: (){
+                  _isDeleted? _restore():_delete();
+                }
+              ),
+            ],
+          ),
+          Row(
+              mainAxisAlignment: MainAxisAlignment.spaceAround,
+              children: widget.group.kids.map((kid) =>
+                  Container(
+                    padding: EdgeInsets.all(5),
+                    child: ClipRRect(
+                      borderRadius: BorderRadius.circular(20),
+                      child:FlatButton(
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(20.0),
+                        ),
+                        highlightColor: Theme.of(context).cardColor.withAlpha(100),
+                        splashColor: Theme.of(context).cardColor,
+                        color: Theme.of(context).canvasColor,
+                        onPressed: (){
+                          //TODO open kid overview
+                        },
+                        child:  Text(
+                          kid.name.toUpperCase()??"no name ",
+                          style: TextStyle(fontSize: 16,color: Theme.of(context).primaryColor, ),
+                        ),
+                      ),
+                    ),
+                  )
+              ).toList()),
+        ],
+      ),
+    );
+  }
+}
 
 class AddGroupActionbutton extends StatefulWidget {
 
-  Function(Group) update;
+  final Function(Group) update;
 
   AddGroupActionbutton({Key key, this.update}) : super(key: key);
 
@@ -209,16 +265,16 @@ class AddGroupActionbuttonState extends State<AddGroupActionbutton> {
 
 class GroupEditor extends StatelessWidget {
 
-  FocusNode name2 = FocusNode();
-  FocusNode name3 = FocusNode();
+  final FocusNode name2 = FocusNode();
+  final FocusNode name3 = FocusNode();
 
   final name1C= TextEditingController();
   final name2C= TextEditingController();
   final name3C= TextEditingController();
   final gNameC= TextEditingController();
 
-  Function(Group) update;
-  Function()abort;
+  final Function(Group) update;
+  final Function()abort;
 
   List<String> names=[];
 
@@ -275,7 +331,7 @@ class GroupEditor extends StatelessWidget {
     }
 
 
-    Widget Input({onDone,fn,c}){
+    Widget input({onDone,fn,c}){
       return Container(
         padding: EdgeInsets.only(top: 10,left: 20,right:20),
         child: TextField(
@@ -305,20 +361,20 @@ class GroupEditor extends StatelessWidget {
 
     return Column(
       children: <Widget>[
-        Input(
+        input(
           onDone: (name){
             FocusScope.of(context).requestFocus(name2);
           },
           c:name1C,
         ),
-        Input(
+        input(
           onDone: (name){
             FocusScope.of(context).requestFocus(name3);
           },
           fn: name2,
           c:name2C,
         ),
-        Input(
+        input(
           onDone: (name){
             set();
           },
