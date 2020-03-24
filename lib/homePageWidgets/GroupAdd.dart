@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:kruemelreiten/other/Database.dart';
+import 'package:kruemelreiten/pages/GroupView.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 
@@ -157,7 +158,7 @@ class _GroupCardS extends State<GroupCard>{
                 tooltip: "mehr zeigen",
                 icon: Icon(Icons.more, color: _isDeleted?widget.deletedColor:Theme.of(context).canvasColor,),
                 onPressed: _isDeleted?null:(){
-                  //TODO show Group View
+                  Navigator.push(context, MaterialPageRoute(builder: (context) => GroupPage(group:widget.group)));
                 }
 
               ),

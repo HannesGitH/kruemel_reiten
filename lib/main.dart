@@ -96,10 +96,10 @@ class _MyHomePageState extends State<MyHomePage> {
   List<Widget> Pages() {return <Widget>[
     groupPage,
     Text(
-      'Index 1: Business',
+      'hannes arbeitet hier noch dran',
     ),
     Text(
-      'Index 2: School',
+      'hier ist erstmal noch garnix',
     ),
   ];}
 
