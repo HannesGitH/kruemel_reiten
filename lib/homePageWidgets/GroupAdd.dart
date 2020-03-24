@@ -10,7 +10,7 @@ class SetGroups extends StatefulWidget {
   @override
   SetGroupsState createState() => SetGroupsState();
 
-  var lc=0;
+  Future<int> lc=Future<int>(()async{return(await DataHandler().getAllGroups_noBalance()).length;});
 }
 
 class SetGroupsState extends State<SetGroups> {
@@ -32,7 +32,7 @@ class SetGroupsState extends State<SetGroups> {
   Future<void> _addGroup(newGroup) async {
     dataMan.addGroup(newGroup); //optional add groupname TODo later
     setState(() {
-      widget.lc=_localCounter+1;
+      //widget.lc=Future((){return _localCounter+1;});
       counter=Future((){return _localCounter+1;});
       _localGroups.add(newGroup);
     });
@@ -51,7 +51,8 @@ class SetGroupsState extends State<SetGroups> {
     _groups  = dataMan.getAllGroups_noBalance();
     createLocalCopy(_groups);
     counter = Future<int>(()async{return(await _groups).length;});
-    counter.then((c){_localCounter=c;widget.lc=c;});
+    counter.then((c){_localCounter=c;});
+    //widget.lc = Future<int>(()async{return(await _groups).length;});
   }
 
   @override
