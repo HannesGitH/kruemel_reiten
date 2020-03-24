@@ -50,7 +50,7 @@ class SetGroupsState extends State<SetGroups> {
     _groups  = dataMan.getAllGroups_noBalance();
     createLocalCopy(_groups);
     counter = Future<int>(()async{return(await _groups).length;});
-    counter.then((c){_localCounter=c;});
+    counter.then((c){_localCounter=c;widget.lc=c;});
   }
 
   @override
@@ -193,7 +193,7 @@ class _GroupCardS extends State<GroupCard>{
                           //TODO open kid overview
                         },
                         child:  Text(
-                          kid.name.toUpperCase()??"no name ",
+                          kid.name.toUpperCase()??"no name",
                           style: TextStyle(fontSize: 16,color: Theme.of(context).primaryColor, ),
                         ),
                       ),
@@ -315,6 +315,7 @@ class GroupEditor extends StatelessWidget {
     }
 
     void set(){
+      bool hasName=gNameC.text.isNotEmpty;
       bool bedingung=name1C.text.length>0&&name2C.text.length>0&&name3C.text.length>0;
       if (bedingung) {
         names=[name1C.text,name2C.text,name3C.text];
@@ -323,7 +324,7 @@ class GroupEditor extends StatelessWidget {
             name: names[i],
           );
         });
-        update(Group(kids: kids,name: gNameC.text));
+        update(Group(kids: kids,name: hasName?gNameC.text:null));
       }else{
         _fillNames();
         print(names.length);
