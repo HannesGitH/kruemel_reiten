@@ -208,6 +208,11 @@ class DataHandler{
     return _instance;
   }
 
+
+//---------------------------------------------------------------------- ADD Stuff
+
+
+//ADD a single user
   Future<int> _addUser(name) async{
     Database db = await _database;
 
@@ -219,6 +224,19 @@ class DataHandler{
     );
 
     return id;
+  }
+
+
+//ADD a Group 
+  Future<void> addGroup(Group group) async{
+    print("adding group: ${group.toString()}");
+    int id1 = await _addUser(group.kids[0].name);
+    int id2 = await _addUser(group.kids[1].name);
+    int id3 = await _addUser(group.kids[2].name);
+
+    await _addGroup([id1,id2,id3], name: group.name);
+
+    return;
   }
 
   Future<int> _addGroup(List<int> names, {String name, bool isSec}) async{
@@ -247,17 +265,10 @@ class DataHandler{
     return id;
   }
 
-  Future<void> addGroup(Group group) async{
-    print("adding group: ${group.toString()}");
-    int id1 = await _addUser(group.kids[0].name);
-    int id2 = await _addUser(group.kids[1].name);
-    int id3 = await _addUser(group.kids[2].name);
 
-    await _addGroup([id1,id2,id3], name: group.name);
+//---------------------------------------------------------------------- GET Stuff
 
-    return;
-  }
-
+//GET groups 
    Future<List<List<String>>> getAllGroups_onlyNames() async{
     print("getting all group names..");
     //this might be slower than the complete variant 
@@ -294,6 +305,7 @@ class DataHandler{
     return groups;
   }
 
+//GET Group
   Future<List<int>> _getGroupMembersByName_id(groupName) async{
     print("getting Groupmembers from Group $groupName");
     Database db = await _database;
@@ -323,6 +335,38 @@ class DataHandler{
     });
   }
 
+  Future<List<Kid>> getGroupMembersByName_noBalance(groupName) async{
+    List<int> kidIDs = await _getGroupMembersByName_id(groupName);
+
+    List<Kid> kids=[];
+    void getKid (kidID) async{
+      kids.add(
+        await _getKidById(kidID)
+      );
+    }
+    await Future.forEach(kidIDs,getKid);
+    return kids;
+  }
+
+  Future<List<Kid>> getGroupMembersByName_complete(groupName) async{
+    List<Kid> kids = await getGroupMembersByName_noBalance(groupName);
+    List<int> kidIDs = await _getGroupMembersByName_id(groupName);
+    //ich hab iwie sorge dass die groupmembers nach aufruf von ..._nobalance aufgrund das async forEach nicht mehr sortiert sind ; wird sich in testcases herausfinden
+
+    List<Kid> newKids=[];
+    for(int i=0;i<kids.length;i++){
+      kids.add(
+        Kid(
+          name: kids[i].name,
+          tel: kids[i].tel,
+          balance: await _getBalanceByUserID(kidIDs[i]),
+        )
+      );
+    }
+    return newKids;
+  }
+
+//GET Kid
   Future<Kid> _getKidById(kidID)async{
     print("getting kid from id $kidID .. ");
     Database db = await _database;
@@ -342,20 +386,8 @@ class DataHandler{
     return null;
 
   }
-  
-  Future<List<Kid>> getGroupMembersByName_noBalance(groupName) async{
-    List<int> kidIDs = await _getGroupMembersByName_id(groupName);
 
-    List<Kid> kids=[];
-    void getKid (kidID) async{
-      kids.add(
-        await _getKidById(kidID)
-      );
-    }
-    await Future.forEach(kidIDs,getKid);
-    return kids;
-  }
-
+//GET Lessons
   Future<int> _getLessonAmountByUserId(int uid) async{
     Database db = await _database;
     return (await db.query(tdb.lessons,
@@ -365,6 +397,7 @@ class DataHandler{
     )).first['Count(*)'];
   }
 
+//GET Payments
   Future<int> _getBalanceByUserID(int uid) async{
     print("getbalenceFrom $uid");
     int price=2500;//der Preis für eine Reitstunde in cent
@@ -388,22 +421,20 @@ class DataHandler{
 
   }
 
-  Future<List<Kid>> getGroupMembersByName_complete(groupName) async{
-    List<Kid> kids = await getGroupMembersByName_noBalance(groupName);
-    List<int> kidIDs = await _getGroupMembersByName_id(groupName);
-    //ich hab iwie sorge dass die groupmembers nach aufruf von ..._nobalance aufgrund das async forEach nicht mehr sortiert sind ; wird sich in testcases herausfinden
 
-    List<Kid> newKids=[];
-    for(int i=0;i<kids.length;i++){
-      kids.add(
-        Kid(
-          name: kids[i].name,
-          tel: kids[i].tel,
-          balance: await _getBalanceByUserID(kidIDs[i]),
-        )
-      );
-    }
-    return newKids;
+//---------------------------------------------------------------------- DELETE Stuff
+
+//DELETE Group
+ Future<void> deleteGroup(Group group) async{
+    print("deleting Group ${group.name}");
+
+    Database db = await _database;
+    await db.delete(tdb.groups,
+      where: 'name = ?',
+      whereArgs: [group.name],
+    );
+    return;
+
   }
 
 }
