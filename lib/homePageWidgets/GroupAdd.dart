@@ -3,14 +3,33 @@ import 'package:kruemelreiten/other/Database.dart';
 import 'package:kruemelreiten/pages/GroupView.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-
-class SetGroups extends StatefulWidget {
-  SetGroups({Key key}) : super(key: key);
+//This wont work
+/*class SetGroupsHeadline extends StatefulWidget {
+  SetGroupsHeadline({Key key,}) : super(key: key);
 
   @override
   SetGroupsState createState() => SetGroupsState();
+}
 
-  Future<int> lc=Future<int>(()async{return(await DataHandler().getAllGroups_noBalance()).length;});
+class SetGroupsheadlineState extends State<SetGroupsHeadline> {
+  void onAdded(int c){
+    setState((){
+
+    });
+  }
+  SetGroups createBody=SetGroups(onAdded:onAdded);
+  @override
+  Widget build(BuildContext context) {
+    // TODO: implement build
+    return null;
+  }
+}*/
+
+class SetGroups extends StatefulWidget {
+  @override
+  SetGroupsState createState() => SetGroupsState();
+
+  int lc = 0;
 }
 
 class SetGroupsState extends State<SetGroups> {
@@ -32,7 +51,7 @@ class SetGroupsState extends State<SetGroups> {
   Future<void> _addGroup(newGroup) async {
     dataMan.addGroup(newGroup); //optional add groupname TODo later
     setState(() {
-      //widget.lc=Future((){return _localCounter+1;});
+      widget.lc = _localCounter+1;
       counter=Future((){return _localCounter+1;});
       _localGroups.add(newGroup);
     });
@@ -51,8 +70,7 @@ class SetGroupsState extends State<SetGroups> {
     _groups  = dataMan.getAllGroups_noBalance();
     createLocalCopy(_groups);
     counter = Future<int>(()async{return(await _groups).length;});
-    counter.then((c){_localCounter=c;});
-    //widget.lc = Future<int>(()async{return(await _groups).length;});
+    counter.then((c){_localCounter=c; widget.lc=c;});
   }
 
   @override

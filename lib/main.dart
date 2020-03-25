@@ -72,15 +72,30 @@ class _MyHomePageState extends State<MyHomePage> {
   int _selectedIndex = 1;
 
   SetGroups groupPage = SetGroups();
+//keine saubere aber immerhin eine lösung
+  Stream<int> timedCounter(Duration interval, [int maxCount]) async* {
+  while (true) {
+    int i = groupPage.lc;
+    await Future.delayed(interval);
+    yield i;
+    if (i == maxCount) break;
+  }
+}
 
-  Future<String> _title()async{
+  Widget _title(){
     switch(_selectedIndex) {
       case 0:
-        return "Gruppen verwalten (${await groupPage.lc})";
+        return StreamBuilder<int>(
+          initialData: 0,
+            stream: timedCounter(Duration(milliseconds: 300)),//_title(),
+            builder: (BuildContext context, AsyncSnapshot<int> snapshot) {
+              return Text("Gruppen verwalten (${snapshot.data})");
+            }
+        );
       case 1:
-        return "Krümel Reiten";
+        return Text("Krümel Reiten");
       default:
-        return "--in arbeit--";
+        return Text("--in arbeit--");
     }
   }
 
@@ -117,12 +132,7 @@ class _MyHomePageState extends State<MyHomePage> {
       drawer: MainDrawer(),
       appBar: AppBar(
         backgroundColor: Theme.of(context).primaryColor,
-        title:FutureBuilder<String>(
-            future: _title(),
-            builder: (BuildContext context, AsyncSnapshot<String> snapshot) {
-              return Text(snapshot.data);
-            }
-        )
+        title:_title(),
       ),
       body: Pages()[_selectedIndex],
       bottomNavigationBar: BottomNavigationBar(
