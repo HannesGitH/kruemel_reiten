@@ -355,7 +355,7 @@ class DataHandler{
 
     List<Kid> newKids=[];
     for(int i=0;i<kids.length;i++){
-      kids.add(
+      newKids.add(
         Kid(
           name: kids[i].name,
           tel: kids[i].tel,
@@ -363,6 +363,7 @@ class DataHandler{
         )
       );
     }
+    print(newKids);
     return newKids;
   }
 

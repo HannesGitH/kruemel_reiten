@@ -112,7 +112,7 @@ class _GroupCardS extends State<GroupCard>{
         borderRadius: BorderRadius.circular(20.0),
       ),
       elevation: 8.0,
-      margin: new EdgeInsets.all(15),
+      margin: EdgeInsets.all(15),
       child: Column(
         children: <Widget>[
           Row(
