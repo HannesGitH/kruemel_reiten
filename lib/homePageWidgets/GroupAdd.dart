@@ -3,28 +3,6 @@ import 'package:kruemelreiten/other/Database.dart';
 import 'package:kruemelreiten/pages/GroupView.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-//This wont work
-/*class SetGroupsHeadline extends StatefulWidget {
-  SetGroupsHeadline({Key key,}) : super(key: key);
-
-  @override
-  SetGroupsState createState() => SetGroupsState();
-}
-
-class SetGroupsheadlineState extends State<SetGroupsHeadline> {
-  void onAdded(int c){
-    setState((){
-
-    });
-  }
-  SetGroups createBody=SetGroups(onAdded:onAdded);
-  @override
-  Widget build(BuildContext context) {
-    // TODO: implement build
-    return null;
-  }
-}*/
-
 class SetGroups extends StatefulWidget {
   @override
   SetGroupsState createState() => SetGroupsState();
@@ -36,7 +14,6 @@ class SetGroupsState extends State<SetGroups> {
 
   DataHandler dataMan=DataHandler();
 
-  //Future<SharedPreferences> _prefs = SharedPreferences.getInstance();
   int _localCounter=0;
   static Future<int> counter;
 
@@ -49,7 +26,7 @@ class SetGroupsState extends State<SetGroups> {
   }
 
   Future<void> _addGroup(newGroup) async {
-    dataMan.addGroup(newGroup); //optional add groupname TODo later
+    dataMan.addGroup(newGroup);
     setState(() {
       widget.lc = _localCounter+1;
       counter=Future((){return _localCounter+1;});
@@ -77,37 +54,6 @@ class SetGroupsState extends State<SetGroups> {
   Widget build(BuildContext context) {
     return Scaffold(
         backgroundColor: Theme.of(context).canvasColor,
-        /*appBar: AppBar(
-          backgroundColor: Theme.of(context).primaryColor,
-          title: Row(
-            children: <Widget>[
-              Text("Gruppen verwalten"),
-              FutureBuilder<int>(
-                  future: counter,
-                  builder: (BuildContext context, AsyncSnapshot<int> snapshot) {
-                    switch (snapshot.connectionState) {
-                      case ConnectionState.waiting:
-                        return const CircularProgressIndicator();
-                      default:
-                        if (snapshot.hasError) {
-                          return Text('Error: ${snapshot.error}');
-                        } else {
-                          return Container(
-                              padding: EdgeInsets.all(0),
-                              child: Column(
-                                  children: <Widget>[
-                                    Text(" (${snapshot.data})"),
-                                    //ScrollView für gruppen
-                                  ]
-                              )
-                          );
-                        }
-                    }
-                  }
-              )
-            ],
-          ),
-        ),*/
         body: Column(
           children: <Widget>[
             Expanded(

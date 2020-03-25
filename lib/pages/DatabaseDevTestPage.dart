@@ -4,6 +4,8 @@ import 'package:sqflite/sqflite.dart';
 import 'dart:async';
 
 
+////This Page is just for dev test purposes TODO remove file
+
 class TestBase {
   Future<Database>database()async{return await openDatabase(
     // Set the path to the database. Note: Using the `join` function from the
@@ -185,7 +187,6 @@ class DatabaseTestPage extends StatelessWidget{
 
   @override
   Widget build(BuildContext context) {
-    // TODO: implement build
     return Scaffold(
       appBar: AppBar(
         title: Text("Nur Für Hannes"),
