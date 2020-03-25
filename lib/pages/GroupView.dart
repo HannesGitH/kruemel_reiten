@@ -21,8 +21,8 @@ class GroupPage extends StatelessWidget{
     return Column(
       children: <Widget>[
         _kidView(kids[0]),
-        _kidView(kids[0]),
-        _kidView(kids[0]),
+        _kidView(kids[1]),
+        _kidView(kids[2]),
       ],
     );
   }
@@ -34,10 +34,12 @@ class GroupPage extends StatelessWidget{
       appBar: AppBar(
         title: Text(group.name??"neue Gruppe"),
       ),
-      body: Column(
-        children: <Widget>[
-          Center(child: Text("hier wird später mehr info zur Grupe zu sehen sein")),
-        ],
+      body: FutureBuilder<Group>(
+        initialData: group,
+        future: _getCurrentGroup(),
+        builder: (BuildContext context, AsyncSnapshot<Group> snapshot) {
+              return _groupView(snapshot.data);
+            },
       ),//TODO make body
     );
   }
