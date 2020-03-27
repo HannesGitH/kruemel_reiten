@@ -84,16 +84,17 @@ class GroupPage extends StatelessWidget{
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: <Widget>[
+                  Container(width:20),//Theme.of(context).iconTheme.size),
                   Container(
                       padding: EdgeInsets.only(top:10,bottom: 10),
                       child: Text(kid.name??"Kind ohne Namen",style: TextStyle(fontSize: 20,fontWeight: FontWeight.bold,),)
                   ),
                   IconButton(
-                      icon: Icon(Icons.edit,color: Theme.of(context).cardColor,),
-                      onPressed: (){
-                        //TODO: add change kids name
-                      },
-                    ),
+                    icon: Icon(Icons.edit,color: Theme.of(context).cardColor,),
+                    onPressed: (){
+                      //TODO: add change kids name
+                    },
+                  ),
                 ],
               ),
               ...
@@ -112,11 +113,11 @@ class GroupPage extends StatelessWidget{
         controller: scrollie,
         reverse: true,
         children: <Widget>[
-          Container(height: MediaQuery.of(context).size.height/2,),
-          _kidView(kids[0]),
-          _kidView(kids[1]),
-          _kidView(kids[2]),
           Container(height: 10,),
+          _kidView(kids[2]),
+          _kidView(kids[1]),
+          _kidView(kids[0]),
+          Container(height: MediaQuery.of(context).size.height/2,),
         ],
       );
     }
