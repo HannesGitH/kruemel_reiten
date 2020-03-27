@@ -17,6 +17,7 @@ environment:
   sdk: ">=2.2.2 <3.0.0"
 
 dependencies:
+  url_launcher:
   sqflite:
   path:
   shared_preferences: ^0.5.6

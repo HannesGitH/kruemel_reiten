@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:kruemelreiten/other/Database.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class GroupPage extends StatelessWidget{
   final DataHandler dataman=DataHandler();
@@ -19,39 +20,53 @@ class GroupPage extends StatelessWidget{
 
     Widget _editRow({@required IconData icon, @required Widget child, Function() editor}){
       return Container(
-                padding: EdgeInsets.symmetric(horizontal:20),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: <Widget>[
-                    Row(
-                      children: <Widget>[
-                        Icon(icon,//---
-                          color: Theme.of(context).textTheme.body1.color,
-                        ),
-                        Container(width:10),
-                        child,//---
-                      ],
-                    ),
-                    IconButton(
-                      icon: Icon(Icons.edit,color: Theme.of(context).cardColor,),
-                      onPressed: editor,//---
-                    ),
-                  ],
+        padding: EdgeInsets.symmetric(horizontal:20),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: <Widget>[
+            Row(
+              children: <Widget>[
+                Icon(icon,//---
+                  color: Theme.of(context).textTheme.body1.color,
                 ),
-              );
+                Container(width:10),
+                child,//---
+              ],
+            ),
+            IconButton(
+              icon: Icon(Icons.edit,color: Theme.of(context).cardColor,),
+              onPressed: editor,//---
+            ),
+          ],
+        ),
+      );
     }
 
 //A Single Kid Card
     Widget _kidView(Kid kid){
 
+      _callTel(tel) async {
+        var url = "tel://$tel";
+        if (await canLaunch(url)) {
+          await launch(url);
+        } else {
+          throw 'Could not call $url';
+        }
+      }
+
       List<Widget> _editrows=[
         Divider(),
-        _editRow(
-          icon: Icons.phone,
-          //TODO: onClick: call number
-          child: Text(kid.tel??"keine Nummer..",
-            style: TextStyle(
-              color: Theme.of(context).textTheme.body1.color,
+        GestureDetector(
+          onTap: (){
+            _callTel(kid.tel);
+          },
+          child: _editRow(
+            icon: Icons.phone,
+            child: Text(kid.tel??"keine Nummer..",
+              style: TextStyle(
+                decoration: TextDecoration.underline,
+                color: Theme.of(context).primaryColor,
+              ),
             ),
           ),
         ),
