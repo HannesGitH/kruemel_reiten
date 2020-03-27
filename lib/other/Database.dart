@@ -441,4 +441,28 @@ class DataHandler{
 
 //---------------------------------------------------------------------- UPDATE Stuff
 
+//Updating a kid
+  Future<void> changeKidsName({@required oldname, @required newname})async{
+    print("changing $oldname's name to $newname");
+
+    Database db = await _database;
+    await db.update(tdb.users,
+      {'name':newname},
+      where: 'name = ?',
+      whereArgs: [oldname],
+    );
+    return;
+  }
+
+  Future<void> changeKidsTel({@required name, @required tel})async{
+    print("changing $name's number to $tel");
+
+    Database db = await _database;
+    await db.update(tdb.users,
+      {'tel':tel},
+      where: 'name = ?',
+      whereArgs: [name],
+    );
+    return;
+  }
 }
