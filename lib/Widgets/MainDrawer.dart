@@ -39,7 +39,7 @@ class MainDrawer extends StatelessWidget{
           ),
           BetterListTile(
             icon:Icons.developer_board,
-            text: 'DataBaseTests',
+            text: 'Debug Page (dev)',
             onTap: () {
               Navigator.pop(context);
               Navigator.push(context, MaterialPageRoute(builder: (context) => DatabaseTestPage()),);
