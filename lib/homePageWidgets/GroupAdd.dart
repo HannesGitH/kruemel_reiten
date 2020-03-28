@@ -156,7 +156,8 @@ class _GroupCardS extends State<GroupCard>{
                         splashColor: Theme.of(context).cardColor,
                         color: Theme.of(context).canvasColor,
                         onPressed: (){
-                          //TODO open kid overview
+                          Navigator.push(context,  MaterialPageRoute(builder: (context) => GroupPage(group:widget.group)));
+                          //TODO open kid overview instead of above line
                         },
                         child:  Text(
                           kid.name.toUpperCase()??"no name",
