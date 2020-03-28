@@ -96,22 +96,7 @@ class GroupPage extends StatelessWidget{
           margin: EdgeInsets.all(10),
           child: Column(
             children: <Widget>[
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: <Widget>[
-                  Container(width:20),//Theme.of(context).iconTheme.size),
-                  Container(
-                      padding: EdgeInsets.only(top:10,bottom: 10),
-                      child: Text(kid.name??"Kind ohne Namen",style: TextStyle(fontSize: 20,fontWeight: FontWeight.bold,),)
-                  ),
-                  IconButton(
-                    icon: Icon(Icons.edit,color: Theme.of(context).cardColor,),
-                    onPressed: (){
-                      //TODO: add change kids name
-                    },
-                  ),
-                ],
-              ),
+              _KidNameTextField(kidsName: kid.name,),
               ...
               _editrows,
             ],
@@ -149,6 +134,55 @@ class GroupPage extends StatelessWidget{
               return _groupView(snapshot.data);
             },
       ),//TODO make body
+    );
+  }
+}
+
+class _KidNameTextField extends StatefulWidget{
+  String kidsName;
+  _KidNameTextField({@required this.kidsName});
+
+  @override
+  State<StatefulWidget> createState() => _KidNameTextFieldState();
+}
+
+class _KidNameTextFieldState extends State<_KidNameTextField>{
+  bool isInEditState=false;
+
+  @override
+  Widget build(BuildContext context) {
+
+    Widget editButton=
+      IconButton(
+        icon: Icon(Icons.edit,color: Theme.of(context).cardColor,),
+        onPressed: (){
+          setState(() {
+            isInEditState=true;
+          });
+          //TODO: make Text TextField and change kids name on enter
+        },
+      );
+
+    Widget cancelButton=
+      IconButton(
+        icon: Icon(Icons.cancel,color: Theme.of(context).cardColor,),
+        onPressed: (){
+          setState(() {
+            isInEditState=true;
+          });
+          //TODO: cancel: make TextField text-only again
+        },
+      );
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: <Widget>[
+        Container(width:20),//Theme.of(context).iconTheme.size),
+        Container(
+            padding: EdgeInsets.only(top:10,bottom: 10),
+            child: Text(widget.kidsName??"Kind ohne Namen",style: TextStyle(fontSize: 20,fontWeight: FontWeight.bold,),)
+        ),
+        isInEditState?editButton:cancelButton,
+      ],
     );
   }
 }
