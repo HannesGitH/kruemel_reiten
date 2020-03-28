@@ -168,7 +168,7 @@ class _KidNameTextFieldState extends State<_KidNameTextField>{
         icon: Icon(Icons.cancel,color: Theme.of(context).cardColor,),
         onPressed: (){
           setState(() {
-            isInEditState=true;
+            isInEditState=false;
           });
           //TODO: cancel: make TextField text-only again
         },
@@ -181,7 +181,7 @@ class _KidNameTextFieldState extends State<_KidNameTextField>{
             padding: EdgeInsets.only(top:10,bottom: 10),
             child: Text(widget.kidsName??"Kind ohne Namen",style: TextStyle(fontSize: 20,fontWeight: FontWeight.bold,),)
         ),
-        isInEditState?editButton:cancelButton,
+        isInEditState?cancelButton:editButton,
       ],
     );
   }
