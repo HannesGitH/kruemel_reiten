@@ -3,6 +3,7 @@ import 'package:kruemelreiten/Widgets/BetterListTile.dart';
 import 'package:kruemelreiten/pages/DatabaseDevTestPage.dart';
 import 'package:kruemelreiten/homePageWidgets/GroupAdd.dart';
 import 'package:kruemelreiten/pages/Settings.dart';
+import 'package:kruemelreiten/pages/randomDogsTest.dart';
 
 class MainDrawer extends StatelessWidget{
 
@@ -42,6 +43,15 @@ class MainDrawer extends StatelessWidget{
             onTap: () {
               Navigator.pop(context);
               Navigator.push(context, MaterialPageRoute(builder: (context) => DatabaseTestPage()),);
+            },
+          ),
+
+          BetterListTile(
+            icon:Icons.child_care,
+            text: 'Unendlich Hunde',
+            onTap: () {
+              Navigator.pop(context);
+              Navigator.push(context, MaterialPageRoute(builder: (context) => RandomDogsScrollView()),);
             },
           ),
         ],
