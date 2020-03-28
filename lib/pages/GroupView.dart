@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:kruemelreiten/other/Database.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -18,29 +19,7 @@ class GroupPage extends StatelessWidget{
   @override
   Widget build(BuildContext context) {
 
-    Widget _editRow({@required IconData icon, @required Widget child, Function() editor}){
-      return Container(
-        padding: EdgeInsets.symmetric(horizontal:20),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: <Widget>[
-            Row(
-              children: <Widget>[
-                Icon(icon,//---
-                  color: Theme.of(context).textTheme.body1.color,
-                ),
-                Container(width:10),
-                child,//---
-              ],
-            ),
-            IconButton(
-              icon: Icon(Icons.edit,color: Theme.of(context).cardColor,),
-              onPressed: editor,//---
-            ),
-          ],
-        ),
-      );
-    }
+
 
 //A Single Kid Card
     Widget _kidView(Kid kid){
@@ -55,6 +34,15 @@ class GroupPage extends StatelessWidget{
         }
       }
 
+      Widget number(String tel){
+        return Text(tel??"keine Nummer..",
+          style: TextStyle(
+            decoration: TextDecoration.underline,
+            color: Theme.of(context).primaryColor,
+          ),
+        );
+      }
+
       List<Widget> _editrows=[
         Divider(),
         GestureDetector(
@@ -63,12 +51,12 @@ class GroupPage extends StatelessWidget{
           },
           child: _editRow(
             icon: Icons.phone,
-            child: Text(kid.tel??"keine Nummer..",
-              style: TextStyle(
-                decoration: TextDecoration.underline,
-                color: Theme.of(context).primaryColor,
-              ),
-            ),
+            child: number(kid.tel),
+            onValue: (val){
+              dataman.changeKidsTel(name: kid.name, tel: val);
+              return number(val);
+            },
+            keyboardType: TextInputType.phone,
           ),
         ),
         Divider(),
@@ -167,7 +155,6 @@ class _KidNameTextFieldState extends State<_KidNameTextField>{
           setState(() {
             isInEditState=true;
           });
-          //TODO: make Text TextField and change kids name on enter
         },
       );
 
@@ -178,14 +165,13 @@ class _KidNameTextFieldState extends State<_KidNameTextField>{
           setState(() {
             isInEditState=false;
           });
-          //TODO: cancel: make TextField text-only again
         },
       );
 
     TextEditingController c = TextEditingController();
     Widget editableKidName=
       Container(
-        width: 200,
+        width: MediaQuery.of(context).size.width/2,
         child: TextField(
           autofocus: true,
           controller: c,
@@ -193,6 +179,11 @@ class _KidNameTextFieldState extends State<_KidNameTextField>{
           textCapitalization: TextCapitalization.words,
           decoration: InputDecoration(
             hintText: name??"neuer Name",
+            hintStyle: TextStyle(
+              color: Theme.of(context).textTheme.body1.color,
+              fontWeight: FontWeight.w300,
+              fontSize: 19,
+            ),
           ),
           onSubmitted: (x){
             DataHandler().changeKidsName(oldname: name, newname: x);
@@ -214,5 +205,97 @@ class _KidNameTextFieldState extends State<_KidNameTextField>{
         isInEditState?cancelButton:editButton,
       ],
     );
+  }
+}
+
+class _editRow extends StatefulWidget{
+
+
+  IconData icon;
+  Widget child;
+  Widget Function(String) onValue;
+  TextInputType keyboardType;
+
+  _editRow({@required this.icon, @required this.child, this.onValue, this.keyboardType});
+
+  @override
+  State<StatefulWidget> createState() => _editRowState();
+}
+
+class _editRowState extends State<_editRow>{
+  bool isInEditState=false;
+
+  Widget child;
+
+  @override
+  void initState() {
+    super.initState();
+    child=widget.child;
+  }
+
+  @override
+  Widget build(BuildContext context) {
+
+    Widget editButton=
+    IconButton(
+      icon: Icon(Icons.edit,color: Theme.of(context).cardColor,),
+      onPressed: (){
+        setState(() {
+          isInEditState=true;
+        });
+      },
+    );
+
+    Widget cancelButton=
+    IconButton(
+      icon: Icon(Icons.cancel,color: Theme.of(context).cardColor,),
+      onPressed: (){
+        setState(() {
+          isInEditState=false;
+        });
+      },
+    );
+
+    Widget editor=
+    Container(
+        width: MediaQuery.of(context).size.width/2,
+        child: TextField(
+          keyboardType: widget.keyboardType??TextInputType.text,
+          autofocus: true,
+          textInputAction: TextInputAction.done,
+          decoration: InputDecoration(
+            hintStyle: TextStyle(
+              color: Theme.of(context).textTheme.body1.color,
+              fontWeight: FontWeight.w300,
+              fontSize: 19,
+            ),
+          ),
+          onSubmitted: (x){
+            setState(() {
+              child=widget.onValue(x);
+              isInEditState=false;
+            });
+          },
+        )
+    );
+
+    return Container(
+        padding: EdgeInsets.symmetric(horizontal:20),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: <Widget>[
+            Row(
+              children: <Widget>[
+                Icon(widget.icon,//---
+                  color: Theme.of(context).textTheme.body1.color,
+                ),
+                Container(width:10),
+                isInEditState?editor:child,//---
+              ],
+            ),
+            isInEditState?cancelButton:editButton,
+          ],
+        ),
+      );
   }
 }
