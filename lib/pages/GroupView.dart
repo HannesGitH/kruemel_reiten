@@ -43,6 +43,14 @@ class GroupPage extends StatelessWidget{
         );
       }
 
+      Widget balance(String val){
+        return Text(((int.tryParse(val)??0)/100).toString()+" €", //TODO make all payments showable
+          style: TextStyle(
+            color: (kid.balance??0)<0 ? Colors.red[400]: (Theme.of(context).brightness==Brightness.light ? Colors.green[800] : Colors.greenAccent[400]),
+          ),
+        );
+      }
+
       List<Widget> _editrows=[
         Divider(),
         GestureDetector(
@@ -62,11 +70,11 @@ class GroupPage extends StatelessWidget{
         Divider(),
         _editRow(
           icon: Icons.euro_symbol,
-          child: Text(((kid.balance??0)/100).toString()+" €", //TODO make all payments showable 
-            style: TextStyle(
-              color: (kid.balance??0)<0 ? Colors.red[400]: (Theme.of(context).brightness==Brightness.light ? Colors.green[800] : Colors.greenAccent[400]),
-            ),
-          ),
+          child: balance(kid.balance.toString()),
+          onValue: (val){
+            //TODO add payment (if plus or minus add this; if no Vorzeichen add missing money as payment)
+            return balance(val);
+          },
         ),
       ];
     
@@ -207,9 +215,8 @@ class _KidNameTextFieldState extends State<_KidNameTextField>{
     );
   }
 }
-
+//MARK- editrow
 class _editRow extends StatefulWidget{
-
 
   IconData icon;
   Widget child;
