@@ -149,6 +149,13 @@ class _KidNameTextField extends StatefulWidget{
 
 class _KidNameTextFieldState extends State<_KidNameTextField>{
   bool isInEditState=false;
+  String name;
+
+  @override
+  void initState() {
+    super.initState();
+    name  = widget.kidsName;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -175,9 +182,21 @@ class _KidNameTextFieldState extends State<_KidNameTextField>{
         },
       );
 
+    TextEditingController c = TextEditingController();
     Widget editableKidName=
       TextField(
-        //TODO---------------------
+        autofocus: true,
+        controller: c,
+        textInputAction: TextInputAction.done,
+        textCapitalization: TextCapitalization.words,
+        decoration: InputDecoration(
+          hintText: name??"neuer Name",
+        ),
+        onSubmitted: (x){
+          DataHandler().changeKidsName(oldname: name, newname: x);
+          name=x;
+          isInEditState=false;
+        },
       );
 
       //TODO on click go to childView in table or smthn
@@ -187,7 +206,7 @@ class _KidNameTextFieldState extends State<_KidNameTextField>{
         Container(width:20),//Theme.of(context).iconTheme.size),
         Container(
             padding: EdgeInsets.only(top:10,bottom: 10),
-            child: isInEditState? editableKidName : Text(widget.kidsName??"Kind ohne Namen",style: TextStyle(fontSize: 20,fontWeight: FontWeight.bold,),)
+            child: isInEditState? editableKidName : Text(name??"Kind ohne Namen",style: TextStyle(fontSize: 20,fontWeight: FontWeight.bold,),)
         ),
         isInEditState?cancelButton:editButton,
       ],
