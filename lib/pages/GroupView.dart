@@ -76,7 +76,7 @@ class GroupPage extends StatelessWidget{
           icon: Icons.euro_symbol,
           child: Text(((kid.balance??0)/100).toString()+" €", //TODO make all payments showable 
             style: TextStyle(
-              color: kid.balance<0 ? Colors.red[400]: (Theme.of(context).brightness==Brightness.light ? Colors.green[800] : Colors.greenAccent[400]),
+              color: (kid.balance??0)<0 ? Colors.red[400]: (Theme.of(context).brightness==Brightness.light ? Colors.green[800] : Colors.greenAccent[400]),
             ),
           ),
         ),
@@ -184,19 +184,22 @@ class _KidNameTextFieldState extends State<_KidNameTextField>{
 
     TextEditingController c = TextEditingController();
     Widget editableKidName=
-      TextField(
-        autofocus: true,
-        controller: c,
-        textInputAction: TextInputAction.done,
-        textCapitalization: TextCapitalization.words,
-        decoration: InputDecoration(
-          hintText: name??"neuer Name",
-        ),
-        onSubmitted: (x){
-          DataHandler().changeKidsName(oldname: name, newname: x);
-          name=x;
-          isInEditState=false;
-        },
+      Container(
+        width: 200,
+        child: TextField(
+          autofocus: true,
+          controller: c,
+          textInputAction: TextInputAction.done,
+          textCapitalization: TextCapitalization.words,
+          decoration: InputDecoration(
+            hintText: name??"neuer Name",
+          ),
+          onSubmitted: (x){
+            DataHandler().changeKidsName(oldname: name, newname: x);
+            name=x;
+            isInEditState=false;
+          },
+        )
       );
 
       //TODO on click go to childView in table or smthn
