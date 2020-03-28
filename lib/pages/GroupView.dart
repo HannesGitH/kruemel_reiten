@@ -44,6 +44,7 @@ class GroupPage extends StatelessWidget{
 
 //A Single Kid Card
     Widget _kidView(Kid kid){
+      //TODO add delete 
 
       _callTel(tel) async {
         var url = "tel://$tel";
@@ -73,7 +74,7 @@ class GroupPage extends StatelessWidget{
         Divider(),
         _editRow(
           icon: Icons.euro_symbol,
-          child: Text(((kid.balance??0)/100).toString()+" €",
+          child: Text(((kid.balance??0)/100).toString()+" €", //TODO make all payments showable 
             style: TextStyle(
               color: kid.balance<0 ? Colors.red[400]: (Theme.of(context).brightness==Brightness.light ? Colors.green[800] : Colors.greenAccent[400]),
             ),
@@ -133,7 +134,7 @@ class GroupPage extends StatelessWidget{
           print(snapshot);
               return _groupView(snapshot.data);
             },
-      ),//TODO make body
+      ),
     );
   }
 }
@@ -173,13 +174,20 @@ class _KidNameTextFieldState extends State<_KidNameTextField>{
           //TODO: cancel: make TextField text-only again
         },
       );
+
+    Widget editableKidName=
+      TextField(
+        //TODO---------------------
+      );
+
+      //TODO on click go to childView in table or smthn
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
       children: <Widget>[
         Container(width:20),//Theme.of(context).iconTheme.size),
         Container(
             padding: EdgeInsets.only(top:10,bottom: 10),
-            child: Text(widget.kidsName??"Kind ohne Namen",style: TextStyle(fontSize: 20,fontWeight: FontWeight.bold,),)
+            child: isInEditState? editableKidName : Text(widget.kidsName??"Kind ohne Namen",style: TextStyle(fontSize: 20,fontWeight: FontWeight.bold,),)
         ),
         isInEditState?cancelButton:editButton,
       ],
