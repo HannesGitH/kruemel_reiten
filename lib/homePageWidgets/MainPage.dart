@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:kruemelreiten/homePageWidgets/MainPageChildren/GroupLabels.dart';
 import 'package:kruemelreiten/other/Database.dart';
 
 import 'MainPageChildren/MainSideBar.dart';
@@ -18,9 +19,11 @@ class MainPage extends StatelessWidget{
         future: _count,
         builder:(context,AsyncSnapshot<int> snap) {
 
-          double height = snap.data*estGH;
+          double height = snap.data*estGH+15;
 
-          sideBar sb = sideBar(height: height,estGH: estGH,);
+          double sbW=160;
+
+          sideBar sb = sideBar(height: height,estGH: estGH,width: sbW,);
 
           return SingleChildScrollView(
             child: Container(
@@ -28,8 +31,42 @@ class MainPage extends StatelessWidget{
               child: Stack(
                 children: <Widget>[
                   ListView.builder(
+                    padding: EdgeInsets.all(0),
                       scrollDirection: Axis.horizontal,
                       itemBuilder: (context, i) {
+                        List<Widget> container=List.filled(snap.data, Container(
+                          height: estGH,
+                          width: 20,
+                          padding: EdgeInsets.only(top:10),
+                          child: Card(
+                            margin: EdgeInsets.symmetric(vertical: 5),
+                            color: Theme.of(context).backgroundColor,
+                            elevation: 0,
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.horizontal(right: Radius.circular(10)),
+                            ),
+                        ),),);
+                        switch (i){
+                          case 0:
+                            return Container(
+                                color: Theme.of(context).cardColor,
+                                width: sbW+60,
+                                child: GrouplabelColumn(estGH: estGH,)
+                            );
+                            break;
+                          case 1:
+                            return Container(
+                              width: 35,
+                              color: Theme.of(context).cardColor,
+                              child: Align(
+                                alignment: Alignment.centerLeft,
+                                child: Column(
+                                  children: container,
+                                ),
+                              ),
+                            );
+                            break;
+                        }
                         return Container(
                           padding: EdgeInsets.all(20),
                           child: Container(
