@@ -303,6 +303,7 @@ class GroupEditor extends StatelessWidget {
       return Container(
         padding: EdgeInsets.only(top: 10,left: 20,right:20),
         child: TextField(
+          maxLength: 10,
           focusNode: fn,
           textInputAction: TextInputAction.next,
           textCapitalization: TextCapitalization.words,
@@ -369,6 +370,7 @@ class GroupEditor extends StatelessWidget {
             Container(
               width: 130,
               child: TextField(
+                maxLength: 15,
                 textInputAction: TextInputAction.next,
                 textCapitalization: TextCapitalization.words,
                 decoration: InputDecoration(

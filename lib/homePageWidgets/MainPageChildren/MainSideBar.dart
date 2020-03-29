@@ -69,7 +69,7 @@ class _sideBarState extends State<sideBar>  with SingleTickerProviderStateMixin 
                 ),
               ),
             ),
-            GrouplabelColumn(height: widget.height,),
+            Transform.translate(offset: Offset(-50,0),child: GrouplabelColumn(height: widget.height,)),
             Transform.translate(
               offset: Offset(-5, 0),
                 child: IconButton(
