@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:kruemelreiten/other/Database.dart';
 
 import 'MainPageChildren/MainSideBar.dart';
 
@@ -9,33 +10,43 @@ class MainPage extends StatelessWidget{
 
     double estGH = 175;
 
-    double height = MediaQuery.of(context).size.height*1.5;
+    Future<int> _count = DataHandler().getGroupCount();
 
-    sideBar sb = sideBar(height: height,estGH: estGH,);
     return Scaffold(
-      body: SingleChildScrollView(
-        child: Container(
-          height: height,
-          child: Stack(
-            children: <Widget>[
-              ListView.builder(
-                  scrollDirection: Axis.horizontal,
-                  itemBuilder: (context,i){
-                    return Container(
-                      padding: EdgeInsets.all(20),
-                      child: Container(
-                        padding: EdgeInsets.all(20),
-                        height: 200,
-                        color: Colors.amberAccent,
-                        child: Text("numero $i  ;"),
-                      ),
-                    );
-                  }
+      body: FutureBuilder<int>(
+        initialData: 0,
+        future: _count,
+        builder:(context,AsyncSnapshot<int> snap) {
+
+          double height = snap.data*estGH;
+
+          sideBar sb = sideBar(height: height,estGH: estGH,);
+
+          return SingleChildScrollView(
+            child: Container(
+              height: height,
+              child: Stack(
+                children: <Widget>[
+                  ListView.builder(
+                      scrollDirection: Axis.horizontal,
+                      itemBuilder: (context, i) {
+                        return Container(
+                          padding: EdgeInsets.all(20),
+                          child: Container(
+                            padding: EdgeInsets.all(20),
+                            height: 200,
+                            color: Colors.amberAccent,
+                            child: Text("numero $i  ;"),
+                          ),
+                        );
+                      }
+                  ),
+                  sb,
+                ],
               ),
-              sb,
-            ],
-          ),
-        ),
+            ),
+          );
+        },
       ),
       /*floatingActionButton: FloatingActionButton(
         onPressed: (){

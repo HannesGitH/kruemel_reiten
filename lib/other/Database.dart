@@ -305,6 +305,16 @@ class DataHandler{
     return groups;
   }
 
+  Future<int> getGroupCount() async{
+    //print("Getting Group Count");
+    Database db = await _database;
+    int count = (await db.query(tdb.groups,
+      columns: ['Count(*)'],
+    )).first['Count(*)'];
+    return count;
+  }
+
+
 //GET Group
   Future<List<int>> _getGroupMembersByName_id(groupName) async{
     //print("getting Groupmembers from Group $groupName");

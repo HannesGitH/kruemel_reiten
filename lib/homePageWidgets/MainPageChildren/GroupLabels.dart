@@ -62,7 +62,8 @@ class GrouplabelColumn extends StatelessWidget{
      }
     return Container(
       padding: EdgeInsets.only(left: 50),//wegen dem Offset schlonz
-      child: FutureBuilder(
+      child: FutureBuilder<List<Group>>(
+          initialData: [],
           future: allgroups(),
           builder: (context,AsyncSnapshot<List<Group>> snap){
             List<Widget> groups = List.generate(snap.data.length, (i){
