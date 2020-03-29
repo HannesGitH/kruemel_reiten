@@ -229,7 +229,7 @@ class DataHandler{
 
 //ADD a Group 
   Future<void> addGroup(Group group) async{
-    print("adding group: ${group.toString()}");
+    //print("adding group: ${group.toString()}");
     int id1 = await _addUser(group.kids[0].name);
     int id2 = await _addUser(group.kids[1].name);
     int id3 = await _addUser(group.kids[2].name);
@@ -270,7 +270,7 @@ class DataHandler{
 
 //GET groups 
    Future<List<List<String>>> getAllGroups_onlyNames() async{
-    print("getting all group names..");
+    //print("getting all group names..");
     //this might be slower than the complete variant 
     Database db = await _database;
     List<Map<String,dynamic>> allIds = await db.query(tdb.groups,
@@ -286,7 +286,7 @@ class DataHandler{
   }
 
   Future<List<Group>> getAllGroups_noBalance() async{
-    print("Getting all Groups..");
+    //print("Getting all Groups..");
     Database db = await _database;
     List<Map<String,dynamic>> allIds = await db.query(tdb.groups,
       columns: ['kid1','kid2','kid3','name'],
@@ -296,7 +296,7 @@ class DataHandler{
       Map<String,dynamic> map=allIds[i];
       String groupName=map['name'];
       List<Kid> kids=[];
-    print("gettin' all those kids: ${map.toString()}");
+    //print("gettin' all those kids: ${map.toString()}");
       for(int j=1 ; j<map.length ; j++){//jep my kids index starts at 1, shame on me
         kids.add(await _getKidById(map['kid$j']));
       }
@@ -307,7 +307,7 @@ class DataHandler{
 
 //GET Group
   Future<List<int>> _getGroupMembersByName_id(groupName) async{
-    print("getting Groupmembers from Group $groupName");
+    //print("getting Groupmembers from Group $groupName");
     Database db = await _database;
 
     Map<String, dynamic> kidsMap = (await db.query(tdb.groups,
@@ -328,7 +328,7 @@ class DataHandler{
   }
 
   Future<List<String>> getGroupMembersByName_onlyNames(groupName) async{
-    print("getting GroupmemberNames from Group $groupName");
+    //print("getting GroupmemberNames from Group $groupName");
     List<Kid> kids = await getGroupMembersByName_noBalance(groupName);
     return List.generate(kids.length, (i){
       return kids[i].name;
@@ -363,13 +363,13 @@ class DataHandler{
         )
       );
     }
-    print(newKids);
+    //print(newKids);
     return newKids;
   }
 
 //GET Kid
   Future<Kid> _getKidById(kidID)async{
-    print("getting kid from id $kidID .. ");
+    //print("getting kid from id $kidID .. ");
     Database db = await _database;
 
     List<Map<String, dynamic>> kids = await db.query(tdb.users,
@@ -400,7 +400,7 @@ class DataHandler{
 
 //GET Payments
   Future<int> _getBalanceByUserID(int uid) async{
-    print("getbalenceFrom $uid");
+    //print("getbalenceFrom $uid");
     int price=2500;//der Preis für eine Reitstunde in cent
 
     Database db = await _database;
@@ -427,7 +427,7 @@ class DataHandler{
 
 //DELETE Group
  Future<void> deleteGroup(Group group) async{
-    print("deleting Group ${group.name}");
+    //print("deleting Group ${group.name}");
 
     Database db = await _database;
     await db.delete(tdb.groups,
@@ -443,7 +443,7 @@ class DataHandler{
 
 //Updating a kid
   Future<void> changeKidsName({@required oldname, @required newname})async{
-    print("changing $oldname's name to $newname");
+    //print("changing $oldname's name to $newname");
 
     Database db = await _database;
     await db.update(tdb.users,
@@ -455,7 +455,7 @@ class DataHandler{
   }
 
   Future<void> changeKidsTel({@required name, @required tel})async{
-    print("changing $name's number to $tel");
+    //print("changing $name's number to $tel");
 
     Database db = await _database;
     await db.update(tdb.users,

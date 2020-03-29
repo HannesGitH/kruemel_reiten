@@ -8,7 +8,7 @@ class sideBar extends StatefulWidget{
 
   bool isOut=false;
 
-  sideBar({@required this.height,this.width=200});
+  sideBar({@required this.height,this.width=160});
 
   toggle(){isOut?rin():out();print("sideBar toggled");}
   out(){_c.forward();isOut=true;}
@@ -22,6 +22,7 @@ class _sideBarState extends State<sideBar>  with SingleTickerProviderStateMixin 
   Animation<double> animation;
   AnimationController controller;
   double xOff = 0;
+  int alpha = 255;
 
   @override
   void initState() {
@@ -43,6 +44,7 @@ class _sideBarState extends State<sideBar>  with SingleTickerProviderStateMixin 
     widget._c = controller;
 
     xOff = animation.value;
+    alpha = (((-xOff/widget.width)*255).floor());
     return Transform.translate(
       offset: Offset(xOff, 0),
       child: Container(
@@ -63,7 +65,8 @@ class _sideBarState extends State<sideBar>  with SingleTickerProviderStateMixin 
                   },
                   child: CustomPaint( //TODO maybe mak the gnubbel not scrollable
                     painter: _sideBarBG(
-                      color: Theme.of(context).backgroundColor,
+                      color: Theme.of(context).canvasColor,//.withAlpha(alpha),
+                      gSize: (-xOff/widget.width)*70
                     ),
                   ),
                 ),
@@ -71,7 +74,7 @@ class _sideBarState extends State<sideBar>  with SingleTickerProviderStateMixin 
             ),
             Transform.translate(offset: Offset(-50,0),child: GrouplabelColumn(height: widget.height,)),
             Transform.translate(
-              offset: Offset(-5, 0),
+              offset: Offset(0, 0),
                 child: IconButton(
                     icon: Icon(widget.isOut?Icons.chevron_left:Icons.chevron_right,color: Colors.purple,),
                     onPressed: (){
@@ -94,19 +97,25 @@ class _sideBarState extends State<sideBar>  with SingleTickerProviderStateMixin 
 }
 
 class _sideBarBG extends CustomPainter {
+
+  //gnubbelParameter
+  double gHeight=100;
+  double gSize=50;
+
+
   Color color;
-  _sideBarBG({@required this.color});
+  _sideBarBG({@required this.color,this.gSize});
 
   @override
   void paint(Canvas canvas, Size size) {
-    //gnubbelParameter
-    double gHeight=100;
-    double gSize=50;
+    var paint = Paint()
+        ..color = color
+            ..style = PaintingStyle.fill;
 
 
-    var paint = Paint();
-    paint.color = color;
-    paint.style = PaintingStyle.fill; // Change this to fill
+    Paint shadowPaint = Paint()
+        ..color = Colors.black.withAlpha(150)
+            ..maskFilter = MaskFilter.blur(BlurStyle.normal, 9);
 
     var path = Path();
 
@@ -114,25 +123,38 @@ class _sideBarBG extends CustomPainter {
     path.lineTo(size.width, 0);
 
     //Gnobbel
-    path.lineTo(size.width, size.height/2-gHeight*2);
-    path.quadraticBezierTo(size.width, size.height/2-gHeight, size.width+gSize/2, size.height/2-gHeight/2);
-    path.quadraticBezierTo(size.width+gSize, size.height/2,size.width+gSize/2, size.height/2+gHeight/2);
-    path.quadraticBezierTo(size.width, size.height/2+gHeight,size.width, size.height/2+gHeight*2);
+    path.lineTo(size.width, size.height / 2 - gHeight * 2);
+    path.quadraticBezierTo(
+        size.width, size.height / 2 - gHeight, size.width + gSize / 2,
+        size.height / 2 - gHeight / 2);
+    path.quadraticBezierTo(
+        size.width + gSize, size.height / 2, size.width + gSize / 2,
+        size.height / 2 + gHeight / 2);
+    path.quadraticBezierTo(size.width, size.height / 2 + gHeight, size.width,
+        size.height / 2 + gHeight * 2);
 
-    path.lineTo(size.width, size.height/2+gHeight/2);
+    path.lineTo(size.width, size.height / 2 + gHeight / 2);
     path.lineTo(size.width, size.height);
     path.lineTo(0, size.height);
     path.lineTo(0, 0);
 
-    Path path2 = path.shift(Offset(2,-2));
-    canvas.drawShadow(path2, Colors.black, 2, false);
-    canvas.drawShadow(path2, Colors.black, 5, false);
-    canvas.drawShadow(path2, Colors.black, 8, false);
+    canvas.drawPath(path, shadowPaint);
+
     canvas.drawPath(path, paint);
+
+    canvas.drawCircle(
+        Offset(size.width + (35 - gSize), size.height / 2), (70 - gSize) * 0.45,
+        shadowPaint);
+
+    canvas.drawCircle(
+        Offset(size.width + (35 - gSize), size.height / 2), (70 - gSize) * 0.45,
+        paint);
+
+
   }
 
-  @override
-  bool shouldRepaint(CustomPainter oldDelegate) {
-    return true;
-  }
+    @override
+    bool shouldRepaint(CustomPainter oldDelegate) {
+      return true;
+    }
 }

@@ -12,28 +12,42 @@ class GrouplabelColumn extends StatelessWidget{
    @override
   Widget build(BuildContext context) {
 
+     Widget kiddo(String name){
+       return Container(
+         padding: EdgeInsets.only(bottom:8,right: 10),
+         child: Align(
+           alignment: Alignment.centerRight,
+           child: Text("$name : ",style: TextStyle(fontWeight: FontWeight.w600,fontSize: 16),),
+         ),
+       );
+     }
+
      Widget group(Group group){
        return Transform.translate(
          offset: Offset(5,0),
          child: Container(
-           padding: EdgeInsets.only(left:10,top:10),
+           padding: EdgeInsets.only(left:5,top:10),
            child: Card(
              margin: EdgeInsets.all(5),
-             color: Theme.of(context).canvasColor,
+             color: Theme.of(context).backgroundColor,
              elevation: 10,
              shape: RoundedRectangleBorder(
                borderRadius: BorderRadius.horizontal(left: Radius.circular(10)),
              ),
-             child: Container(
-               padding: EdgeInsets.all(10),
-               child: Column(
-                 children: <Widget>[
-                   Align(
+             child: Column(
+               children: <Widget>[
+                 Container(
+                   padding: EdgeInsets.only(left:10,top:10),
+                   child: Align(
                      alignment: Alignment.centerLeft,
                        child: Text(group.name),
                    ),
-                 ],
-               ),
+                 ),
+                 Divider(),
+                 kiddo(group.kids[0].name),
+                 kiddo(group.kids[1].name),
+                 kiddo(group.kids[2].name),
+               ],
              ),
            ),
          ),

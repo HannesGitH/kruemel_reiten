@@ -218,7 +218,7 @@ class AddGroupActionbuttonState extends State<AddGroupActionbutton> {
         ),
         curve: Curves.easeInOutCubic,
         duration: Duration(milliseconds: 400),
-        height: isClicked? 250: 60,
+        height: isClicked? 350: 60,
         width: isClicked? MediaQuery.of(context).size.width-30: 60,
         child: wasClicked?
         Container(
@@ -370,7 +370,7 @@ class GroupEditor extends StatelessWidget {
             Container(
               width: 130,
               child: TextField(
-                maxLength: 15,
+                maxLength: 20,
                 textInputAction: TextInputAction.next,
                 textCapitalization: TextCapitalization.words,
                 decoration: InputDecoration(
