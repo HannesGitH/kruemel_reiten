@@ -34,11 +34,11 @@ class MainPage extends StatelessWidget{
           ),
         ),
       ),
-      floatingActionButton: FloatingActionButton(
+      /*floatingActionButton: FloatingActionButton(
         onPressed: (){
           sb.toggle();
         },
-      ),
+      ),*/
     );
   }
 }

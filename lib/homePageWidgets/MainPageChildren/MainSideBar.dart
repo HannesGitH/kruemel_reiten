@@ -9,7 +9,7 @@ class sideBar extends StatefulWidget{
 
   sideBar({@required this.height,this.width=200});
 
-  toggle(){isOut?rin():out();}
+  toggle(){isOut?rin():out();print("sideBar toggled");}
   out(){_c.forward();isOut=true;}
   rin(){_c.reverse();isOut=false;}
 
@@ -45,26 +45,39 @@ class _sideBarState extends State<sideBar>  with SingleTickerProviderStateMixin 
     return Transform.translate(
       offset: Offset(xOff, 0),
       child: Container(
-        width: widget.width,
+        width: widget.width+50,
         height: widget.height,
         child: Stack(
           alignment: AlignmentDirectional.centerEnd,
           children: <Widget>[
-            Container(
-              width: widget.width,
-              height: widget.height,
-              child: GestureDetector(
-                onTap: (){
-                  print("tapped");
-                  widget.toggle();
-                },
-                child: CustomPaint( //TODO maybe mak the gnubbel not scrollable
-                  painter: _sideBarBG(
-                    color: Colors.black,//Theme.of(context).backgroundColor,
+            Transform.translate(
+              offset: Offset(-50, 0),
+              child: Container(
+                width: widget.width,
+                height: widget.height,
+                child: GestureDetector(
+                  onTap: (){
+                    print("tapped");
+                    widget.toggle();
+                  },
+                  child: CustomPaint( //TODO maybe mak the gnubbel not scrollable
+                    painter: _sideBarBG(
+                      color: Theme.of(context).backgroundColor,
+                    ),
                   ),
                 ),
               ),
-            )
+            ),
+            Transform.translate(
+              offset: Offset(-5, 0),
+                child: IconButton(
+                    icon: Icon(widget.isOut?Icons.chevron_left:Icons.chevron_right,color: Colors.purple,),
+                    onPressed: (){
+                      print("icon pressed");
+                      widget.toggle();
+                    },
+                ),
+            ),
           ],
         ),
       ),
