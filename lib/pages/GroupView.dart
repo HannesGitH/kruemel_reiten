@@ -181,7 +181,7 @@ class _KidNameTextFieldState extends State<_KidNameTextField>{
       Container(
         width: MediaQuery.of(context).size.width/2,
         child: TextField(
-          maxLength: 10,
+          maxLength: 15,
           autofocus: true,
           controller: c,
           textInputAction: TextInputAction.done,
@@ -268,7 +268,7 @@ class _editRowState extends State<_editRow>{
     Container(
         width: MediaQuery.of(context).size.width/2,
         child: TextField(
-          maxLength: 10,
+          maxLength: 15,
           keyboardType: widget.keyboardType??TextInputType.text,
           autofocus: true,
           textInputAction: TextInputAction.done,

@@ -303,7 +303,7 @@ class GroupEditor extends StatelessWidget {
       return Container(
         padding: EdgeInsets.only(top: 10,left: 20,right:20),
         child: TextField(
-          maxLength: 10,
+          maxLength: 15,
           focusNode: fn,
           textInputAction: TextInputAction.next,
           textCapitalization: TextCapitalization.words,

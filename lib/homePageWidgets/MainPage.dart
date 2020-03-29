@@ -6,9 +6,12 @@ class MainPage extends StatelessWidget{
 
   @override
   Widget build(BuildContext context) {
+
+    double estGH = 175;
+
     double height = MediaQuery.of(context).size.height*1.5;
 
-    sideBar sb =sideBar(height: height);
+    sideBar sb = sideBar(height: height,estGH: estGH,);
     return Scaffold(
       body: SingleChildScrollView(
         child: Container(

@@ -6,15 +6,15 @@ class GrouplabelColumn extends StatelessWidget{
   Future<List<Group>> allgroups() async {
     return await dataman.getAllGroups_noBalance();
   }
-  double height;
-  GrouplabelColumn({@required this.height});
+  double estGH;
+  GrouplabelColumn({@required this.estGH});
 
    @override
   Widget build(BuildContext context) {
 
      Widget kiddo(String name){
        return Container(
-         padding: EdgeInsets.only(bottom:8,right: 10),
+         padding: EdgeInsets.only(bottom:18,right: 10),
          child: Align(
            alignment: Alignment.centerRight,
            child: Text("$name : ",style: TextStyle(fontWeight: FontWeight.w600,fontSize: 16),),
@@ -35,6 +35,7 @@ class GrouplabelColumn extends StatelessWidget{
                borderRadius: BorderRadius.horizontal(left: Radius.circular(10)),
              ),
              child: Column(
+               mainAxisSize: MainAxisSize.max,
                children: <Widget>[
                  Container(
                    padding: EdgeInsets.only(left:10,top:10),
@@ -44,9 +45,15 @@ class GrouplabelColumn extends StatelessWidget{
                    ),
                  ),
                  Divider(),
-                 kiddo(group.kids[0].name),
-                 kiddo(group.kids[1].name),
-                 kiddo(group.kids[2].name),
+                 Column(
+                   mainAxisAlignment: MainAxisAlignment.spaceAround,
+                   mainAxisSize: MainAxisSize.max,
+                   children: <Widget>[
+                     kiddo(group.kids[0].name),
+                     kiddo(group.kids[1].name),
+                     kiddo(group.kids[2].name),
+                   ],
+                 ),
                ],
              ),
            ),
@@ -55,14 +62,13 @@ class GrouplabelColumn extends StatelessWidget{
      }
     return Container(
       padding: EdgeInsets.only(left: 50),//wegen dem Offset schlonz
-      height: height,
       child: FutureBuilder(
           future: allgroups(),
           builder: (context,AsyncSnapshot<List<Group>> snap){
             List<Widget> groups = List.generate(snap.data.length, (i){
               return Container(
                 //color: Colors.red,
-                //height: height/snap.data.length,
+                height: estGH,
                 child: group(snap.data[i]),
               );
             });
