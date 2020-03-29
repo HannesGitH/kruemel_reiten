@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:kruemelreiten/homePageWidgets/MainPageChildren/GroupLabels.dart';
 
 class sideBar extends StatefulWidget{
   AnimationController _c;
@@ -68,6 +69,7 @@ class _sideBarState extends State<sideBar>  with SingleTickerProviderStateMixin 
                 ),
               ),
             ),
+            GrouplabelColumn(height: widget.height,),
             Transform.translate(
               offset: Offset(-5, 0),
                 child: IconButton(
