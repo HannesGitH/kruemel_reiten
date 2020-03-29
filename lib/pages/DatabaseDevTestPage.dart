@@ -93,6 +93,9 @@ class _sideBarState extends State<sideBar>  with SingleTickerProviderStateMixin{
         color: Colors.red,
         width: widget.width,
         height: widget.height,
+        child: CustomPaint(
+          painter: CurvePainter(),
+        ),
       ),
     );
   }
@@ -101,5 +104,46 @@ class _sideBarState extends State<sideBar>  with SingleTickerProviderStateMixin{
   void dispose() {
     controller.dispose();
     super.dispose();
+  }
+}
+
+class CurvePainter extends CustomPainter {
+  @override
+  void paint(Canvas canvas, Size size) {
+    //gnubbelParameter
+    double gHeight=100;
+    double gSize=50;
+
+
+    var paint = Paint();
+    paint.color = Colors.green[800];
+    paint.style = PaintingStyle.fill; // Change this to fill
+
+    var path = Path();
+
+    path.moveTo(0, 0);
+    path.lineTo(size.width, 0);
+
+    //Gnobbel
+    path.lineTo(size.width, size.height/2-gHeight*2);
+    path.quadraticBezierTo(size.width, size.height/2-gHeight, size.width+gSize/2, size.height/2-gHeight/2);
+    path.quadraticBezierTo(size.width+gSize, size.height/2,size.width+gSize/2, size.height/2+gHeight/2);
+    path.quadraticBezierTo(size.width, size.height/2+gHeight,size.width, size.height/2+gHeight*2);
+
+    path.lineTo(size.width, size.height/2+gHeight/2);
+    path.lineTo(size.width, size.height);
+    path.lineTo(0, size.height);
+    path.lineTo(0, 0);
+
+    Path path2 = path.shift(Offset(2,-2));
+    canvas.drawShadow(path2, Colors.black, 2, false);
+    canvas.drawShadow(path2, Colors.black, 5, false);
+    canvas.drawShadow(path2, Colors.black, 8, false);
+    canvas.drawPath(path, paint);
+  }
+
+  @override
+  bool shouldRepaint(CustomPainter oldDelegate) {
+    return true;
   }
 }

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:kruemelreiten/Widgets/MainDrawer.dart';
 import 'package:kruemelreiten/homePageWidgets/GroupAdd.dart';
+import 'package:kruemelreiten/homePageWidgets/MainPage.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'dart:async';
 
@@ -13,17 +14,6 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'Krümel',
       theme: ThemeData(
-        // This is the theme of your application.
-        //
-        // Try running your application with "flutter run". You'll see the
-        // application has a blue toolbar. Then, without quitting the app, try
-        // changing the primarySwatch below to Colors.green and then invoke
-        // "hot reload" (press "r" in the console where you ran "flutter run",
-        // or simply save your changes to "hot reload" in a Flutter IDE).
-        // Notice that the counter didn't reset back to zero; the application
-        // is not restarted.
-        //primarySwatch: Colors.blue,
-        //accentColor: Colors.white,
         backgroundColor: Colors.white,
         cardColor: Colors.blueGrey[400],
         primaryColor: Colors.blue,
@@ -36,7 +26,6 @@ class MyApp extends StatelessWidget {
         cardColor: Colors.blueGrey[700],
         primaryColor: Colors.tealAccent,
         hintColor: Colors.white70,
-
         //highlightColor: Colors.amberAccent,
       ),
       home: MyHomePage(title: 'Krümel Reiten'),
@@ -99,20 +88,9 @@ class _MyHomePageState extends State<MyHomePage> {
     }
   }
 
-  int _counter = 0;
-
-  void _incrementCounter() {
-    setState(() {
-      _counter++;
-    });
-  }
-
-
   List<Widget> Pages() {return <Widget>[
     groupPage,
-    Text(
-      'hannes arbeitet hier noch dran',
-    ),
+    MainPage(),
     Text(
       'hier ist erstmal noch garnix',
     ),
