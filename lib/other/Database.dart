@@ -197,6 +197,36 @@ class Group{
   List<Kid>kids;
 } 
 
+class Lesson{
+  final String description;
+  final int kid;
+  final DateTime date;
+  final Presence presence;
+  final bool isPaid;
+
+  Lesson({this.description, this.kid, this.date, this.presence,this.isPaid});
+
+  Map<String, dynamic> toMap() {
+    return {
+      'kid':kid,
+      'date':date,
+      'presence':presence,
+      'paymentStatus':isPaid,
+      'description':description,
+    };
+  }
+
+  /*Lesson fromMap(Map<String, dynamic> m){
+    return Lesson(date: m['date'],kid: m['kid'],presence: m['presence'],isPaid: m['isPaid'],description: m['description']);
+  }*/
+
+  @override
+  String toString() {
+    return 'Stunde am ${date.day}: {KindNr: $kid: $presence, wurde ${isPaid?'':'nicht'} bezahlt.}';
+  }
+}
+
+
 class DataHandler{
   static final DataHandler _instance = DataHandler._();
   static TheDatabase tdb = TheDatabase();
@@ -404,8 +434,28 @@ class DataHandler{
     return (await db.query(tdb.lessons,
       columns: ['Count(*)'], 
       where:'id = ?' , 
-      whereArgs: [uid]
+      whereArgs: [uid],
     )).first['Count(*)'];
+  }
+
+  Future<List<Lesson>> getLessonsOnDay(DateTime day) async{
+    Database db = await _database;
+    List<Map<String, dynamic>> lessons = await db.query(tdb.lessons,
+      columns: ['kid','presence','paymentStatus','description'], 
+      where:'date = ?' , 
+      whereArgs: [day],
+    );
+
+    return List.generate(lessons.length, (i){
+      return Lesson(
+        date: day,
+        kid: lessons[i]['kid'],
+        description: lessons[i]['description'],
+        presence: Presence.values[lessons[i]['presence']],
+        isPaid: lessons[i]['paymentStatus'],
+      );
+    });
+
   }
 
 //GET Payments

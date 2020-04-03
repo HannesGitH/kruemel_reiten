@@ -5,7 +5,9 @@ class SaturdayCol extends StatelessWidget{
   double width;
   double estGH;
 
-  SaturdayCol(DateTime saturday, {this.width=400, this.estGH}){
+  int groupCount;
+
+  SaturdayCol(DateTime saturday, {this.width=400, this.estGH, this.groupCount=2}){
     this.saturday=saturday;
   }
 
@@ -43,7 +45,11 @@ class SaturdayCol extends StatelessWidget{
                 ],
               ),
             ),
-            _saturdayAppointments(sat: saturday,),
+            _saturdayAppointments(
+              sat: saturday,
+              estGH: estGH,
+              groupCount: groupCount,
+            ),
           ],
         ),
       ),
@@ -55,16 +61,25 @@ class SaturdayCol extends StatelessWidget{
 class _saturdayAppointments extends StatelessWidget{
   DateTime sat;
 
-  _saturdayAppointments({@required this.sat});
+  double estGH;
+  int groupCount;
+
+  _saturdayAppointments({@required this.sat,this.estGH=160,this.groupCount=2});
 
   @override
   Widget build(BuildContext context) {
     // TODO: implement build
-    return Container(
+
+    return FutureBuilder(
+
+      builder: (context, snap){
+        return Container(
               padding: EdgeInsets.all(20),
               height: 200,
               color: Colors.amberAccent,
               child: Text("numero ${sat.toString()}"),
             );
+    });
+    
   }
 }

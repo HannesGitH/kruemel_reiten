@@ -97,6 +97,7 @@ class MainPage extends StatelessWidget{
                       child: SaturdayCol(getNthSaturdaySinceStart(i-2),//da ja 2 cols schon auf die ersten draufgehen
                         width: estWidth,
                         estGH: estGH,
+                        groupCount: snap.data,
                       ),
                     );
                   }
