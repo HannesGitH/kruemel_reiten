@@ -83,9 +83,12 @@ class _saturdayAppointments extends StatelessWidget{
             borderRadius: BorderRadius.circular(10),
           ),
           elevation: 2,
-          child: Container(
-            width: width,
-            child: children[i]
+          child: ClipRRect(
+            borderRadius: BorderRadius.circular(10),
+            child: Container(
+              width: width,
+              child: children[i]
+            ),
           ),
         ),
       );
