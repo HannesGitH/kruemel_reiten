@@ -15,6 +15,8 @@ class MainPage extends StatelessWidget{
 
     Future<int> _count = DataHandler().getGroupCount();
 
+    Future<List<List<String>>> _allgroups = DataHandler().getAllGroups_onlyNames();
+
     return Scaffold(
       body: FutureBuilder<int>(
         initialData: 0,
@@ -50,58 +52,63 @@ class MainPage extends StatelessWidget{
           Widget _mainPage=Stack(
             alignment: Alignment.bottomLeft,
             children: <Widget>[
-              ListView.builder(
-                controller: horizontalScrollController,
-                  padding: EdgeInsets.all(0),
-                  scrollDirection: Axis.horizontal,
-                  itemBuilder: (context, i) {
-                    List<Widget> container=List.filled(snap.data, Container(
-                      height: estGH,
-                      width: 20,
-                      padding: EdgeInsets.only(bottom:10),
-                      child: Card(
-                        margin: EdgeInsets.symmetric(vertical: 5, horizontal: 0),
-                        color: Theme.of(context).backgroundColor,
-                        elevation: 0,
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.horizontal(right: Radius.circular(10)),
-                        ),
-                      ),),);
-                    switch (i){
-                      case 0:
-                        return Container(
-                          color: Theme.of(context).cardColor,
-                          width: sbW+60,
-                          child: Align(
-                            alignment: Alignment.bottomLeft,
-                            child: GrouplabelColumn(estGH: estGH,)
+              FutureBuilder(
+                future: _allgroups,
+                builder: (cantext, AsyncSnapshot<List<List<String>>> snapSchot){
+                  return ListView.builder(
+                    controller: horizontalScrollController,
+                    padding: EdgeInsets.all(0),
+                    scrollDirection: Axis.horizontal,
+                    itemBuilder: (context, i) {
+                      List<Widget> container=List.filled(snap.data, Container(
+                        height: estGH,
+                        width: 20,
+                        padding: EdgeInsets.only(bottom:10),
+                        child: Card(
+                          margin: EdgeInsets.symmetric(vertical: 5, horizontal: 0),
+                          color: Theme.of(context).backgroundColor,
+                          elevation: 0,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.horizontal(right: Radius.circular(10)),
                           ),
-                        );
-                        break;
-                      case 1:
-                        return Container(
-                          width: 35,
-                          color: Theme.of(context).cardColor,
-                          child: Align(
-                            alignment: Alignment.bottomLeft,
-                            child: Column(
-                              mainAxisAlignment: MainAxisAlignment.end,
-                              children: container,
+                        ),),);
+                      switch (i){
+                        case 0:
+                          return Container(
+                            color: Theme.of(context).cardColor,
+                            width: sbW+60,
+                            child: Align(
+                              alignment: Alignment.bottomLeft,
+                              child: GrouplabelColumn(estGH: estGH,)
                             ),
-                          ),
-                        );
-                        break;
+                          );
+                          break;
+                        case 1:
+                          return Container(
+                            width: 35,
+                            color: Theme.of(context).cardColor,
+                            child: Align(
+                              alignment: Alignment.bottomLeft,
+                              child: Column(
+                                mainAxisAlignment: MainAxisAlignment.end,
+                                children: container,
+                              ),
+                            ),
+                          );
+                          break;
+                      }
+                      return Align(
+                        alignment: Alignment.bottomLeft,
+                        child: SaturdayCol(getNthSaturdaySinceStart(i-2),//da ja 2 cols schon auf die ersten draufgehen
+                          width: estWidth,
+                          estGH: estGH,
+                          groupCount: snap.data,
+                          kidnames: snapSchot.data,
+                        ),
+                      );
                     }
-                    return Align(
-                      alignment: Alignment.bottomLeft,
-                      child: SaturdayCol(getNthSaturdaySinceStart(i-2),//da ja 2 cols schon auf die ersten draufgehen
-                        width: estWidth,
-                        estGH: estGH,
-                        groupCount: snap.data,
-                      ),
-                    );
-                  }
-              ),
+                );
+              }),
               sb,
             ],
           );

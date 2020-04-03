@@ -7,8 +7,9 @@ class SaturdayCol extends StatelessWidget{
   double estGH;
 
   int groupCount;
+  List<List<String>> kidnames;
 
-  SaturdayCol(DateTime saturday, {this.width=400, this.estGH, this.groupCount=2}){
+  SaturdayCol(DateTime saturday, {this.width=400, this.estGH, this.groupCount=2,this.kidnames}){
     this.saturday=saturday;
   }
 
@@ -49,7 +50,8 @@ class SaturdayCol extends StatelessWidget{
             sat: saturday,
             estGH: estGH,
             groupCount: groupCount,
-            width: width-50
+            width: width-60,
+            kidnames: kidnames,
           ),
         ],
       ),
@@ -64,8 +66,9 @@ class _saturdayAppointments extends StatelessWidget{
   double estGH;
   double width;
   int groupCount;
+  List<List<String>> kidnames;
 
-  _saturdayAppointments({@required this.sat,this.estGH=160,this.groupCount=2,this.width=200});
+  _saturdayAppointments({@required this.sat,this.estGH=160,this.groupCount=2,this.width=200,this.kidnames});
 
   Future<List<Lesson>> _getLessons()async{return await DataHandler().getLessonsOnDay(sat);}
 
@@ -102,17 +105,14 @@ class _saturdayAppointments extends StatelessWidget{
       future: _getLessons(),
       initialData: [],
       builder: (context, AsyncSnapshot<List<Lesson>> snap){
-        if(snap.data.length==0){
+        if(kidnames == null){
           return  _design(
             children: List.filled(groupCount, Center(child: CircularProgressIndicator(backgroundColor: Colors.white,))),
           );
         }
-        return Container(
-              padding: EdgeInsets.all(20),
-              height: 200,
-              color: Colors.amberAccent,
-              child: Text("numero ${sat.toString()}"),
-            );
+        return  _design(
+          children: List.filled(groupCount, Center(child: Container(color: Colors.red,))),
+        );
     });
     
   }
