@@ -443,7 +443,7 @@ class DataHandler{
     List<Map<String, dynamic>> lessons = await db.query(tdb.lessons,
       columns: ['kid','presence','paymentStatus','description'], 
       where:'date = ?' , 
-      whereArgs: [day],
+      whereArgs: [day.millisecondsSinceEpoch],
     );
 
     return List.generate(lessons.length, (i){
