@@ -26,7 +26,7 @@ class GrouplabelColumn extends StatelessWidget{
        return Transform.translate(
          offset: Offset(5,0),
          child: Container(
-           padding: EdgeInsets.only(left:5,top:10),
+           padding: EdgeInsets.only(left:5,bottom:10),
            child: Card(
              margin: EdgeInsets.all(5),
              color: Theme.of(context).backgroundColor,
@@ -74,7 +74,7 @@ class GrouplabelColumn extends StatelessWidget{
               );
             });
             return Column(
-              mainAxisAlignment: MainAxisAlignment.start,
+              mainAxisAlignment: MainAxisAlignment.end,
               children: groups,
             );
           }

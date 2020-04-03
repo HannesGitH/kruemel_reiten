@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:kruemelreiten/homePageWidgets/MainPageChildren/GroupLabels.dart';
+import 'package:kruemelreiten/homePageWidgets/MainPageChildren/sunday.dart';
 import 'package:kruemelreiten/other/Database.dart';
 
 import 'MainPageChildren/MainSideBar.dart';
@@ -30,11 +31,21 @@ class MainPage extends StatelessWidget{
 
           sideBar sb = sideBar(height: height,estGH: estGH,width: sbW,);
 
-          double offset=500; //TODO: calculate offset depending on current date
+          var startDay = DateTime.utc(2020,1,4);//has to be a saturday
+          var estWidth = 500;
+          var today = DateTime.now();
+          var nthWeek = today.difference(startDay).inDays/7;
+
+          double offset=110;//estWidth*nthWeek;
+
+          DateTime getNthSaturdaySinceStart(int n){
+            var dt=startDay.add(Duration(days: 7*n));
+          }
 
           ScrollController horizontalScrollController = ScrollController(initialScrollOffset: offset);
 
           Widget _mainPage=Stack(
+            alignment: Alignment.bottomLeft,
             children: <Widget>[
               ListView.builder(
                 controller: horizontalScrollController,
@@ -44,9 +55,9 @@ class MainPage extends StatelessWidget{
                     List<Widget> container=List.filled(snap.data, Container(
                       height: estGH,
                       width: 20,
-                      padding: EdgeInsets.only(top:10),
+                      padding: EdgeInsets.only(bottom:10),
                       child: Card(
-                        margin: EdgeInsets.symmetric(vertical: 5),
+                        margin: EdgeInsets.symmetric(vertical: 5, horizontal: 0),
                         color: Theme.of(context).backgroundColor,
                         elevation: 0,
                         shape: RoundedRectangleBorder(
@@ -56,9 +67,12 @@ class MainPage extends StatelessWidget{
                     switch (i){
                       case 0:
                         return Container(
-                            color: Theme.of(context).cardColor,
-                            width: sbW+60,
+                          color: Theme.of(context).cardColor,
+                          width: sbW+60,
+                          child: Align(
+                            alignment: Alignment.bottomLeft,
                             child: GrouplabelColumn(estGH: estGH,)
+                          ),
                         );
                         break;
                       case 1:
@@ -66,23 +80,16 @@ class MainPage extends StatelessWidget{
                           width: 35,
                           color: Theme.of(context).cardColor,
                           child: Align(
-                            alignment: Alignment.centerLeft,
+                            alignment: Alignment.bottomLeft,
                             child: Column(
+                              mainAxisAlignment: MainAxisAlignment.end,
                               children: container,
                             ),
                           ),
                         );
                         break;
                     }
-                    return Container(
-                      padding: EdgeInsets.all(20),
-                      child: Container(
-                        padding: EdgeInsets.all(20),
-                        height: 200,
-                        color: Colors.amberAccent,
-                        child: Text("numero $i  ;"),
-                      ),
-                    );
+                    return SundayCol();
                   }
               ),
               sb,
