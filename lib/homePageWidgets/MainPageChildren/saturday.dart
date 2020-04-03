@@ -120,3 +120,12 @@ class _saturdayAppointments extends StatelessWidget{
     
   }
 }
+
+class _AppointmentIndicator extends StatefulWidget{
+
+  @override
+  State<StatefulWidget> createState() {
+    // TODO: implement createState
+    return null;
+  }
+}
