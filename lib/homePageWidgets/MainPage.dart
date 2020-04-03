@@ -11,7 +11,7 @@ class MainPage extends StatelessWidget{
   Widget build(BuildContext context) {
 
     double estGH = 175;
-    double estWidth = 500;
+    double estWidth = 150;
 
     Future<int> _count = DataHandler().getGroupCount();
 
@@ -112,7 +112,7 @@ class MainPage extends StatelessWidget{
           }
           return SingleChildScrollView(
             child: Container(
-              height: height,
+              height: height+10,
               child: _mainPage,
             ),
           );

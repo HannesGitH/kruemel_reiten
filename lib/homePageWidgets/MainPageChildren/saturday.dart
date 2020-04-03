@@ -16,46 +16,42 @@ class SaturdayCol extends StatelessWidget{
 
   @override
   Widget build(BuildContext context) {
-    return Align(
-      alignment: Alignment.bottomLeft,
-      child: Container(
-        width: width,
-        child: Container(
-          padding: EdgeInsets.only(bottom:20, left:20, top:20),
-          child: Row(
-            crossAxisAlignment: CrossAxisAlignment.end,
-            children: <Widget>[
-              RotatedBox(
-                quarterTurns: 3,
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.end,
-                  crossAxisAlignment: CrossAxisAlignment.end,
-                  children: <Widget>[
-                    Text(
-                      "${saturday.year.toString()}",
-                      style: TextStyle(fontSize:10,fontWeight: FontWeight.w400),
-                    ),
-                    SizedBox(width: 40),
-                    Text(
-                      "${saturday.day.toString()}.",
-                      style: TextStyle(fontWeight: FontWeight.w600, fontSize:20),
-                    ),
-                    Text(
-                      "${months[saturday.month-1]}",
-                      style: TextStyle(fontSize:20,fontWeight: FontWeight.w200),
-                    ),
-                    
-                  ],
+    return Container(
+      padding: EdgeInsets.only(bottom:5, left:20, top:20),
+      width: width,
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.end,
+        children: <Widget>[
+          RotatedBox(
+            quarterTurns: 3,
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.end,
+              crossAxisAlignment: CrossAxisAlignment.end,
+              children: <Widget>[
+                Text(
+                  "${saturday.year.toString()}",
+                  style: TextStyle(fontSize:10,fontWeight: FontWeight.w400),
                 ),
-              ),
-              _saturdayAppointments(
-                sat: saturday,
-                estGH: estGH,
-                groupCount: groupCount,
-              ),
-            ],
+                SizedBox(width: 40),
+                Text(
+                  "${saturday.day.toString()}.",
+                  style: TextStyle(fontWeight: FontWeight.w600, fontSize:20),
+                ),
+                Text(
+                  "${months[saturday.month-1]}",
+                  style: TextStyle(fontSize:20,fontWeight: FontWeight.w200),
+                ),
+                SizedBox(width: 40),
+              ],
+            ),
           ),
-        ),
+          _saturdayAppointments(
+            sat: saturday,
+            estGH: estGH,
+            groupCount: groupCount,
+            width: width-50
+          ),
+        ],
       ),
     );
   }
@@ -66,23 +62,27 @@ class _saturdayAppointments extends StatelessWidget{
   DateTime sat;
 
   double estGH;
+  double width;
   int groupCount;
 
-  _saturdayAppointments({@required this.sat,this.estGH=160,this.groupCount=2});
+  _saturdayAppointments({@required this.sat,this.estGH=160,this.groupCount=2,this.width=200});
 
-  Future<List<Lesson>> _getLessons(){DataHandler().getLessonsOnDay(sat);}
+  Future<List<Lesson>> _getLessons()async{return await DataHandler().getLessonsOnDay(sat);}
 
   Widget _design({@required List<Widget> children}){
     List<Widget> _list = List.generate(children.length, (i){
       return Container(
+        padding: EdgeInsets.symmetric(vertical:5),
         height: estGH,
         child: Card(
-          child: Row(
-            children: <Widget>[
-              Container(//Expanded(
-                child: children[i]
-              ),
-            ],
+          margin: EdgeInsets.all(5),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(10),
+          ),
+          elevation: 2,
+          child: Container(
+            width: width,
+            child: children[i]
           ),
         ),
       );
@@ -104,7 +104,7 @@ class _saturdayAppointments extends StatelessWidget{
       builder: (context, AsyncSnapshot<List<Lesson>> snap){
         if(snap.data.length==0){
           return  _design(
-            children: List.filled(groupCount, Center(child: CircularProgressIndicator())),
+            children: List.filled(groupCount, Center(child: CircularProgressIndicator(backgroundColor: Colors.white,))),
           );
         }
         return Container(
