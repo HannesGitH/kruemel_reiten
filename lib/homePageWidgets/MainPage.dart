@@ -19,9 +19,8 @@ class MainPage extends StatelessWidget{
         future: _count,
         builder:(context,AsyncSnapshot<int> snap) {
 
-          if(snap.data<3){
+          if(snap.data<2){
             return Center(child: Container(padding: EdgeInsets.all(30),child: Text("Füg doch unten links bitte mindestens 2 Gruppen hinzu")));
-
           }
 
           double height = snap.data*estGH+15;
@@ -31,9 +30,14 @@ class MainPage extends StatelessWidget{
 
           sideBar sb = sideBar(height: height,estGH: estGH,width: sbW,);
 
+          double offset=500; //TODO: calculate offset depending on current date
+
+          ScrollController horizontalScrollController = ScrollController(initialScrollOffset: offset);
+
           Widget _mainPage=Stack(
             children: <Widget>[
               ListView.builder(
+                controller: horizontalScrollController,
                   padding: EdgeInsets.all(0),
                   scrollDirection: Axis.horizontal,
                   itemBuilder: (context, i) {
