@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:kruemelreiten/homePageWidgets/MainPageChildren/GroupLabels.dart';
-import 'package:kruemelreiten/homePageWidgets/MainPageChildren/sunday.dart';
+import 'package:kruemelreiten/homePageWidgets/MainPageChildren/saturday.dart';
 import 'package:kruemelreiten/other/Database.dart';
 
 import 'MainPageChildren/MainSideBar.dart';
@@ -11,6 +11,7 @@ class MainPage extends StatelessWidget{
   Widget build(BuildContext context) {
 
     double estGH = 175;
+    double estWidth = 500;
 
     Future<int> _count = DataHandler().getGroupCount();
 
@@ -32,14 +33,16 @@ class MainPage extends StatelessWidget{
           sideBar sb = sideBar(height: height,estGH: estGH,width: sbW,);
 
           var startDay = DateTime.utc(2020,1,4);//has to be a saturday
-          var estWidth = 500;
           var today = DateTime.now();
           var nthWeek = today.difference(startDay).inDays/7;
 
-          double offset=110;//estWidth*nthWeek;
+          double offset=estWidth*nthWeek+300;
 
           DateTime getNthSaturdaySinceStart(int n){
             var dt=startDay.add(Duration(days: 7*n));
+            print(n);
+            print(dt.toString());
+            return dt;
           }
 
           ScrollController horizontalScrollController = ScrollController(initialScrollOffset: offset);
@@ -89,7 +92,13 @@ class MainPage extends StatelessWidget{
                         );
                         break;
                     }
-                    return SundayCol();
+                    return Align(
+                      alignment: Alignment.bottomLeft,
+                      child: SaturdayCol(getNthSaturdaySinceStart(i-2),//da ja 2 cols schon auf die ersten draufgehen
+                        width: estWidth,
+                        estGH: estGH,
+                      ),
+                    );
                   }
               ),
               sb,
