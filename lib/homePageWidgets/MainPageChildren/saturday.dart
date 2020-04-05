@@ -110,11 +110,21 @@ class _saturdayAppointments extends StatelessWidget{
       builder: (context, AsyncSnapshot<List<Lesson>> snap){
         if(kidnames == null){
           return  _design(
-            children: List.filled(groupCount, Center(child: CircularProgressIndicator(backgroundColor: Colors.white,))),
+            children: List.filled(groupCount, Center(
+              child: CircularProgressIndicator(
+                backgroundColor: Colors.white,
+              ),
+            )),
           );
         }
         return  _design(
-          children: List.filled(groupCount, Center(child: Container(color: Colors.red,))),
+          children: List.generate(groupCount, (i){
+            return Center(
+              child:_AppointmentIndicator(
+                kidNames: kidnames[i+1],
+              ),
+            );
+          }),
         );
     });
     
@@ -123,9 +133,34 @@ class _saturdayAppointments extends StatelessWidget{
 
 class _AppointmentIndicator extends StatefulWidget{
 
+  List<String> kidNames;
+  _AppointmentIndicator({@required this.kidNames});
+
   @override
-  State<StatefulWidget> createState() {
-    // TODO: implement createState
-    return null;
+  State<StatefulWidget> createState() => _AppointmentIndicatorState();
+}
+
+class _AppointmentIndicatorState extends State<_AppointmentIndicator>{
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      mainAxisSize: MainAxisSize.max,
+      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+      children: List.generate(widget.kidNames.length, (i){
+        return Expanded(
+          child: Card(
+            color: Colors.green,
+            margin: EdgeInsets.all(5),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(5),
+            ),
+            child: Container(
+              //height: 20,
+              //color: Colors.red,
+            ),
+          ),
+        );
+      }),
+    );
   }
 }
