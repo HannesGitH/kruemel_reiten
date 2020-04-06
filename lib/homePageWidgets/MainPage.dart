@@ -15,7 +15,7 @@ class MainPage extends StatelessWidget{
 
     Future<int> _count = DataHandler().getGroupCount();
 
-    Future<List<List<String>>> _allgroups = DataHandler().getAllGroups_onlyNames();
+    Future<List<Group>> _allgroups = DataHandler().getAllGroups_noBalance();
 
     return Scaffold(
       body: FutureBuilder<int>(
@@ -54,7 +54,7 @@ class MainPage extends StatelessWidget{
             children: <Widget>[
               FutureBuilder(
                 future: _allgroups,
-                builder: (cantext, AsyncSnapshot<List<List<String>>> snapSchot){
+                builder: (cantext, AsyncSnapshot<List<Group>> snapSchot){
                   return ListView.builder(
                     controller: horizontalScrollController,
                     padding: EdgeInsets.all(0),
@@ -103,7 +103,7 @@ class MainPage extends StatelessWidget{
                           width: estWidth,
                           estGH: estGH,
                           groupCount: snap.data,
-                          kidnames: snapSchot.data,
+                          groups: snapSchot.data,
                         ),
                       );
                     }

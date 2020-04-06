@@ -10,9 +10,9 @@ class SaturdayCol extends StatelessWidget{
   double estGH;
 
   int groupCount;
-  List<List<String>> kidnames;
+  List<Group> groups;
 
-  SaturdayCol(DateTime saturday, {this.width=400, this.estGH, this.groupCount=2,this.kidnames}){
+  SaturdayCol(DateTime saturday, {this.width=400, this.estGH, this.groupCount=2,this.groups}){
     this.saturday=saturday;
   }
 
@@ -54,7 +54,7 @@ class SaturdayCol extends StatelessWidget{
             estGH: estGH,
             groupCount: groupCount,
             width: width-50,
-            kidnames: kidnames,
+            groups: groups,
           ),
         ],
       ),
@@ -69,9 +69,9 @@ class _saturdayAppointments extends StatelessWidget{
   double estGH;
   double width;
   int groupCount;
-  List<List<String>> kidnames;
+  List<Group> groups;
 
-  _saturdayAppointments({@required this.sat,this.estGH=160,this.groupCount=2,this.width=200,this.kidnames});
+  _saturdayAppointments({@required this.sat,this.estGH=160,this.groupCount=2,this.width=200,this.groups});
 
   Future<List<Lesson>> _getLessons()async{return await DataHandler().getLessonsOnDay(sat);}
 
@@ -122,7 +122,7 @@ class _saturdayAppointments extends StatelessWidget{
       future: _getLessons(),
       initialData: [],
       builder: (context, AsyncSnapshot<List<Lesson>> snap){
-        if(kidnames == null){
+        if(groups == null){
           return  _design(
             children: List.filled(groupCount, Center(
               child: CircularProgressIndicator(
@@ -133,10 +133,16 @@ class _saturdayAppointments extends StatelessWidget{
         }
         return  _design(
           children: List.generate(groupCount, (i){
+            if(groups[i].isSec!=(sat.millisecondsSinceEpoch/1000/3600/24)%14<8) {//jeder 2ter samstag
+              return Center(child: RotatedBox(
+                quarterTurns: 1,
+                child: Text("kein unterricht"),
+              ));
+            }
             return Center(
               child:_AppointmentIndicator(
-                lessons: List.generate(kidnames[i+1].length,(j){
-                  return _getLessonFromKid(lessons: snap.data, name: kidnames[i+1][j]);
+                lessons: List.generate(groups[i].kids.length,(j){
+                  return _getLessonFromKid(lessons: snap.data, name: groups[i].kids[j].name);
                 }),
               ),
             );
