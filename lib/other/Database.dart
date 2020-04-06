@@ -135,8 +135,8 @@ class GroupD{
 class LessonD{
   final String description;
   final int kid;
-  final DateTime date;
-  final Presence presence;
+  final int date;
+  final int presence;
   final bool isPaid;
 
   LessonD({this.description, this.kid, this.date, this.presence,this.isPaid});
@@ -153,7 +153,8 @@ class LessonD{
 
   @override
   String toString() {
-    return 'Stunde am ${date.day}: {KindNr: $kid: $presence, wurde ${isPaid?'':'nicht'} bezahlt.}';
+    DateTime day=DateTime.fromMillisecondsSinceEpoch(date);
+    return 'Stunde am ${day.day}: {KindNr: $kid: $presence, wurde ${isPaid?'':'nicht'} bezahlt.}';
   }
 }
 
@@ -446,15 +447,21 @@ class DataHandler{
       whereArgs: [day.millisecondsSinceEpoch],
     );
 
-    return List.generate(lessons.length, (i){
-      return Lesson(
-        date: day,
-        kid: lessons[i]['kid'],
-        description: lessons[i]['description'],
-        presence: Presence.values[lessons[i]['presence']],
-        isPaid: lessons[i]['paymentStatus'],
+    List<Lesson> newlessons=[];
+    for(int i=0; i<lessons.length; i++){
+      Kid kid = await _getKidById(lessons[i]['kid']);
+      newlessons.add(
+        Lesson(
+          date: day,
+          kid: kid,
+          description: lessons[i]['description'],
+          presence: Presence.values[lessons[i]['presence']],
+          isPaid: lessons[i]['paymentStatus'],
+        )
       );
-    });
+    }
+
+    return newlessons;
 
   }
 
@@ -529,34 +536,49 @@ class DataHandler{
 //setting a lesson
   Future<void> setLesson(Lesson lesson)async{
     Database db = await _database;
-    int id = await _isThereALesson(name: lesson.kid.name, day: lesson.date);
-    if(id == -1){
+    Map<String,int> id = await _isThereALesson(name: lesson.kid.name, day: lesson.date);
+
+    LessonD newLesson = LessonD(
+      description: lesson.description,
+      kid:id['kidId'],
+      date:lesson.date.millisecondsSinceEpoch,
+      presence: lesson.presence.index,
+      isPaid:lesson.isPaid,
+    );
+
+    if(id['lessonId'] == -1){
       //insert new Lesson
       await db.insert(tdb.lessons, 
-        lesson.toMap(),
+        newLesson.toMap(),
       );
     }else{
       //update Lesson
       await db.update(tdb.lessons, 
-        lesson.toMap(),
+        newLesson.toMap(),
         where: 'id = ?',
-        whereArgs: [id],
+        whereArgs: [id['lessonId']],
       );
     }
     return;
   }
-  Future<int> _isThereALesson({@required String name, @required DateTime day})async{
+  Future<Map<String,int>> _isThereALesson({@required String name, @required DateTime day})async{
     Database db = await _database;
     int id = await _getKidsIdfromName(name);
     List<Map<String,dynamic>> ids = await db.query(tdb.lessons,
       columns: ['id'],
-      where: 'name = ? AND date = ?',
-      whereArgs: [name,day.millisecondsSinceEpoch], //TODO:eigtl wollen wir ja nicht nach der millisekunde sondern dem Tag schaune
+      where: 'kid = ? AND date = ?',
+      whereArgs: [id,day.millisecondsSinceEpoch], //TODO:eigtl wollen wir ja nicht nach der millisekunde sondern dem Tag schaune
     );
     if (ids==null ||ids.length==0){
-      return -1;
+      return {
+       'kidId': id,
+       'lessonId' : -1,
+      };
     }
-    return ids.first['id'];
+    return {
+      'kidId': id,
+      'lessonId' : ids.first['id'],
+    };
   }
   Future<int> _getKidsIdfromName(String name)async{
     Database db = await _database;
