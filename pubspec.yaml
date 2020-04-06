@@ -1,5 +1,5 @@
-name: kruemelreiten
-description: krümel app für sarahuebi
+name: Reit Manager
+description: eine Managing App für 3er Gruppen die jeden 2. samstag etwas tun
 
 # The following defines the version and build number for your application.
 # A version number is three numbers separated by dots, like 1.2.43
@@ -11,7 +11,7 @@ description: krümel app für sarahuebi
 # In iOS, build-name is used as CFBundleShortVersionString while build-number used as CFBundleVersion.
 # Read more about iOS versioning at
 # https://developer.apple.com/library/archive/documentation/General/Reference/InfoPlistKeyReference/Articles/CoreFoundationKeys.html
-version: 1.0.0+1
+version: 0.0.1+1
 
 environment:
   sdk: ">=2.2.2 <3.0.0"
