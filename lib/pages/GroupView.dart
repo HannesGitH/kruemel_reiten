@@ -44,7 +44,7 @@ class GroupPage extends StatelessWidget{
       }
 
       Widget balance(String val){
-        val=val??kid.balance;
+        val=val??kid.balance??0;
         int bal = int.parse(val);
         return Text(((int.tryParse(val)??0)/100).toString()+" €", //TODO make all payments showable
           style: TextStyle(
