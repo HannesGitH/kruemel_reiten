@@ -20,11 +20,9 @@ class BetterListTile extends StatelessWidget{
           text,
           style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
         ),
-        //subtitle: Text("Intermediate", style: TextStyle(color: Colors.white)),
         trailing: Icon(Icons.keyboard_arrow_right, color: Colors.white, size: 30.0)
     );
 
-    // TOD: implement build
     return Card(
       clipBehavior: Clip.antiAlias,
       shape: RoundedRectangleBorder(

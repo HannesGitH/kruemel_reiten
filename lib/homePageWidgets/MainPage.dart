@@ -114,7 +114,7 @@ class MainPage extends StatelessWidget{
           );
 
 
-          if (height<screenH-70){
+          if (height<screenH-100){
             return Container(child: _mainPage);
           }
           return SingleChildScrollView(

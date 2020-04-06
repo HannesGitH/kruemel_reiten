@@ -199,7 +199,7 @@ class Group{
 
 class Lesson{
   final String description;
-  final int kid;
+  final Kid kid;
   final DateTime date;
   final Presence presence;
   final bool isPaid;
@@ -222,7 +222,7 @@ class Lesson{
 
   @override
   String toString() {
-    return 'Stunde am ${date.day}: {KindNr: $kid: $presence, wurde ${isPaid?'':'nicht'} bezahlt.}';
+    return 'Stunde am ${date != null ? date.day : "unbekannt"}: {Kind: ${kid.name??"unbekannt"}: ${presence??"unbekannt"}, wurde ${(isPaid??false)?'':'nicht'} bezahlt.}';
   }
 }
 
@@ -524,5 +524,49 @@ class DataHandler{
       whereArgs: [name],
     );
     return;
+  }
+
+//setting a lesson
+  Future<void> setLesson(Lesson lesson)async{
+    Database db = await _database;
+    int id = await _isThereALesson(name: lesson.kid.name, day: lesson.date);
+    if(id == -1){
+      //insert new Lesson
+      await db.insert(tdb.lessons, 
+        lesson.toMap(),
+      );
+    }else{
+      //update Lesson
+      await db.update(tdb.lessons, 
+        lesson.toMap(),
+        where: 'id = ?',
+        whereArgs: [id],
+      );
+    }
+    return;
+  }
+  Future<int> _isThereALesson({@required String name, @required DateTime day})async{
+    Database db = await _database;
+    int id = await _getKidsIdfromName(name);
+    List<Map<String,dynamic>> ids = await db.query(tdb.lessons,
+      columns: ['id'],
+      where: 'name = ? AND date = ?',
+      whereArgs: [name,day.millisecondsSinceEpoch], //TODO:eigtl wollen wir ja nicht nach der millisekunde sondern dem Tag schaune
+    );
+    if (ids==null ||ids.length==0){
+      return -1;
+    }
+    return ids.first['id'];
+  }
+  Future<int> _getKidsIdfromName(String name)async{
+    Database db = await _database;
+
+    int id = (await db.query(tdb.users,
+      columns: ['id'],
+      where: 'name = ?',
+      whereArgs: [name],
+    )).first['id'];
+
+    return id;
   }
 }
