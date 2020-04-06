@@ -3,29 +3,44 @@ import 'package:flutter/material.dart';
 import 'package:kruemelreiten/other/Database.dart';
 import 'package:url_launcher/url_launcher.dart';
 
-class GroupPage extends StatelessWidget{
-  final DataHandler dataman=DataHandler();
+class GroupPage extends StatefulWidget{
    Group group;
   GroupPage({this.group});
 
+  @override
+  _GroupPageState createState() => _GroupPageState();
+}
+
+class _GroupPageState extends State<GroupPage> {
+  final DataHandler dataman=DataHandler();
+
   Future<Group>_getCurrentGroup() async{
-    List<Kid> kids= await dataman.getGroupMembersByName_complete(group.name);
-    print (kids);
-    return Group(name: group.name, kids:kids);
+    List<Kid> kids= await dataman.getGroupMembersByName_complete(widget.group.name);
+    return Group(name: widget.group.name, kids:kids);
   }
 
   ScrollController scrollie = ScrollController(initialScrollOffset:0.0);
-  
+
+  bool isSec;
+  @override
+  void initState() {
+    isSec=widget.group.isSec??false;
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
 
     return Scaffold(
       appBar: AppBar(
         //TODO make change if erster oder 2. samstag
-        title: Text(group.name??"neue Gruppe"),
+        actions: <Widget>[
+          IconButton(icon: Icon(isSec?Icons.looks_one: Icons.looks_two), onPressed: null)
+        ],
+        title: Text(widget.group.name??"neue Gruppe"),
       ),
       body: FutureBuilder<Group>(
-        initialData: group,
+        initialData: widget.group,
         future: _getCurrentGroup(),
         builder: (BuildContext context, AsyncSnapshot<Group> snapshot) {
           List<Kid>kids=snapshot.data.kids;
@@ -121,7 +136,6 @@ class _kidView extends StatelessWidget{
           icon: Icons.euro_symbol,
           child: balance((kid.balance).toString()),
           onValue: (val){
-            print(val);
             bool add=false;
             bool substract=false;
             switch(val[0]){

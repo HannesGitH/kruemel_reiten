@@ -76,9 +76,7 @@ class _saturdayAppointments extends StatelessWidget{
   Future<List<Lesson>> _getLessons()async{return await DataHandler().getLessonsOnDay(sat);}
 
   Lesson _getLessonFromKid({@required List<Lesson> lessons, @required String name}){
-    print("-------------------$name");
     for(int i=0; i<lessons.length; i++){
-      print(lessons[i].toString());
       if (lessons[i].kid.name==name){
         return lessons[i];
       }

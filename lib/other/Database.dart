@@ -24,7 +24,7 @@ class TheDatabase {
   }
 
   Future<Database> init() async {
-    String dbPath = join(await getDatabasesPath(), 'theRealDatabase_TT.db');
+    String dbPath = join(await getDatabasesPath(), 'theRealDatabase_T.db');
     var database = openDatabase(
         dbPath, version: 1, onCreate: _onCreate, onUpgrade: _onUpgrade);
     return database;
@@ -192,10 +192,11 @@ class Kid{
 
 class Group{
 
-  Group({this.name, this.kids});
+  Group({this.name, this.kids, this.isSec});
 
   String name;
   List<Kid>kids;
+  bool isSec;
 } 
 
 class Lesson{
@@ -311,7 +312,12 @@ class DataHandler{
       lastId =(qr.first??{'id':0})['id'];
     }
 
-    GroupD group = new GroupD(name: name??"Gruppe ${lastId+1}", kid1: names[0], kid2: names[1], kid3: names[2]);
+    GroupD group = GroupD(
+      name: name??'Gruppe ${lastId+1}',
+      kid1: names[0], kid2: names[1], kid3: names[2],
+      isSec: lastId%2==1
+    );
+    print(lastId%2==1);
 
     int id = await db.insert(tdb.groups, 
       group.toMap(),
@@ -360,7 +366,7 @@ class DataHandler{
     //print("Getting all Groups..");
     Database db = await _database;
     List<Map<String,dynamic>> allIds = await db.query(tdb.groups,
-      columns: ['kid1','kid2','kid3','name'],
+      columns: ['kid1','kid2','kid3','name','isSec'],
     );
     List<Group> groups=[];
     for(int i=0 ; i<allIds.length ; i++){
@@ -368,10 +374,10 @@ class DataHandler{
       String groupName=map['name'];
       List<Kid> kids=[];
     //print("gettin' all those kids: ${map.toString()}");
-      for(int j=1 ; j<map.length ; j++){//jep my kids index starts at 1, shame on me
+      for(int j=1 ; j<map.length-1 ; j++){//jep my kids index starts at 1, shame on me
         kids.add(await _getKidById(map['kid$j']));
       }
-      groups.add(Group(name: groupName, kids: kids));
+      groups.add(Group(name: groupName, kids: kids,isSec: map['isSec']==1));
     }
     return groups;
   }
@@ -394,7 +400,7 @@ class DataHandler{
     Map<String, dynamic> kidsMap = (await db.query(tdb.groups,
       columns: ['kid1','kid2','kid3'],
       where: 'name = ?',
-      whereArgs: [groupName],
+      whereArgs: [groupName??0],
     )).first;
 
     List<int> kids=[];

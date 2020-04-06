@@ -106,6 +106,7 @@ class _GroupCardS extends State<GroupCard>{
   }
   @override
   Widget build(BuildContext context) {
+    print(widget.group.kids);
     return Card(
       color: _isDeleted? widget.deletedColor: Theme.of(context).cardColor,
       shape: RoundedRectangleBorder(
@@ -160,7 +161,7 @@ class _GroupCardS extends State<GroupCard>{
                           //TODO open kid overview instead of above line
                         },
                         child:  Text(
-                          kid.name.toUpperCase()??"no name",
+                          kid?.name?.toUpperCase()??"no name",
                           style: TextStyle(fontSize: 16,color: Theme.of(context).primaryColor, ),
                         ),
                       ),
