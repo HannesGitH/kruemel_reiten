@@ -1,4 +1,4 @@
-package com.example.kruemelreiten;
+package tools.hannepps.kruemelreiten;
 
 import androidx.annotation.NonNull;
 import io.flutter.embedding.android.FlutterActivity;
