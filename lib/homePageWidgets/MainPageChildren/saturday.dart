@@ -283,6 +283,7 @@ class _kidGetterState extends State<_kidGetter>{
     };
 
     return InkWell(
+      //TODO: on long press show detais description and stuff
       onTap: (){setState(() {
         presence= nextPresence(presence);
         click();
