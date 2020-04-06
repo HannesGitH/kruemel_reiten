@@ -5,7 +5,7 @@ import 'package:url_launcher/url_launcher.dart';
 
 class GroupPage extends StatelessWidget{
   final DataHandler dataman=DataHandler();
-  final Group group;
+   Group group;
   GroupPage({this.group});
 
   Future<Group>_getCurrentGroup() async{
@@ -19,10 +19,58 @@ class GroupPage extends StatelessWidget{
   @override
   Widget build(BuildContext context) {
 
+    return Scaffold(
+      appBar: AppBar(
+        //TODO make change if erster oder 2. samstag
+        title: Text(group.name??"neue Gruppe"),
+      ),
+      body: FutureBuilder<Group>(
+        initialData: group,
+        future: _getCurrentGroup(),
+        builder: (BuildContext context, AsyncSnapshot<Group> snapshot) {
+          List<Kid>kids=snapshot.data.kids;
+          if(snapshot.connectionState==ConnectionState.waiting){
+              return ListView(
+                children: <Widget>[
+                  Container(height: 10,),
+                  _kidView(kids[2]),
+                  _kidView(kids[1]),
+                  _kidView(kids[0]),
+                  Container(height: MediaQuery.of(context).size.height/2,),
+                ],
+            
+              );
+          }
+          return ListView(
+            controller: scrollie,
+            reverse: true,
+            children: <Widget>[
+              Container(height: 10,),
+              _kidView(kids[2]),
+              _kidView(kids[1]),
+              _kidView(kids[0]),
+              Container(height: MediaQuery.of(context).size.height/2,),
+            ],
+          );
+        },
+      ),
+    );
+  }
+}
 
+class _kidView extends StatefulWidget{
 
-//A Single Kid Card
-    Widget _kidView(Kid kid){
+  Kid s;
+
+  _kidView(this.s);
+
+  @override
+  State<StatefulWidget> createState() => _kidViewS();
+}
+class _kidViewS extends State<_kidView>{
+
+  //A Single Kid Card
+    Widget _kidView2(Kid kid){
       //TODO add delete 
 
       _callTel(tel) async {
@@ -44,16 +92,18 @@ class GroupPage extends StatelessWidget{
       }
 
       Widget balance(String val){
-        val=val??kid.balance??0;
-        int bal = int.parse(val);
-        return Text(((int.tryParse(val)??0)/100).toString()+" €", //TODO make all payments showable
+        /*if(val=="null")val=kid.balance??'0';
+        val=val??kid.balance;*/
+        int bal = int.tryParse(val??'0')??0;
+        double balInEur=bal/100;
+        return new Text(balInEur.toString()+" €", //TODO: make all payments showable
           style: TextStyle(
             color: (bal??0)<0 ? Colors.red[400]: (Theme.of(context).brightness==Brightness.light ? Colors.green[800] : Colors.greenAccent[400]),
           ),
         );
       }
 
-      List<Widget> _editrows=[
+      List<Widget> _editrows(){return[
         Divider(),
         GestureDetector(
           onTap: (){
@@ -63,7 +113,7 @@ class GroupPage extends StatelessWidget{
             icon: Icons.phone,
             child: number(kid.tel),
             onValue: (val){
-              dataman.changeKidsTel(name: kid.name, tel: val);
+              DataHandler().changeKidsTel(name: kid.name, tel: val);
               return number(val);
             },
             keyboardType: TextInputType.phone,
@@ -89,11 +139,9 @@ class GroupPage extends StatelessWidget{
               default:
                 break;
             }
-            print(val);
             double newVal = double.parse(val)??0;
             newVal *=100;//Euro to cents
             int nVal = newVal.floor();
-            print(nVal);
             int cBal=kid.balance??0;
 
             DataHandler dataman= DataHandler();
@@ -126,7 +174,7 @@ class GroupPage extends StatelessWidget{
             
           },
         ),
-      ];
+      ];}
     
     return Card(
         shape: RoundedRectangleBorder(
@@ -145,43 +193,17 @@ class GroupPage extends StatelessWidget{
             children: <Widget>[
               _KidNameTextField(kidsName: kid.name,),
               ...
-              _editrows,
+              _editrows(),
             ],
           ),
         )
     );
   }
 
-    Widget _groupView(Group g){
-      print(g.toString());
-      List<Kid>kids=g.kids;
-      
-      return ListView(
-        controller: scrollie,
-        reverse: true,
-        children: <Widget>[
-          Container(height: 10,),
-          _kidView(kids[2]),
-          _kidView(kids[1]),
-          _kidView(kids[0]),
-          Container(height: MediaQuery.of(context).size.height/2,),
-        ],
-      );
-    }
-
-    return Scaffold(
-      appBar: AppBar(
-        //TODO make change if erster oder 2. samstag
-        title: Text(group.name??"neue Gruppe"),
-      ),
-      body: FutureBuilder<Group>(
-        initialData: group,
-        future: _getCurrentGroup(),
-        builder: (BuildContext context, AsyncSnapshot<Group> snapshot) {
-          return _groupView(snapshot.data);
-        },
-      ),
-    );
+  @override
+  Widget build(BuildContext context) {
+    print("rebuild ${widget.s.name}");
+    return _kidView2(widget.s);
   }
 }
 
