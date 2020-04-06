@@ -177,10 +177,10 @@ class _AppointmentIndicatorState extends State<_AppointmentIndicator>{
             mainAxisAlignment: MainAxisAlignment.center,
             crossAxisAlignment: CrossAxisAlignment.end,
             children: <Widget>[
-              Icon(Icons.hdr_weak,size: 15,),
+              Icon(Icons.hdr_weak,size: 15,color: Colors.white,),
               Transform(
                 alignment: Alignment.center,
-                transform: Matrix4.rotationY(math.pi),child:Icon(Icons.hdr_strong, size:15),),
+                transform: Matrix4.rotationY(math.pi),child:Icon(Icons.hdr_strong, size:15,color: Colors.white),),
             ],
           ),
         ),
@@ -219,7 +219,7 @@ class _kidGetterState extends State<_kidGetter>{
 
   Future click()async {
     if (await Vibration.hasVibrator()) {
-        Vibration.vibrate(duration: 150);
+        Vibration.vibrate(duration: 20);
     }
     return;
   }
@@ -258,7 +258,7 @@ class _kidGetterState extends State<_kidGetter>{
     return Container(
       color: color,
       child: Center(
-        child: Text(text),
+        child: Text(text,style: TextStyle(color: Colors.white),),
       ),
     );
   }

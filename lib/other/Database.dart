@@ -161,7 +161,7 @@ class LessonD{
 class PaymentD{
   final String description;
   final int kid;
-  final DateTime date;
+  final int date;
   final int cents;
 
   PaymentD({this.description, this.kid, this.date, this.cents});
@@ -177,7 +177,7 @@ class PaymentD{
 
   @override
   String toString() {
-    return 'am ${date.day} wurde für Kind Nr $kid $cents bezahlt. ($description)}';
+    return 'am ${date} wurde für Kind Nr $kid $cents bezahlt. ($description)}';
   }
 }
 
@@ -217,6 +217,8 @@ class Lesson{
     };
   }
 
+
+
   /*Lesson fromMap(Map<String, dynamic> m){
     return Lesson(date: m['date'],kid: m['kid'],presence: m['presence'],isPaid: m['isPaid'],description: m['description']);
   }*/
@@ -224,6 +226,29 @@ class Lesson{
   @override
   String toString() {
     return 'Stunde am ${date != null ? date.day : "unbekannt"}: {Kind: ${kid.name??"unbekannt"}: ${presence??"unbekannt"}, wurde ${(isPaid??false)?'':'nicht'} bezahlt.}';
+  }
+}
+
+class Payment{
+  final String description;
+  final Kid kid;
+  final DateTime date;
+  final int cents;
+
+  Payment({this.description, this.kid, this.date, this.cents});
+
+  PaymentD toPaymentD(int kidID) {
+    return PaymentD(
+      kid:kidID,
+      date:date.millisecondsSinceEpoch,
+      cents:cents,
+      description:description,
+    );
+  }
+
+  @override
+  String toString() {
+    return 'am ${date.day} wurde für Kind Nr $kid $cents bezahlt. ($description)}';
   }
 }
 
@@ -296,6 +321,21 @@ class DataHandler{
     return id;
   }
 
+  //add a payment
+  Future<int> addPayment (Payment payment) async{
+    Database db = await _database;
+
+    int kidID = await _getKidsIdfromName(payment.kid.name);
+
+    PaymentD pd= payment.toPaymentD(kidID);
+
+    int id = await db.insert(tdb.payments, 
+      pd.toMap(),
+      conflictAlgorithm: ConflictAlgorithm.replace
+    );
+
+    return id;
+  }
 
 //---------------------------------------------------------------------- GET Stuff
 

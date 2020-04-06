@@ -8,7 +8,12 @@ class Settings
       appBar: AppBar(
         title: Text("Einstellungen"),
       ),
-      body: Container(),//TODO: add DarkThemeSettings
+      body: Container(
+        padding: EdgeInsets.all(30),
+        child: Center(
+          child: Text("noch gibt es keine Einstellungen.."),
+        ),
+      ),//TODO: add DarkThemeSettings
     );
   }
 }

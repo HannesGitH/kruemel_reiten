@@ -93,8 +93,17 @@ class _MyHomePageState extends State<MyHomePage> {
   List<Widget> Pages() {return <Widget>[
     groupPage,
     MainPage(),
-    Text(
-      'hier ist erstmal noch garnix',
+    Container(
+      padding: EdgeInsets.all(30),
+      child: Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.spaceAround,
+          children: <Widget>[
+            Text("hier werden später Zahlungsübersichten zu sehen sein"),
+            Text("bis dahin befinden sich die Zahlungsbilanzen auf der Gruppen-Seite"),
+          ],
+        ),
+      ),
     ),
   ];}
 

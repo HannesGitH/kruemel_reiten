@@ -37,14 +37,14 @@ class MainDrawer extends StatelessWidget{
               Navigator.push(context, MaterialPageRoute(builder: (context) => Settings()),);
             },
           ),
-          BetterListTile(
+          /*BetterListTile(
             icon:Icons.developer_board,
             text: 'Debug Page (dev)',
             onTap: () {
               Navigator.pop(context);
               Navigator.push(context, MaterialPageRoute(builder: (context) => DatabaseTestPage()),);
             },
-          ),
+          ),*/
 
           BetterListTile(
             icon:Icons.child_care,

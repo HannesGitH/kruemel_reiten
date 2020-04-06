@@ -44,9 +44,11 @@ class GroupPage extends StatelessWidget{
       }
 
       Widget balance(String val){
+        val=val??kid.balance;
+        int bal = int.parse(val);
         return Text(((int.tryParse(val)??0)/100).toString()+" €", //TODO make all payments showable
           style: TextStyle(
-            color: (kid.balance??0)<0 ? Colors.red[400]: (Theme.of(context).brightness==Brightness.light ? Colors.green[800] : Colors.greenAccent[400]),
+            color: (bal??0)<0 ? Colors.red[400]: (Theme.of(context).brightness==Brightness.light ? Colors.green[800] : Colors.greenAccent[400]),
           ),
         );
       }
@@ -70,10 +72,58 @@ class GroupPage extends StatelessWidget{
         Divider(),
         _editRow(
           icon: Icons.euro_symbol,
-          child: balance(kid.balance.toString()),
+          child: balance((kid.balance).toString()),
           onValue: (val){
-            //TODO add payment (if plus or minus add this; if no Vorzeichen add missing money as payment)
-            return balance(val);
+            print(val);
+            bool add=false;
+            bool substract=false;
+            switch(val[0]){
+              case '+':
+                add=true;
+                val=val.substring(1);
+                break;
+              case '-':
+                substract=true;
+                val=val.substring(1);
+                break;
+              default:
+                break;
+            }
+            print(val);
+            double newVal = double.parse(val)??0;
+            newVal *=100;//Euro to cents
+            int nVal = newVal.floor();
+            print(nVal);
+            int cBal=kid.balance??0;
+
+            DataHandler dataman= DataHandler();
+            if(add) {
+              dataman.addPayment(Payment(
+                kid:kid,
+                cents:nVal,
+                date:DateTime.now(),
+                //TODO: add description
+              ));
+              return balance((cBal+nVal).toString());
+            }
+            if(substract) {
+              dataman.addPayment(Payment(
+                kid:kid,
+                cents:-nVal,
+                date:DateTime.now(),
+                description: "geld ausgezahlt",//TODO: add description
+              ));
+              return balance((cBal-nVal).toString());
+            }
+
+            dataman.addPayment(Payment(
+                kid:kid,
+                cents:nVal-cBal,
+                date:DateTime.now(),
+                description: "fehler behoben",//TODO: add description
+              ));
+            return balance(nVal.toString());
+            
           },
         ),
       ];
@@ -121,15 +171,15 @@ class GroupPage extends StatelessWidget{
 
     return Scaffold(
       appBar: AppBar(
+        //TODO make change if erster oder 2. samstag
         title: Text(group.name??"neue Gruppe"),
       ),
       body: FutureBuilder<Group>(
         initialData: group,
         future: _getCurrentGroup(),
         builder: (BuildContext context, AsyncSnapshot<Group> snapshot) {
-          print(snapshot);
-              return _groupView(snapshot.data);
-            },
+          return _groupView(snapshot.data);
+        },
       ),
     );
   }
