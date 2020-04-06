@@ -58,19 +58,18 @@ class GroupPage extends StatelessWidget{
   }
 }
 
-class _kidView extends StatefulWidget{
+class _kidView extends StatelessWidget{
 
-  Kid s;
+  Kid kid;
 
-  _kidView(this.s);
+  _kidView(this.kid);
 
+  
   @override
-  State<StatefulWidget> createState() => _kidViewS();
-}
-class _kidViewS extends State<_kidView>{
+  Widget build(BuildContext context) {
 
   //A Single Kid Card
-    Widget _kidView2(Kid kid){
+
       //TODO add delete 
 
       _callTel(tel) async {
@@ -92,8 +91,6 @@ class _kidViewS extends State<_kidView>{
       }
 
       Widget balance(String val){
-        /*if(val=="null")val=kid.balance??'0';
-        val=val??kid.balance;*/
         int bal = int.tryParse(val??'0')??0;
         double balInEur=bal/100;
         return new Text(balInEur.toString()+" €", //TODO: make all payments showable
@@ -199,12 +196,7 @@ class _kidViewS extends State<_kidView>{
         )
     );
   }
-
-  @override
-  Widget build(BuildContext context) {
-    print("rebuild ${widget.s.name}");
-    return _kidView2(widget.s);
-  }
+  
 }
 
 class _KidNameTextField extends StatefulWidget{
