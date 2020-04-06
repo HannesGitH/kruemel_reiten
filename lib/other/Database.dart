@@ -637,4 +637,20 @@ class DataHandler{
 
     return id;
   }
+
+//update a groups isSec
+Future<void> changeGroupsIsSec({@required String groupName,@required bool isSec})async{
+
+  Database db = await _database;
+  await db.update(tdb.groups,
+    {'isSec':isSec?1:0},
+    where: 'name = ?',
+    whereArgs: [groupName],
+  );
+
+  return;
+} 
+
+
+
 }

@@ -4,7 +4,7 @@ import 'package:kruemelreiten/other/Database.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class GroupPage extends StatefulWidget{
-   Group group;
+  Group group;
   GroupPage({this.group});
 
   @override
@@ -33,9 +33,13 @@ class _GroupPageState extends State<GroupPage> {
 
     return Scaffold(
       appBar: AppBar(
-        //TODO make change if erster oder 2. samstag
         actions: <Widget>[
-          IconButton(icon: Icon(isSec?Icons.looks_one: Icons.looks_two), onPressed: null)
+          IconButton(icon: Icon(isSec?Icons.looks_one: Icons.looks_two, color: Theme.of(context).canvasColor,), onPressed: (){
+            setState(() {
+              isSec ^=true;
+              DataHandler().changeGroupsIsSec(groupName: widget.group.name, isSec: isSec);
+            });
+          })
         ],
         title: Text(widget.group.name??"neue Gruppe"),
       ),
@@ -46,6 +50,7 @@ class _GroupPageState extends State<GroupPage> {
           List<Kid>kids=snapshot.data.kids;
           if(snapshot.connectionState==ConnectionState.waiting){
               return ListView(
+                reverse: true,
                 children: <Widget>[
                   Container(height: 10,),
                   _kidView(kids[2]),
