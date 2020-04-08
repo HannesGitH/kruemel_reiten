@@ -220,6 +220,7 @@ class _kidGetter extends StatefulWidget{
 
 class _kidGetterState extends State<_kidGetter>{
   Presence presence;
+  bool gotReplace=false;
 
   Future click()async {
     if (await Vibration.hasVibrator()) {
@@ -245,8 +246,8 @@ class _kidGetterState extends State<_kidGetter>{
       case Presence.canceledNot:
         return Presence.canceledJust;
       case Presence.canceledJust:
+        if(gotReplace)return Presence.canceledInTime_withReplacement;
         return Presence.canceledInTime;
-      
       default: 
         return Presence.wasThere;
     }
@@ -255,6 +256,7 @@ class _kidGetterState extends State<_kidGetter>{
   @override
   void initState() {
     presence=widget.lesson.presence??Presence.future;
+    gotReplace=presence==Presence.canceledInTime_withReplacement;
     super.initState();
   }
 
@@ -281,7 +283,7 @@ class _kidGetterState extends State<_kidGetter>{
       case Presence.canceledInTime:
         return _container(color: Colors.teal, text: "Abgesagt");
       case Presence.canceledInTime_withReplacement:
-        return _container(color: Colors.tealAccent[700], text: "Ersatz gef.");
+        return _container(color: Colors.greenAccent[400], text: "Ersatz gef.");
       
       default: 
         return _container(color: Colors.grey, text: "no data");
@@ -297,9 +299,11 @@ class _kidGetterState extends State<_kidGetter>{
       onLongPress: (){setState(() {
         switch (presence){
           case Presence.canceledInTime:
+            gotReplace=true;
             presence=Presence.canceledInTime_withReplacement;
             break;
           case Presence.canceledInTime_withReplacement:
+            gotReplace=false;
             presence=Presence.canceledInTime;
             break;
           default:
