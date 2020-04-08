@@ -280,6 +280,8 @@ class _kidGetterState extends State<_kidGetter>{
         return _container(color: Colors.orange, text: "knapp Abg.");
       case Presence.canceledInTime:
         return _container(color: Colors.teal, text: "Abgesagt");
+      case Presence.canceledInTime_withReplacement:
+        return _container(color: Colors.tealAccent[700], text: "Ersatz gef.");
       
       default: 
         return _container(color: Colors.grey, text: "no data");
@@ -287,10 +289,22 @@ class _kidGetterState extends State<_kidGetter>{
     };
 
     return InkWell(
-      //TODO: on long press show detais description and stuff
       onTap: (){setState(() {
         presence= nextPresence(presence);
         click();
+        DataHandler().setLesson(_changePresenceOfLesson(widget.lesson, presence));
+      });},
+      onLongPress: (){setState(() {
+        switch (presence){
+          case Presence.canceledInTime:
+            presence=Presence.canceledInTime_withReplacement;
+            break;
+          case Presence.canceledInTime_withReplacement:
+            presence=Presence.canceledInTime;
+            break;
+          default:
+            //TODO: on long press show details description and stuff
+        }
         DataHandler().setLesson(_changePresenceOfLesson(widget.lesson, presence));
       });},
       child: kidGetter(

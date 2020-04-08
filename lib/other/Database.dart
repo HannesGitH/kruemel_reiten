@@ -84,6 +84,7 @@ enum Presence {
   future,
   wasThere,
   canceledInTime,
+  canceledInTime_withReplacement,
   canceledJust,
   canceledNot
 }
@@ -485,6 +486,23 @@ class DataHandler{
     )).first['Count(*)'];
   }
 
+  Future<DateTime> _getFirstLessonFromUserId(int uid)async{
+    Database db = await _database;
+    List<Map<String, dynamic>> lessons = await db.query(tdb.lessons,
+      columns: ['date'], 
+      where:'kid = ?' , 
+      whereArgs: [uid],
+    );
+
+    int smallestDate;
+    for (Map<String, dynamic> lesson in lessons){
+      if (smallestDate==null || lesson['date']<smallestDate){
+        smallestDate=lesson['date'];
+      }
+    }
+    return DateTime.fromMillisecondsSinceEpoch(smallestDate);
+  }
+
   Future<List<Lesson>> getLessonsOnDay(DateTime day) async{
     Database db = await _database;
     List<Map<String, dynamic>> lessons = await db.query(tdb.lessons,
@@ -527,7 +545,11 @@ class DataHandler{
       return payments[i]['cents'];
     });
 
-    int negativeBalance = -(await _getLessonAmountByUserId(uid))*price;
+    int startedMonths(DateTime t1, DateTime t2){
+      return ((t1.year*12+t1.month)-(t2.year*1+t2.month)).abs()+1;
+    }
+    //int negativeBalance = -(await _getLessonAmountByUserId(uid))*price;
+    int negativeBalance = - startedMonths(await _getFirstLessonFromUserId(uid),DateTime.now())*price;
 
     int balance=paymentsInCents.fold(negativeBalance, (bal,paid){return bal+paid;});
     
