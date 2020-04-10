@@ -500,7 +500,10 @@ class DataHandler{
         smallestDate=lesson['date'];
       }
     }
+    try{
     return DateTime.fromMillisecondsSinceEpoch(smallestDate);
+    }catch(e){return null;}
+    return null;
   }
 
   Future<List<Lesson>> getLessonsOnDay(DateTime day) async{
@@ -546,15 +549,35 @@ class DataHandler{
     });
 
     int startedMonths(DateTime t1, DateTime t2){
-      return ((t1.year*12+t1.month)-(t2.year*1+t2.month)).abs()+1;
+      int dist=0;
+      try{
+        dist= ((t1.year*12+t1.month)-(t2.year*12+t2.month)).abs()+1;
+      }catch (e) {return 0;}
+      return dist;
     }
-    //int negativeBalance = -(await _getLessonAmountByUserId(uid))*price;
+
+    print("startedmonths since ${await _getFirstLessonFromUserId(uid)} :${startedMonths(await _getFirstLessonFromUserId(uid),DateTime.now())}");
+
     int negativeBalance = - startedMonths(await _getFirstLessonFromUserId(uid),DateTime.now())*price;
+    negativeBalance += await _getFreeLessonAmount(uid)*1000;
 
     int balance=paymentsInCents.fold(negativeBalance, (bal,paid){return bal+paid;});
     
     return balance;
 
+  }
+
+  Future<int>_getFreeLessonAmount(int uid)async{
+    Database db = await _database;
+    try{
+    return (await db.query(tdb.lessons,
+      columns: ['Count(*)'],
+      where: 'kid = ? AND presence = ?',
+      whereArgs: [uid,Presence.canceledInTime_withReplacement.index],
+    )).first['Count(*)'];
+    }on Exception{
+      return 0;
+    }
   }
 
 
