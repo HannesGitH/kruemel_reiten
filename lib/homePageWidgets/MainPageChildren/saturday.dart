@@ -249,6 +249,41 @@ class _kidGetterState extends State<_kidGetter>{
     return;
   }
 
+  Future<void> _fillNames() async {
+      return showDialog<void>(
+        context: context,
+        //barrierDismissible: false, // user must tap button!
+        builder: (BuildContext context) {
+          return AlertDialog(
+            shape:  RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(20.0),
+            ),
+            title: Text('Wen gabs denn als Ersatz?'),
+            content: SingleChildScrollView(
+              child: FutureBuilder(
+                initialData: [['wait','wait','wait'],['wait','wait','wait'],['wait','wait','wait'],['wait','wait','wait']],
+                builder: (BuildContext con, AsyncSnapshot<List<List<String>>> snap){
+                  return Column(
+                    children: snap.data.map((List<String> kids)=>
+                      Text("wat"),//TODO
+                    ).toList(),
+                  );
+                },
+              )
+            ),
+            actions: <Widget>[
+              FlatButton(
+                child: Text('Abbruch',style: TextStyle(color: Theme.of(context).primaryColor),),
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+              ),
+            ],
+          );
+        },
+      );
+    }
+
   Lesson _changePresenceOfLesson(Lesson lesson,Presence presence){
     return Lesson(
       date: lesson.date,
@@ -313,10 +348,11 @@ class _kidGetterState extends State<_kidGetter>{
     return InkWell(
       onTap: (){setState(() {
         presence= nextPresence(presence);
-        click();
         DataHandler().setLesson(_changePresenceOfLesson(widget.lesson, presence));
       });},
       onLongPress: (){setState(() {
+        click();
+        _fillNames();
         switch (presence){
           case Presence.canceledInTime:
             gotReplace=true;

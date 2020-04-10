@@ -145,8 +145,9 @@ class LessonD{
   final int date;
   final int presence;
   final bool isPaid;
+  final String replacement;
 
-  LessonD({this.description, this.kid, this.date, this.presence,this.isPaid});
+  LessonD({this.description, this.kid, this.date, this.presence,this.isPaid,this.replacement=''});
 
   Map<String, dynamic> toMap() {
     return {
@@ -155,6 +156,7 @@ class LessonD{
       'presence':presence,
       'paymentStatus':isPaid,
       'description':description,
+      'replacement':replacement,
     };
   }
 
@@ -212,8 +214,9 @@ class Lesson{
   final DateTime date;
   final Presence presence;
   final bool isPaid;
+  final String replacement;
 
-  Lesson({this.description, this.kid, this.date, this.presence,this.isPaid});
+  Lesson({this.description, this.kid, this.date, this.presence,this.isPaid,this.replacement});
 
   Map<String, dynamic> toMap() {
     return {
@@ -222,6 +225,7 @@ class Lesson{
       'presence':presence,
       'paymentStatus':isPaid,
       'description':description,
+      'replacement':replacement,
     };
   }
 
@@ -641,6 +645,7 @@ class DataHandler{
       date:lesson.date.millisecondsSinceEpoch,
       presence: lesson.presence.index,
       isPaid:lesson.isPaid,
+      replacement: lesson.replacement
     );
 
     if(id['lessonId'] == -1){
