@@ -4,7 +4,7 @@ import 'package:kruemelreiten/homePageWidgets/GroupAdd.dart';
 import 'package:kruemelreiten/homePageWidgets/MainPage.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'dart:async';
-//TODO: make every data available and passing by ID instead of Name
+// TODO: make every data available and passing by ID instead of Name
 
 
 void main() => runApp(MyApp());

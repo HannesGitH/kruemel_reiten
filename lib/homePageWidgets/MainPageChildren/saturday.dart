@@ -135,6 +135,7 @@ class _saturdayAppointments extends StatelessWidget{
           children: List.generate(groupCount, (int i){
             if(groups[i].isSec!=(sat.millisecondsSinceEpoch/1000/3600/24)%14<8) {//jeder 2ter samstag
               return Center(child: Stack(
+                key: UniqueKey(),
                 alignment: Alignment.bottomLeft,
                 children: <Widget>[
                   _AppointmentIndicator(
@@ -146,7 +147,7 @@ class _saturdayAppointments extends StatelessWidget{
                     child: /*IgnorePointer*/Container(//Use ignorePointer to enable touches of underlaying widget
                       child: Container(
                         padding: EdgeInsets.all(20),
-                        color: Colors.grey.withAlpha(200),
+                        color: Theme.of(context).cardColor.withAlpha(200),
                         child: RotatedBox(
                           quarterTurns: 1,
                           child: Text("kein unterricht",style: TextStyle(color: Colors.white),),
@@ -158,6 +159,7 @@ class _saturdayAppointments extends StatelessWidget{
               ));
             }
             return Center(
+              key: UniqueKey(),
               child:_AppointmentIndicator(
                 lessons: List.generate(groups[i].kids.length,(j){
                   return _getLessonFromKid(lessons: snap.data, name: groups[i].kids[j].name);
