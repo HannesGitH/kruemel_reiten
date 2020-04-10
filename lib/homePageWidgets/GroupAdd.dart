@@ -144,32 +144,35 @@ class _GroupCardS extends State<GroupCard>{
                 ),
               ],
             ),
-            Row(
-                mainAxisAlignment: MainAxisAlignment.spaceAround,
-                children: widget.group.kids.map((kid) =>
-                    Container(
-                      padding: EdgeInsets.all(5),
-                      child: ClipRRect(
-                        borderRadius: BorderRadius.circular(20),
-                        child:FlatButton(
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(20.0),
-                          ),
-                          highlightColor: Theme.of(context).cardColor.withAlpha(100),
-                          splashColor: Theme.of(context).cardColor,
-                          color: Theme.of(context).canvasColor,
-                          onPressed: (){
-                            Navigator.push(context,  MaterialPageRoute(builder: (context) => GroupPage(group:widget.group)));
-                            //TODO open kid overview instead of above line
-                          },
-                          child:  Text(
-                            kid?.name?.toUpperCase()??"no name",
-                            style: TextStyle(fontSize: 16,color: Theme.of(context).primaryColor, ),
+            SingleChildScrollView(
+              scrollDirection: Axis.horizontal,
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceAround,
+                  children: widget.group.kids.map((kid) =>
+                      Container(
+                        padding: EdgeInsets.all(5),
+                        child: ClipRRect(
+                          borderRadius: BorderRadius.circular(20),
+                          child:FlatButton(
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(20.0),
+                            ),
+                            highlightColor: Theme.of(context).cardColor.withAlpha(100),
+                            splashColor: Theme.of(context).cardColor,
+                            color: Theme.of(context).canvasColor,
+                            onPressed: (){
+                              Navigator.push(context,  MaterialPageRoute(builder: (context) => GroupPage(group:widget.group)));
+                              //TODO open kid overview instead of above line
+                            },
+                            child:  Text(
+                              kid?.name?.toUpperCase()??"no name",
+                              style: TextStyle(fontSize: 16,color: Theme.of(context).primaryColor, ),
+                            ),
                           ),
                         ),
-                      ),
-                    )
-                ).toList()),
+                      )
+                  ).toList()),
+            ),
           ],
         ),
       ),

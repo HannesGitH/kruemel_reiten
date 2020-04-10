@@ -26,7 +26,7 @@ class TheDatabase {
   Future<Database> init() async {
     String dbPath = join(await getDatabasesPath(), 'theRealDatabase_T.db');
     var database = openDatabase(
-        dbPath, version: 1, onCreate: _onCreate, onUpgrade: _onUpgrade);
+        dbPath, version: 2, onCreate: _onCreate, onUpgrade: _onUpgrade);
     return database;
   }
 
@@ -76,6 +76,12 @@ class TheDatabase {
 
   void _onUpgrade(Database db, int oldVersion, int newVersion) {
     // Run migration according database versions
+    if (oldVersion==1 && newVersion==2){
+      db.execute('''
+      ALTER TABLE lesson
+      ADD COLUMN replacement TEXT
+    ''');
+    }
   }
 
 }
