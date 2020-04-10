@@ -519,7 +519,7 @@ class DataHandler{
   Future<List<Lesson>> getLessonsOnDay(DateTime day) async{
     Database db = await _database;
     List<Map<String, dynamic>> lessons = await db.query(tdb.lessons,
-      columns: ['kid','presence','paymentStatus','description'], 
+      columns: ['kid','presence','paymentStatus','description','replacement'], 
       where:'date = ?' , 
       whereArgs: [day.millisecondsSinceEpoch],
     );
@@ -534,6 +534,7 @@ class DataHandler{
           description: lessons[i]['description'],
           presence: Presence.values[lessons[i]['presence']],
           isPaid: lessons[i]['paymentStatus'],
+          replacement:  lessons[i]['replacement'],
         )
       );
     }

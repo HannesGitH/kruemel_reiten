@@ -239,6 +239,7 @@ class _kidGetter extends StatefulWidget{
 }
 
 class _kidGetterState extends State<_kidGetter>{
+  String r_name;
   Presence presence;
   bool gotReplace=false;
 
@@ -249,10 +250,10 @@ class _kidGetterState extends State<_kidGetter>{
     return;
   }
 
-  Future<void> _fillNames() async {
+  Future<void> _fillNames({onNameClicked(String name),onCancel()}) {
       return showDialog<void>(
         context: context,
-        //barrierDismissible: false, // user must tap button!
+        barrierDismissible: false, // user must tap button!
         builder: (BuildContext context) {
           return AlertDialog(
             shape:  RoundedRectangleBorder(
@@ -261,20 +262,62 @@ class _kidGetterState extends State<_kidGetter>{
             title: Text('Wen gabs denn als Ersatz?'),
             content: SingleChildScrollView(
               child: FutureBuilder(
+                future: DataHandler().getAllGroups_onlyNames(),
                 initialData: [['wait','wait','wait'],['wait','wait','wait'],['wait','wait','wait'],['wait','wait','wait']],
                 builder: (BuildContext con, AsyncSnapshot<List<List<String>>> snap){
                   return Column(
                     children: snap.data.map((List<String> kids)=>
-                      Text("wat"),//TODO
+                      SingleChildScrollView(
+                        scrollDirection: Axis.horizontal,
+                        child: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          mainAxisAlignment: MainAxisAlignment.spaceAround,
+                          children: kids.map((String name)=>
+                            FlatButton(
+                              onPressed: (){
+                                onNameClicked(name);
+                                Navigator.of(context).pop();
+                              },
+                              child: Text(name),
+                            ),
+                          ).toList(),
+                        ),
+                      ),
                     ).toList(),
                   );
                 },
               )
             ),
             actions: <Widget>[
+              Container(
+                width: 150,
+                child: TextField(
+                  maxLength: 15,
+                textCapitalization: TextCapitalization.words,
+                decoration: InputDecoration(
+                  hintText: "jemand anderes",
+                  hintStyle: TextStyle(
+                    color: Theme.of(context).primaryColor,
+                    fontWeight: FontWeight.w300,
+                    fontSize: Theme.of(context).textTheme.body1.fontSize-1,
+                  ),
+                ),
+                style: TextStyle(
+                  color: Theme.of(context).textTheme.body1.color,
+                  fontWeight: FontWeight.bold,
+                  fontSize: Theme.of(context).textTheme.body1.fontSize+2,
+                ),
+                textAlign: TextAlign.center,
+                onSubmitted: (x){
+                  onNameClicked(x);
+                  Navigator.of(context).pop();
+                },
+              ),
+              ),
               FlatButton(
                 child: Text('Abbruch',style: TextStyle(color: Theme.of(context).primaryColor),),
                 onPressed: () {
+                  onCancel();
                   Navigator.of(context).pop();
                 },
               ),
@@ -291,6 +334,17 @@ class _kidGetterState extends State<_kidGetter>{
       isPaid: lesson.isPaid,
       kid: lesson.kid,
       description: lesson.description,
+      replacement: lesson.replacement,
+    );
+  }
+  Lesson _changeReplacementOfLesson(Lesson lesson,String replacement){
+    return Lesson(
+      date: lesson.date,
+      presence: lesson.presence,
+      isPaid: lesson.isPaid,
+      kid: lesson.kid,
+      description: lesson.description,
+      replacement: replacement,
     );
   }
 
@@ -310,6 +364,7 @@ class _kidGetterState extends State<_kidGetter>{
 
   @override
   void initState() {
+    r_name=widget.lesson.replacement??'Ersatz gef.';
     presence=widget.lesson.presence??Presence.future;
     gotReplace=presence==Presence.canceledInTime_withReplacement;
     super.initState();
@@ -338,7 +393,7 @@ class _kidGetterState extends State<_kidGetter>{
       case Presence.canceledInTime:
         return _container(color: Colors.teal, text: "Abgesagt");
       case Presence.canceledInTime_withReplacement:
-        return _container(color: Colors.greenAccent[400], text: "Ersatz gef.");
+        return _container(color: Colors.tealAccent[700], text: "E: $r_name");
       
       default: 
         return _container(color: Colors.grey, text: "no data");
@@ -350,23 +405,35 @@ class _kidGetterState extends State<_kidGetter>{
         presence= nextPresence(presence);
         DataHandler().setLesson(_changePresenceOfLesson(widget.lesson, presence));
       });},
-      onLongPress: (){setState(() {
+      onLongPress: (){
+        var pre = presence;
         click();
-        _fillNames();
-        switch (presence){
-          case Presence.canceledInTime:
-            gotReplace=true;
-            presence=Presence.canceledInTime_withReplacement;
-            break;
-          case Presence.canceledInTime_withReplacement:
-            gotReplace=false;
+        if(presence==Presence.canceledInTime_withReplacement){
+          setState(() {
             presence=Presence.canceledInTime;
-            break;
-          default:
-            //TODO: on long press show details description and stuff
+            gotReplace=false;
+          });
+          DataHandler().setLesson(_changePresenceOfLesson(widget.lesson, presence));
+          return;
         }
-        DataHandler().setLesson(_changePresenceOfLesson(widget.lesson, presence));
-      });},
+        _fillNames(onNameClicked:(String nname){
+          setState(() {
+            r_name=nname;
+            presence=Presence.canceledInTime_withReplacement;
+            gotReplace=true;
+            DataHandler().setLesson(_changeReplacementOfLesson( _changePresenceOfLesson(widget.lesson, presence),nname));
+            return;
+          });
+        },onCancel: (){
+          setState(() {
+            presence=pre;
+            gotReplace=false;
+          });
+          DataHandler().setLesson(_changePresenceOfLesson(widget.lesson, presence));
+          return;
+        }
+        );
+      },
       child: kidGetter(
         name: widget.lesson.kid.name, 
         presence: presence,
