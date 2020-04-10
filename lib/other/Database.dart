@@ -546,7 +546,11 @@ class DataHandler{
 //GET Payments
   Future<int> _getBalanceByUserID(int uid) async{
     //print("getbalenceFrom $uid");
+
+    //TODO: load from settings
     int price=2500;//der Preis für eine Reitstunde in cent
+    int price_back=1000;//der Preis für eine Reitstunde in cent
+    int price_extra=1500;//der Preis für eine Reitstunde in cent
 
     Database db = await _database;
     List<Map<String, dynamic>> payments = await db.query(tdb.payments,
@@ -570,12 +574,26 @@ class DataHandler{
     print("startedmonths since ${await _getFirstLessonFromUserId(uid)} :${startedMonths(await _getFirstLessonFromUserId(uid),DateTime.now())}");
 
     int negativeBalance = - startedMonths(await _getFirstLessonFromUserId(uid),DateTime.now())*price;
-    negativeBalance += await _getFreeLessonAmount(uid)*1000;
+    negativeBalance += await _getFreeLessonAmount(uid)*price_back;
+    negativeBalance -= await _getExtraLessonAmount(uid)*price_extra;
 
     int balance=paymentsInCents.fold(negativeBalance, (bal,paid){return bal+paid;});
     
     return balance;
 
+  }
+
+  Future<int>_getExtraLessonAmount(int uid)async{
+    Database db = await _database;
+    try{
+    return (await db.query(tdb.lessons,
+      columns: ['Count(*)'],
+      where: 'replacement = ? AND presence = ?',
+      whereArgs: [(await _getKidById(uid)).name ,Presence.canceledInTime_withReplacement.index],
+    )).first['Count(*)'];
+    }on Exception{
+      return 0;
+    }
   }
 
   Future<int>_getFreeLessonAmount(int uid)async{
