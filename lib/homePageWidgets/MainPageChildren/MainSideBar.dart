@@ -50,7 +50,7 @@ class _sideBarState extends State<sideBar>  with SingleTickerProviderStateMixin 
       offset: Offset(xOff, 0),
       child: Container(
         width: widget.width+50,
-        height: widget.height,
+        height: widget.height+15,
         child: Stack(
           alignment: AlignmentDirectional.centerEnd,
           children: <Widget>[
@@ -58,7 +58,7 @@ class _sideBarState extends State<sideBar>  with SingleTickerProviderStateMixin 
               offset: Offset(-50, 0),
               child: Container(
                 width: widget.width,
-                height: widget.height,
+                height: widget.height+10,
                 child: GestureDetector(
                   onTap: (){
                     print("tapped");

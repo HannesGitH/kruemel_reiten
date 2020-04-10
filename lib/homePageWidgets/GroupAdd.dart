@@ -107,68 +107,71 @@ class _GroupCardS extends State<GroupCard>{
   @override
   Widget build(BuildContext context) {
     print(widget.group.kids);
-    return Card(
-      color: _isDeleted? widget.deletedColor: Theme.of(context).cardColor,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(20.0),
-      ),
-      elevation: 8.0,
-      margin: EdgeInsets.all(15),
-      child: Column(
-        children: <Widget>[
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: <Widget>[
-              IconButton(
-                highlightColor: Colors.transparent,
-                tooltip: "mehr zeigen",
-                icon: Icon(Icons.more, color: _isDeleted?widget.deletedColor:Theme.of(context).canvasColor,),
-                onPressed: _isDeleted?null:(){
-                  Navigator.push(context, MaterialPageRoute(builder: (context) => GroupPage(group:widget.group)));
-                }
+    return GestureDetector(
+      onTap: (){Navigator.push(context,  MaterialPageRoute(builder: (context) => GroupPage(group:widget.group)));},
+      child: Card(
+        color: _isDeleted? widget.deletedColor: Theme.of(context).cardColor,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(20.0),
+        ),
+        elevation: 8.0,
+        margin: EdgeInsets.all(15),
+        child: Column(
+          children: <Widget>[
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: <Widget>[
+                IconButton(
+                  highlightColor: Colors.transparent,
+                  tooltip: "mehr zeigen",
+                  icon: Icon(Icons.more, color: _isDeleted?widget.deletedColor:Theme.of(context).canvasColor,),
+                  onPressed: _isDeleted?null:(){
+                    Navigator.push(context, MaterialPageRoute(builder: (context) => GroupPage(group:widget.group)));
+                  }
 
-              ),
-              Container(
-                  padding: EdgeInsets.only(top:20,bottom: 10),
-                  child: Text(widget.group.name??"Gruppe ohne Namen",style: TextStyle(fontSize: 20,color: Colors.white,fontWeight: FontWeight.bold,fontStyle: _isDeleted?FontStyle.italic:FontStyle.normal),)
-              ),
-              IconButton(
-                highlightColor: Colors.transparent,
-                tooltip: _isDeleted?"wiederherstellen":"Löschen",
-                icon: Icon(_isDeleted?Icons.restore_from_trash:Icons.delete_forever, color: Theme.of(context).canvasColor,),
-                onPressed: (){
-                  _isDeleted? _restore():_delete();
-                }
-              ),
-            ],
-          ),
-          Row(
-              mainAxisAlignment: MainAxisAlignment.spaceAround,
-              children: widget.group.kids.map((kid) =>
-                  Container(
-                    padding: EdgeInsets.all(5),
-                    child: ClipRRect(
-                      borderRadius: BorderRadius.circular(20),
-                      child:FlatButton(
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(20.0),
-                        ),
-                        highlightColor: Theme.of(context).cardColor.withAlpha(100),
-                        splashColor: Theme.of(context).cardColor,
-                        color: Theme.of(context).canvasColor,
-                        onPressed: (){
-                          Navigator.push(context,  MaterialPageRoute(builder: (context) => GroupPage(group:widget.group)));
-                          //TODO open kid overview instead of above line
-                        },
-                        child:  Text(
-                          kid?.name?.toUpperCase()??"no name",
-                          style: TextStyle(fontSize: 16,color: Theme.of(context).primaryColor, ),
+                ),
+                Container(
+                    padding: EdgeInsets.only(top:20,bottom: 10),
+                    child: Text(widget.group.name??"Gruppe ohne Namen",style: TextStyle(fontSize: 20,color: Colors.white,fontWeight: FontWeight.bold,fontStyle: _isDeleted?FontStyle.italic:FontStyle.normal),)
+                ),
+                IconButton(
+                  highlightColor: Colors.transparent,
+                  tooltip: _isDeleted?"wiederherstellen":"Löschen",
+                  icon: Icon(_isDeleted?Icons.restore_from_trash:Icons.delete_forever, color: Theme.of(context).canvasColor,),
+                  onPressed: (){
+                    _isDeleted? _restore():_delete();
+                  }
+                ),
+              ],
+            ),
+            Row(
+                mainAxisAlignment: MainAxisAlignment.spaceAround,
+                children: widget.group.kids.map((kid) =>
+                    Container(
+                      padding: EdgeInsets.all(5),
+                      child: ClipRRect(
+                        borderRadius: BorderRadius.circular(20),
+                        child:FlatButton(
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(20.0),
+                          ),
+                          highlightColor: Theme.of(context).cardColor.withAlpha(100),
+                          splashColor: Theme.of(context).cardColor,
+                          color: Theme.of(context).canvasColor,
+                          onPressed: (){
+                            Navigator.push(context,  MaterialPageRoute(builder: (context) => GroupPage(group:widget.group)));
+                            //TODO open kid overview instead of above line
+                          },
+                          child:  Text(
+                            kid?.name?.toUpperCase()??"no name",
+                            style: TextStyle(fontSize: 16,color: Theme.of(context).primaryColor, ),
+                          ),
                         ),
                       ),
-                    ),
-                  )
-              ).toList()),
-        ],
+                    )
+                ).toList()),
+          ],
+        ),
       ),
     );
   }

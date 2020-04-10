@@ -19,7 +19,7 @@ class MainPage extends StatelessWidget{
 
     return Scaffold(
       body: FutureBuilder<int>(
-        initialData: 0,
+        initialData: 2,
         future: _count,
         builder:(context,AsyncSnapshot<int> snap) {
 
@@ -56,6 +56,7 @@ class MainPage extends StatelessWidget{
                 future: _allgroups,
                 builder: (cantext, AsyncSnapshot<List<Group>> snapSchot){
                   return ListView.builder(
+                    cacheExtent: 10,
                     controller: horizontalScrollController,
                     padding: EdgeInsets.all(0),
                     scrollDirection: Axis.horizontal,

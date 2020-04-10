@@ -121,7 +121,7 @@ class _saturdayAppointments extends StatelessWidget{
     return FutureBuilder<List<Lesson>>(
       future: _getLessons(),
       initialData: [],
-      builder: (context, AsyncSnapshot<List<Lesson>> snap){
+      builder: (BuildContext context, AsyncSnapshot<List<Lesson>> snap){
         if(groups == null){
           return  _design(
             children: List.filled(groupCount, Center(
@@ -132,11 +132,29 @@ class _saturdayAppointments extends StatelessWidget{
           );
         }
         return  _design(
-          children: List.generate(groupCount, (i){
+          children: List.generate(groupCount, (int i){
             if(groups[i].isSec!=(sat.millisecondsSinceEpoch/1000/3600/24)%14<8) {//jeder 2ter samstag
-              return Center(child: RotatedBox(
-                quarterTurns: 1,
-                child: Text("kein unterricht"),
+              return Center(child: Stack(
+                alignment: Alignment.bottomLeft,
+                children: <Widget>[
+                  _AppointmentIndicator(
+                    lessons: List.generate(groups[i].kids.length,(j){
+                      return _getLessonFromKid(lessons: snap.data, name: groups[i].kids[j].name);
+                    }),
+                  ),
+                  Positioned.fill(
+                    child: /*IgnorePointer*/Container(//Use ignorePointer to enable touches of underlaying widget
+                      child: Container(
+                        padding: EdgeInsets.all(20),
+                        color: Colors.grey.withAlpha(200),
+                        child: RotatedBox(
+                          quarterTurns: 1,
+                          child: Text("kein unterricht",style: TextStyle(color: Colors.white),),
+                        ),
+                        ),
+                    ),
+                  ),
+                ],
               ));
             }
             return Center(
