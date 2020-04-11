@@ -22,8 +22,12 @@ class _GroupPageState extends State<GroupPage> {
   ScrollController scrollie = ScrollController(initialScrollOffset:0.0);
 
   bool isSec;
+  bool editingGroupName;
+  Group group;
   @override
   void initState() {
+    group= widget.group;
+    editingGroupName=false;
     isSec=widget.group.isSec??false;
     super.initState();
   }
@@ -34,6 +38,11 @@ class _GroupPageState extends State<GroupPage> {
     return Scaffold(
       appBar: AppBar(
         actions: <Widget>[
+          IconButton(icon: Icon(editingGroupName?Icons.cancel: Icons.edit, color: Theme.of(context).canvasColor,), onPressed: (){
+            setState(() {
+              editingGroupName ^=true;
+            });
+          }),
           IconButton(icon: Icon(isSec?Icons.looks_one: Icons.looks_two, color: Theme.of(context).canvasColor,), onPressed: (){
             setState(() {
               isSec ^=true;
@@ -41,7 +50,31 @@ class _GroupPageState extends State<GroupPage> {
             });
           })
         ],
-        title: Text(widget.group.name??"neue Gruppe"),
+        title: editingGroupName?
+          TextField(
+            style: TextStyle(color: Theme.of(context).backgroundColor, fontSize: Theme.of(context).textTheme.headline.fontSize),
+            maxLength: 20,
+            autofocus: true,
+            textInputAction: TextInputAction.done,
+            textCapitalization: TextCapitalization.words,
+            decoration: InputDecoration(
+              border: InputBorder.none, //TODO no bottom space
+              hintText: group.name??"neuer Gruppenname",
+              hintStyle: TextStyle(
+                color: Theme.of(context).backgroundColor,
+                fontWeight: FontWeight.w300,
+                fontSize: 19,
+              ),
+            ),
+            onSubmitted: (x){
+              setState(() {         
+                editingGroupName=false;
+                group.name=x;
+              });
+              //TODO: save to database
+            },
+          )        
+         :Text(group.name??"neue Gruppe"),
       ),
       body: FutureBuilder<Group>(
         initialData: widget.group,
@@ -278,9 +311,11 @@ class _KidNameTextFieldState extends State<_KidNameTextField>{
             ),
           ),
           onSubmitted: (x){
-            DataHandler().changeKidsName(oldname: name, newname: x);
-            name=x;
-            isInEditState=false;
+            setState(() {         
+              DataHandler().changeKidsName(oldname: name, newname: x);
+              name=x;
+              isInEditState=false;
+            });
           },
         )
       );
