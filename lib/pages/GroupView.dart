@@ -58,7 +58,8 @@ class _GroupPageState extends State<GroupPage> {
             textInputAction: TextInputAction.done,
             textCapitalization: TextCapitalization.words,
             decoration: InputDecoration(
-              border: InputBorder.none, //TODO no bottom space
+              counterText: '',
+              border: InputBorder.none, 
               hintText: group.name??"neuer Gruppenname",
               hintStyle: TextStyle(
                 color: Theme.of(context).backgroundColor,
@@ -67,11 +68,11 @@ class _GroupPageState extends State<GroupPage> {
               ),
             ),
             onSubmitted: (x){
+              DataHandler().changeGroupName(oldname: group.name, newname: x);
               setState(() {         
                 editingGroupName=false;
                 group.name=x;
               });
-              //TODO: save to database
             },
           )        
          :Text(group.name??"neue Gruppe"),

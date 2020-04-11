@@ -726,6 +726,18 @@ Future<void> changeGroupsIsSec({@required String groupName,@required bool isSec}
   return;
 } 
 
+Future<void> changeGroupName({@required oldname, @required newname})async{
+    //print("changing $oldname's name to $newname");
+
+    Database db = await _database;
+    await db.update(tdb.groups,
+      {'name':newname},
+      where: 'name = ?',
+      whereArgs: [oldname],
+    );
+    return;
+  }
+
 
 
 }
