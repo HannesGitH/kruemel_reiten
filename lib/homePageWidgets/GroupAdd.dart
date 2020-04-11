@@ -26,7 +26,7 @@ class SetGroupsState extends State<SetGroups> {
   }
 
   Future<void> _addGroup(newGroup) async {
-    dataMan.addGroup(newGroup);
+    await dataMan.addGroup(newGroup);
     setState(() {
       widget.lc = _localCounter+1;
       counter=Future((){return _localCounter+1;});
@@ -39,13 +39,21 @@ class SetGroupsState extends State<SetGroups> {
     setState(() {
       _localGroups=_localGroups;
     });
+    return;
   }
+
+  List<int> indeces=List.generate(5, (i){return i;});
 
   @override
   void initState() {
     super.initState();
     _groups  = dataMan.getAllGroups_noBalance();
-    createLocalCopy(_groups);
+    createLocalCopy(_groups).then((whatever){
+      setState(() {
+        indeces=List.generate(_localGroups.length, (i){return i;});
+        print("list set to $indeces");
+      });
+    });
     counter = Future<int>(()async{return(await _groups).length;});
     counter.then((c){_localCounter=c; widget.lc=c;});
   }
@@ -62,14 +70,23 @@ class SetGroupsState extends State<SetGroups> {
                   List<Widget> list = new List<Widget>();
 
                   //Hier sind die Reihen für jede Gruppe
-                  for(var i = 0; i < _localGroups.length; i++){
+                  for(int i in indeces){
                     list.add(
                       GroupCard(
-                        group: _localGroups[i],
+                        key: UniqueKey(),
+                        group: _localGroups[indeces[i]],
                       )
                     );
                   }
-                  return ListView(
+                  return ReorderableListView(
+                    onReorder: (int oldIndex,int newIndex){
+                      setState(() {
+                        print(indeces);
+                        indeces.removeAt(oldIndex);
+                        indeces.insert(newIndex, oldIndex);
+                      });
+                      print("reordered from $oldIndex to $newIndex:  $indeces");
+                    },
                     children: list,
                   );
                 }
@@ -86,8 +103,9 @@ class GroupCard extends StatefulWidget{
   final Group group;
   final DataHandler dataMan=DataHandler();
   final Color deletedColor= Colors.red[400];
+  Key key;
 
-  GroupCard({@required this.group});
+  GroupCard({@required this.group, this.key});
   _GroupCardS createState() => _GroupCardS();
 }
 class _GroupCardS extends State<GroupCard>{
@@ -108,6 +126,7 @@ class _GroupCardS extends State<GroupCard>{
   Widget build(BuildContext context) {
     print(widget.group.kids);
     return GestureDetector(
+      key: widget.key,
       onTap: (){Navigator.push(context,  MaterialPageRoute(builder: (context) => GroupPage(group:widget.group)));},
       child: Card(
         color: _isDeleted? widget.deletedColor: Theme.of(context).cardColor,
