@@ -6,11 +6,11 @@ class GrouplabelColumn extends StatelessWidget{
   final DataHandler dataman = DataHandler();
   Future<List<Group>> allgroups() async {
     List<Group> groups=await dataman.getAllGroups_noBalance();
-    List<int>order=SmallDataHandler().getIndeces(groups.length);
+    List<int>order=await SmallDataHandler().getIndeces(groups.length);
     List<Group> orderedgroups=List.generate(groups.length, (int i){
       return groups[order[i]];
     });
-    return orderedgroups;
+    return orderedgroups;//return groups;
   }
   double estGH;
   GrouplabelColumn({@required this.estGH});

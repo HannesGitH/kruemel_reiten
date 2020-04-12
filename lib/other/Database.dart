@@ -55,7 +55,8 @@ class TheDatabase {
       date INTEGER,
       presence INTEGER,
       paymentStatus INTEGER,
-      description TEXT)
+      description TEXT,
+      replacement TEXT)
     ''');
 
     db.execute('''
@@ -76,7 +77,7 @@ class TheDatabase {
 
   void _onUpgrade(Database db, int oldVersion, int newVersion) {
     // Run migration according database versions
-    if (oldVersion==1 && newVersion==2){
+    if (oldVersion==1 && newVersion>=2){
       db.execute('''
       ALTER TABLE lesson
       ADD COLUMN replacement TEXT

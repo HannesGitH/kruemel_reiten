@@ -32,6 +32,7 @@ class SetGroupsState extends State<SetGroups> {
       widget.lc = _localCounter+1;
       counter=Future((){return _localCounter+1;});
       _localGroups.add(newGroup);
+      indeces.add(_localCounter);
     });
     return;
   }
@@ -43,16 +44,19 @@ class SetGroupsState extends State<SetGroups> {
     return;
   }
 
-  List<int> indeces=List.generate(5, (i){return i;});
+  List<int> indeces=[];
 
   @override
   void initState() {
     super.initState();
     _groups  = dataMan.getAllGroups_noBalance();
     createLocalCopy(_groups).then((whatever){
-      setState(() {
-        indeces=SmallDataHandler().getIndeces(_localGroups.length);//List.generate(_localGroups.length, (i){return i;});
-        print("list set to $indeces");
+      
+      SmallDataHandler().getIndeces(_localGroups.length).then((indexs){
+        setState(() {
+          indeces=indexs;
+          print("list set to $indeces");
+        });
       });
     });
     counter = Future<int>(()async{return(await _groups).length;});
@@ -75,7 +79,7 @@ class SetGroupsState extends State<SetGroups> {
                     list.add(
                       GroupCard(
                         key: UniqueKey(),
-                        group: _localGroups[indeces[i]],
+                        group: _localGroups[i],
                       )
                     );
                   }

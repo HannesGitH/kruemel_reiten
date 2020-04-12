@@ -6,7 +6,19 @@ import 'package:kruemelreiten/other/Persistent.dart';
 
 import 'MainPageChildren/MainSideBar.dart';
 
-class MainPage extends StatelessWidget{
+class MainPage extends StatefulWidget{
+
+  @override
+  _MainPageState createState() => _MainPageState();
+}
+
+class _MainPageState extends State<MainPage> {
+  List<int> order;
+@override
+  void initState() {
+    order=[0,1,2,3,4,5,6,7,8,9,10];
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -14,14 +26,18 @@ class MainPage extends StatelessWidget{
     double estGH = 175;
     double estWidth = 150;
 
-    Future<int> _count = DataHandler().getGroupCount();
+    Future<int> _count()async{
+      int count = await DataHandler().getGroupCount();
+       order= await SmallDataHandler().getIndeces(count);
+       return count;
+    }
 
     Future<List<Group>> _allgroups = DataHandler().getAllGroups_noBalance();
 
     return Scaffold(
       body: FutureBuilder<int>(
         initialData: 2,
-        future: _count,
+        future: _count(),
         builder:(context,AsyncSnapshot<int> snap) {
 
           if(snap.data<2){
@@ -99,10 +115,12 @@ class MainPage extends StatelessWidget{
                           );
                           break;
                       }
-                      List<int>order=SmallDataHandler().getIndeces(snap.data);
-                      List<Group> orderedgroups=List.generate(snap.data, (int i){
-                        return snapSchot.data[order[i]];
-                      });
+                      List<Group> orderedgroups;
+                      if(snapSchot.hasData){
+                        orderedgroups=List.generate(snap.data, (int i){
+                          return snapSchot.data[order[i]];
+                        });
+                      }
                       return Align(
                         alignment: Alignment.bottomLeft,
                         child: SaturdayCol(getNthSaturdaySinceStart(i-2),//da ja 2 cols schon auf die ersten draufgehen
