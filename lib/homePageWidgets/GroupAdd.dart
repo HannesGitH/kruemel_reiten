@@ -116,6 +116,7 @@ class GroupCard extends StatefulWidget{
 }
 class _GroupCardS extends State<GroupCard>{
   bool _isDeleted=false;
+  bool isDragged=false;
   void _delete(){
     widget.dataMan.deleteGroup(widget.group);
     setState(() {
@@ -132,9 +133,16 @@ class _GroupCardS extends State<GroupCard>{
   Widget build(BuildContext context) {
     print(widget.group.kids);
     return GestureDetector(
+      /*behavior: HitTestBehavior.translucent,
+      onLongPressStart: (d){setState(() {
+        isDragged=true;
+      });},
+      onLongPressEnd: (d){setState(() {
+        isDragged=false;
+      });},*/
       key: widget.key,
       onTap: (){Navigator.push(context,  MaterialPageRoute(builder: (context) => GroupPage(group:widget.group)));},
-      child: Card(
+      child: isDragged?Container(height: 100,width: 700,color: Colors.red,) :Card(
         color: _isDeleted? widget.deletedColor: Theme.of(context).cardColor,
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(20.0),
@@ -142,6 +150,7 @@ class _GroupCardS extends State<GroupCard>{
         elevation: 8.0,
         margin: EdgeInsets.all(15),
         child: Column(
+          mainAxisSize: MainAxisSize.min,
           children: <Widget>[
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
