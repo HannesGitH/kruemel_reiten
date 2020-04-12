@@ -1,10 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:kruemelreiten/other/Database.dart';
+import 'package:kruemelreiten/other/Persistent.dart';
 
 class GrouplabelColumn extends StatelessWidget{
   final DataHandler dataman = DataHandler();
   Future<List<Group>> allgroups() async {
-    return await dataman.getAllGroups_noBalance();
+    List<Group> groups=await dataman.getAllGroups_noBalance();
+    List<int>order=SmallDataHandler().getIndeces(groups.length);
+    List<Group> orderedgroups=List.generate(groups.length, (int i){
+      return groups[order[i]];
+    });
+    return orderedgroups;
   }
   double estGH;
   GrouplabelColumn({@required this.estGH});

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:kruemelreiten/other/Database.dart';
+import 'package:kruemelreiten/other/Persistent.dart';
 import 'package:kruemelreiten/pages/GroupView.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -50,7 +51,7 @@ class SetGroupsState extends State<SetGroups> {
     _groups  = dataMan.getAllGroups_noBalance();
     createLocalCopy(_groups).then((whatever){
       setState(() {
-        indeces=List.generate(_localGroups.length, (i){return i;});
+        indeces=SmallDataHandler().getIndeces(_localGroups.length);//List.generate(_localGroups.length, (i){return i;});
         print("list set to $indeces");
       });
     });
@@ -82,10 +83,11 @@ class SetGroupsState extends State<SetGroups> {
                     onReorder: (int oldIndex,int newIndex){
                       setState(() {
                         print(indeces);
-                        indeces.removeAt(oldIndex);
-                        indeces.insert(newIndex, oldIndex);
+                        final int tmp=indeces.removeAt(oldIndex);
+                        indeces.insert(newIndex, tmp);
+                        SmallDataHandler().setOrder(indeces);
+                        print('reordered from $oldIndex to $newIndex:  $indeces');
                       });
-                      print("reordered from $oldIndex to $newIndex:  $indeces");
                     },
                     children: list,
                   );

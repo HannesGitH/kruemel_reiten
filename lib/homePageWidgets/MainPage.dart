@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:kruemelreiten/homePageWidgets/MainPageChildren/GroupLabels.dart';
 import 'package:kruemelreiten/homePageWidgets/MainPageChildren/saturday.dart';
 import 'package:kruemelreiten/other/Database.dart';
+import 'package:kruemelreiten/other/Persistent.dart';
 
 import 'MainPageChildren/MainSideBar.dart';
 
@@ -98,13 +99,17 @@ class MainPage extends StatelessWidget{
                           );
                           break;
                       }
+                      List<int>order=SmallDataHandler().getIndeces(snap.data);
+                      List<Group> orderedgroups=List.generate(snap.data, (int i){
+                        return snapSchot.data[order[i]];
+                      });
                       return Align(
                         alignment: Alignment.bottomLeft,
                         child: SaturdayCol(getNthSaturdaySinceStart(i-2),//da ja 2 cols schon auf die ersten draufgehen
                           width: estWidth,
                           estGH: estGH,
                           groupCount: snap.data,
-                          groups: snapSchot.data,
+                          groups: orderedgroups,
                         ),
                       );
                     }
