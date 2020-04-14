@@ -12,7 +12,7 @@ class ThemeChanger with ChangeNotifier{
   static final _ThemeDataHandler _themeDataHandler = _ThemeDataHandler(); 
   static final ThemeChanger _instance = ThemeChanger._();
   
-  static const int themeCount=2;//this has to be the length of both of the following lists
+  static const int themeCount=3;//this has to be the length of both of the following lists
 
   static final List<ThemeData> themeData_DARK = <ThemeData>[
     ThemeData(
