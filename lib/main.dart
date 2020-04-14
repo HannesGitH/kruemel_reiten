@@ -2,8 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:kruemelreiten/Widgets/MainDrawer.dart';
 import 'package:kruemelreiten/homePageWidgets/GroupAdd.dart';
 import 'package:kruemelreiten/homePageWidgets/MainPage.dart';
+import 'package:kruemelreiten/other/ThemeManager.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'dart:async';
+import 'package:provider/provider.dart';
 // TODO: make every data available and passing by ID instead of Name
 
 
@@ -13,9 +15,24 @@ class MyApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
+    return ChangeNotifierProvider<ThemeChanger>(
+      create: (_)=>ThemeChanger(),
+      child: MaterialAppWithTheme(),
+    );
+  }
+}
+
+class MaterialAppWithTheme extends StatelessWidget {
+  const MaterialAppWithTheme({
+    Key key,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Provider.of<ThemeChanger>(context);
     return MaterialApp(
       title: 'Krümel',
-      theme: ThemeData(
+      theme: theme.getTheme(),/*ThemeData(
         backgroundColor: Colors.white,
         cardColor: Colors.blueGrey[400],
         primaryColor: Colors.blue,
@@ -29,7 +46,7 @@ class MyApp extends StatelessWidget {
         primaryColor: Colors.tealAccent,
         hintColor: Colors.white70,
         //highlightColor: Colors.amberAccent,
-      ),
+      ),*/
       home: MyHomePage(title: 'Krümel Reiten'),
     );
   }
