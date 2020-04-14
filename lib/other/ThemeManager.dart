@@ -68,9 +68,10 @@ class ThemeChanger with ChangeNotifier{
   ];
   
   static int currentTheme=0;
+  static int isDark=1;//-1=LIGHT; 0=SYSTEM; 1=DARK
 
-  ThemeData getTheme_DARK() => themeData_DARK[currentTheme];
-  ThemeData getTheme_LIGHT() => themeData_LIGHT[currentTheme];
+  ThemeData getTheme_DARK() => isDark==-1?themeData_DARK[currentTheme]:themeData_LIGHT[currentTheme];
+  ThemeData getTheme_LIGHT() => isDark==1?themeData_LIGHT[currentTheme]:themeData_DARK[currentTheme];
 
   Future<void> setTheme(int themeID)async{
     currentTheme = themeID;
