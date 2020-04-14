@@ -86,7 +86,6 @@ class SetGroupsState extends State<SetGroups> {
                   return ReorderableListView(
                     onReorder: (int oldIndex,int newIndex){
                       setState(() {
-                        print(indeces);
                         final int tmp=indeces.removeAt(oldIndex);
                         indeces.insert(newIndex, tmp);
                         SmallDataHandler().setOrder(indeces);
@@ -131,7 +130,6 @@ class _GroupCardS extends State<GroupCard>{
   }
   @override
   Widget build(BuildContext context) {
-    print(widget.group.kids);
     return GestureDetector(
       /*behavior: HitTestBehavior.translucent,
       onLongPressStart: (d){setState(() {
@@ -335,7 +333,6 @@ class GroupEditor extends StatelessWidget {
         update(Group(kids: kids,name: hasName?gNameC.text:null));
       }else{
         _fillNames();
-        print(names.length);
       }
     }
 

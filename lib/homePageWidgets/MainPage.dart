@@ -59,8 +59,6 @@ class _MainPageState extends State<MainPage> {
 
           DateTime getNthSaturdaySinceStart(int n){
             var dt=startDay.add(Duration(days: 7*n));
-            print(n);
-            print(dt.toString());
             return dt;
           }
 

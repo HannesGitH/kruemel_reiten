@@ -3,6 +3,7 @@ import 'package:kruemelreiten/Widgets/MainDrawer.dart';
 import 'package:kruemelreiten/homePageWidgets/GroupAdd.dart';
 import 'package:kruemelreiten/homePageWidgets/MainPage.dart';
 import 'package:kruemelreiten/other/ThemeManager.dart';
+import 'package:kruemelreiten/pages/Settings.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'dart:async';
 import 'package:provider/provider.dart';
@@ -29,24 +30,11 @@ class MaterialAppWithTheme extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final theme = Provider.of<ThemeChanger>(context);
+    final ThemeChanger theme = Provider.of<ThemeChanger>(context);
     return MaterialApp(
       title: 'Krümel',
-      theme: theme.getTheme(),/*ThemeData(
-        backgroundColor: Colors.white,
-        cardColor: Colors.blueGrey[400],
-        primaryColor: Colors.blue,
-        hintColor: Colors.white70,
-        //highlightColor: Colors.amberAccent,
-      ),
-      darkTheme: ThemeData(
-        brightness: Brightness.dark,
-        backgroundColor: Colors.black,
-        cardColor: Colors.blueGrey[700],
-        primaryColor: Colors.tealAccent,
-        hintColor: Colors.white70,
-        //highlightColor: Colors.amberAccent,
-      ),*/
+      theme: theme.getTheme_LIGHT(),
+      darkTheme: theme.getTheme_DARK(),
       home: MyHomePage(title: 'Krümel Reiten'),
     );
   }
@@ -139,6 +127,13 @@ class _MyHomePageState extends State<MyHomePage> {
       appBar: AppBar(
         backgroundColor: Theme.of(context).primaryColor,
         title:_title(),
+        actions: <Widget>[
+          IconButton(icon: Icon(Icons.settings), 
+            onPressed: (){
+              Navigator.push(context, MaterialPageRoute(builder: (context)=>Settings()));
+            },
+          )
+        ],
       ),
       body: Pages()[_selectedIndex],
       bottomNavigationBar: BottomNavigationBar(

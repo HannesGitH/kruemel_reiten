@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:kruemelreiten/Widgets/Settings/ThemeSettings.dart';
 
 class Settings
     extends StatelessWidget{
@@ -8,12 +9,12 @@ class Settings
       appBar: AppBar(
         title: Text("Einstellungen"),
       ),
-      body: Container(
-        padding: EdgeInsets.all(30),
-        child: Center(
-          child: Text("noch gibt es keine Einstellungen.."),
-        ),
-      ),//TODO: add DarkThemeSettings
+      body: ListView(
+        children: <Widget>[
+          SizedBox(height: 30,),
+          ThemeSettings(),
+        ],
+      ),
     );
   }
 }
