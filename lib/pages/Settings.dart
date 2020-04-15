@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:kruemelreiten/Widgets/Settings/DateSettings.dart';
 import 'package:kruemelreiten/Widgets/Settings/ThemeSettings.dart';
 
 class Settings
@@ -13,6 +14,10 @@ class Settings
         children: <Widget>[
           SizedBox(height: 30,),
           ThemeSettings(),
+          SizedBox(height:15),
+          Divider(),
+          SizedBox(height: 15),
+          DateSettings(),
         ],
       ),
     );

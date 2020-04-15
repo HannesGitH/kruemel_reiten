@@ -57,19 +57,19 @@ class _ThemeSettingsState extends State<ThemeSettings> {
     child: 
       Row(
         children: <Widget>[
-          IconButton(icon: Icon(Icons.wb_sunny,color: isDark==-1?Theme.of(context).primaryColor:Colors.grey), onPressed: (){
+          IconButton(icon: Icon(Icons.wb_sunny,color: isDark==-1?Theme.of(context).accentColor:Colors.grey), onPressed: (){
             setState(() {
                isDark=-1;
                themeManager.setDarkness(isDark);
             });
           }),
-          IconButton(icon: Icon(Icons.brightness_3,color: isDark==1?Theme.of(context).primaryColor:Colors.grey), onPressed: (){
+          IconButton(icon: Icon(Icons.brightness_3,color: isDark==1?Theme.of(context).accentColor:Colors.grey), onPressed: (){
             setState(() {
                isDark=1;
                themeManager.setDarkness(isDark);
             });
           }),
-          IconButton(icon: Icon(Icons.settings,color: isDark==0?Theme.of(context).primaryColor:Colors.grey), onPressed: (){
+          IconButton(icon: Icon(Icons.settings,color: isDark==0?Theme.of(context).accentColor:Colors.grey), onPressed: (){
             setState(() {
                isDark=0;
                themeManager.setDarkness(isDark);

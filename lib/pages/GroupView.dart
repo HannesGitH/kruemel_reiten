@@ -1,16 +1,31 @@
 import 'package:flutter/material.dart';
+import 'package:kruemelreiten/Widgets/Settings/DateSettings.dart';
 import 'package:kruemelreiten/other/Database.dart';
+import 'package:provider/provider.dart';
 import 'package:url_launcher/url_launcher.dart';
 
-class GroupPage extends StatefulWidget{
+class GroupPage extends StatelessWidget{
   Group group;
   GroupPage({this.group});
+
+  @override
+  Widget build(BuildContext context) {
+    return ChangeNotifierProvider<DateChanger>(
+      create: (_)=>DateChanger(),
+      child: _GroupPage(group: group,),
+    );
+  }
+}
+
+class _GroupPage extends StatefulWidget{
+  Group group;
+  _GroupPage({this.group});
 
   @override
   _GroupPageState createState() => _GroupPageState();
 }
 
-class _GroupPageState extends State<GroupPage> {
+class _GroupPageState extends State<_GroupPage> {
   final DataHandler dataman=DataHandler();
 
   Future<Group>_getCurrentGroup() async{
@@ -33,15 +48,17 @@ class _GroupPageState extends State<GroupPage> {
 
   @override
   Widget build(BuildContext context) {
+  final DateChanger dateMan = Provider.of<DateChanger>(context);
+  bool isEverySecond=dateMan.isSecond()??true;
 
     return Scaffold(
       appBar: AppBar(
         actions: <Widget>[
-          IconButton(icon: Icon(editingGroupName?Icons.cancel: Icons.edit, color: Theme.of(context).canvasColor,), onPressed: (){
+          isEverySecond ? IconButton(icon: Icon(editingGroupName?Icons.cancel: Icons.edit, color: Theme.of(context).canvasColor,), onPressed: (){
             setState(() {
               editingGroupName ^=true;
             });
-          }),
+          }):null,
           IconButton(icon: Icon(isSec?Icons.looks_one: Icons.looks_two, color: Theme.of(context).canvasColor,), onPressed: (){
             setState(() {
               isSec ^=true;
