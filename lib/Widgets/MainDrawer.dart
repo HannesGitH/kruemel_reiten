@@ -17,7 +17,7 @@ class MainDrawer extends StatelessWidget{
           DrawerHeader(
             child: Center(child: Text('Sarah\'s App',style: TextStyle(fontSize:32, color:  Theme.of(context).backgroundColor),)),
             decoration: BoxDecoration(
-              gradient: LinearGradient(begin: Alignment.topLeft,colors:[Theme.of(context).primaryColor,Colors.cyanAccent]),
+              gradient: LinearGradient(begin: Alignment.topLeft,colors:[Theme.of(context).primaryColor,Theme.of(context).accentColor]),
               //color: Theme.of(context).primaryColor,
             ),
           ),

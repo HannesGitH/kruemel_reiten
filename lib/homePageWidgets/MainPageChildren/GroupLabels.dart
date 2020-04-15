@@ -8,7 +8,7 @@ class GrouplabelColumn extends StatelessWidget{
     List<Group> groups=await dataman.getAllGroups_noBalance();
     List<int>order=await SmallDataHandler().getIndeces(groups.length);
     List<Group> orderedgroups=List.generate(groups.length, (int i){
-      return groups[order[i]];
+      return groups[order[i]??i];
     });
     return orderedgroups;//return groups;
   }

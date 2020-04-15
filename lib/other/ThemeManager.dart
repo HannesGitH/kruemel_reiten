@@ -12,7 +12,7 @@ class ThemeChanger with ChangeNotifier{
   static final _ThemeDataHandler _themeDataHandler = _ThemeDataHandler(); 
   static final ThemeChanger _instance = ThemeChanger._();
   
-  static const int themeCount=3;//this has to be the length of both of the following lists
+  static const int themeCount=4;//this has to be the length of both of the following lists
 
   static final List<ThemeData> themeData_DARK = <ThemeData>[
     ThemeData(
@@ -21,6 +21,8 @@ class ThemeChanger with ChangeNotifier{
       cardColor: Colors.blueGrey[700],
       primaryColor: Colors.red,
       hintColor: Colors.white70,
+      iconTheme: IconThemeData(size:30,color: Colors.red),
+      accentColor: Colors.redAccent,
       //highlightColor: Colors.amberAccent,
     ),
     ThemeData(
@@ -29,6 +31,7 @@ class ThemeChanger with ChangeNotifier{
       cardColor: Colors.blueGrey[700],
       primaryColor: Colors.blue[200],
       hintColor: Colors.white70,
+      accentColor: Colors.blueAccent[100],
       //highlightColor: Colors.amberAccent,
     ),
     ThemeData(
@@ -36,6 +39,17 @@ class ThemeChanger with ChangeNotifier{
       backgroundColor: Colors.black,
       cardColor: Colors.blueGrey[700],
       primaryColor: Colors.tealAccent,
+      accentColor: Colors.teal,
+      hintColor: Colors.white70,
+      //highlightColor: Colors.amberAccent,
+    ),
+    ThemeData(
+      brightness: Brightness.dark,
+      backgroundColor: Colors.grey[800],
+      canvasColor: Colors.black,
+      cardColor: Colors.grey[700],
+      primaryColor: Colors.black,
+      accentColor: Colors.white,
       hintColor: Colors.white70,
       //highlightColor: Colors.amberAccent,
     ),
@@ -47,7 +61,8 @@ class ThemeChanger with ChangeNotifier{
       cardColor: Colors.grey[400],
       primaryColor: Colors.red,
       hintColor: Colors.white70,
-      //highlightColor: Colors.amberAccent,
+      highlightColor: Colors.amberAccent,
+      iconTheme: IconThemeData(size:30,color: Colors.red),
     ),
     ThemeData(
       brightness: Brightness.light,
@@ -65,13 +80,23 @@ class ThemeChanger with ChangeNotifier{
       hintColor: Colors.white70,
       //highlightColor: Colors.amberAccent,
     ),
+    ThemeData(
+      brightness: Brightness.light,
+      backgroundColor: Colors.white,
+      canvasColor: Colors.white,
+      cardColor: Colors.grey[300],
+      primaryColor: Colors.grey[300],
+      accentColor: Colors.grey[700],
+      hintColor: Colors.white70,
+      //highlightColor: Colors.amberAccent,
+    ),
   ];
   
   static int currentTheme=0;
-  static int isDark=1;//-1=LIGHT; 0=SYSTEM; 1=DARK
+  static int isDark=0;//-1=LIGHT; 0=SYSTEM; 1=DARK
 
-  ThemeData getTheme_DARK() => isDark==-1?themeData_DARK[currentTheme]:themeData_LIGHT[currentTheme];
-  ThemeData getTheme_LIGHT() => isDark==1?themeData_LIGHT[currentTheme]:themeData_DARK[currentTheme];
+  ThemeData getTheme_LIGHT() => isDark==1?themeData_DARK[currentTheme]:themeData_LIGHT[currentTheme];
+  ThemeData getTheme_DARK() => isDark==-1?themeData_LIGHT[currentTheme]:themeData_DARK[currentTheme];
 
   Future<void> setTheme(int themeID)async{
     currentTheme = themeID;

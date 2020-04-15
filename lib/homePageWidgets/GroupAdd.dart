@@ -33,6 +33,7 @@ class SetGroupsState extends State<SetGroups> {
       counter=Future((){return _localCounter+1;});
       _localGroups.add(newGroup);
       indeces.add(_localCounter);
+      SmallDataHandler().setOrder(indeces);
     });
     return;
   }
@@ -160,7 +161,6 @@ class _GroupCardS extends State<GroupCard>{
                   onPressed: _isDeleted?null:(){
                     Navigator.push(context, MaterialPageRoute(builder: (context) => GroupPage(group:widget.group)));
                   }
-
                 ),
                 Container(
                     padding: EdgeInsets.only(top:20,bottom: 10),
@@ -176,14 +176,14 @@ class _GroupCardS extends State<GroupCard>{
                 ),
               ],
             ),
-            SingleChildScrollView(
-              scrollDirection: Axis.horizontal,
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceAround,
-                  children: widget.group.kids.map((kid) =>
-                      Container(
-                        padding: EdgeInsets.all(5),
-                        child: ClipRRect(
+            Container(
+              padding: EdgeInsets.only(bottom:10,top:5),
+              child: Wrap(
+                crossAxisAlignment: WrapCrossAlignment.start,
+                spacing: 10,
+                alignment: WrapAlignment.spaceAround,
+                    children: widget.group.kids.map((kid) =>
+                        ClipRRect(
                           borderRadius: BorderRadius.circular(20),
                           child:FlatButton(
                             shape: RoundedRectangleBorder(
@@ -198,12 +198,12 @@ class _GroupCardS extends State<GroupCard>{
                             },
                             child:  Text(
                               kid?.name?.toUpperCase()??"no name",
-                              style: TextStyle(fontSize: 16,color: Theme.of(context).primaryColor, ),
+                              style: TextStyle(fontSize: 16,color: Theme.of(context).accentColor, ),
                             ),
                           ),
-                        ),
-                      )
-                  ).toList()),
+                        )
+                    ).toList()
+              ),
             ),
           ],
         ),
