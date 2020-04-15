@@ -11,6 +11,7 @@ class _ThemeSettingsState extends State<ThemeSettings> {
   int _currentTheme;
   ThemeChanger themeManager=ThemeChanger();
   static int themeCount=ThemeChanger.themeCount;
+  int isDark=0;
 
 
   Widget headline(){return Container(
@@ -21,6 +22,7 @@ class _ThemeSettingsState extends State<ThemeSettings> {
         style: TextStyle(fontSize:22),
       ),
   );}
+
 
   Widget themeChooser(int ct){
     List<Widget> chosers = List.generate(themeCount, (int i){
@@ -36,6 +38,7 @@ class _ThemeSettingsState extends State<ThemeSettings> {
             });
           },
           isChosen: _currentTheme==i,
+          isDark: isDark,
         ),
       );
     });
@@ -47,9 +50,44 @@ class _ThemeSettingsState extends State<ThemeSettings> {
 
   @override
   Widget build(BuildContext context) {
+    
+  Widget darkModeToggle(){return Container(
+    padding: const EdgeInsets.symmetric(horizontal:20, vertical: 0),
+    alignment: Alignment.bottomLeft,
+    child: 
+      Row(
+        children: <Widget>[
+          IconButton(icon: Icon(Icons.wb_sunny,color: isDark==-1?Theme.of(context).primaryColor:Colors.grey), onPressed: (){
+            setState(() {
+               isDark=-1;
+               themeManager.setDarkness(isDark);
+            });
+          }),
+          IconButton(icon: Icon(Icons.brightness_3,color: isDark==1?Theme.of(context).primaryColor:Colors.grey), onPressed: (){
+            setState(() {
+               isDark=1;
+               themeManager.setDarkness(isDark);
+            });
+          }),
+          IconButton(icon: Icon(Icons.settings,color: isDark==0?Theme.of(context).primaryColor:Colors.grey), onPressed: (){
+            setState(() {
+               isDark=0;
+               themeManager.setDarkness(isDark);
+            });
+          }),
+        ],
+      ),
+  );}
+
     return Column(
       children: <Widget>[
-        headline(),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: <Widget>[
+            headline(),
+            darkModeToggle(),
+          ],
+        ),
         const SizedBox(height:10,),
         themeChooser(_currentTheme),
       ]
@@ -60,6 +98,7 @@ class _ThemeSettingsState extends State<ThemeSettings> {
   void initState() {
     print('themeCount : $themeCount');
     _currentTheme = ThemeChanger.currentTheme;
+    isDark=themeManager.getDarkness();
     super.initState();
   }
 }

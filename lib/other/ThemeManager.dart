@@ -8,6 +8,9 @@ class ThemeChanger with ChangeNotifier{
     _themeDataHandler.getCurrentThemeID().then((int id){
       setTheme(id??0);
     });
+    _themeDataHandler.getDarkness().then((int dn){
+      setDarkness(dn??0);
+    });
   }
   static final _ThemeDataHandler _themeDataHandler = _ThemeDataHandler(); 
   static final ThemeChanger _instance = ThemeChanger._();
@@ -93,10 +96,17 @@ class ThemeChanger with ChangeNotifier{
   ];
   
   static int currentTheme=0;
-  static int isDark=0;//-1=LIGHT; 0=SYSTEM; 1=DARK
+  int _isDark=0;//-1=LIGHT; 0=SYSTEM; 1=DARK
 
-  ThemeData getTheme_LIGHT() => isDark==1?themeData_DARK[currentTheme]:themeData_LIGHT[currentTheme];
-  ThemeData getTheme_DARK() => isDark==-1?themeData_LIGHT[currentTheme]:themeData_DARK[currentTheme];
+  int getDarkness()=>_isDark;
+  void setDarkness(int dn){
+    _themeDataHandler.setDarkness(dn);
+    _isDark=dn;
+    notifyListeners();
+  }
+
+  ThemeData getTheme_LIGHT() => _isDark==1?themeData_DARK[currentTheme]:themeData_LIGHT[currentTheme];
+  ThemeData getTheme_DARK() => _isDark==-1?themeData_LIGHT[currentTheme]:themeData_DARK[currentTheme];
 
   Future<void> setTheme(int themeID)async{
     currentTheme = themeID;
@@ -127,6 +137,14 @@ class _ThemeDataHandler{
   Future<bool> setCurrentThemeID(int id)async{
     final SharedPreferences p = await _getPrefs();
     return await p.setInt('themeID',id);
+  }
+  Future<int> getDarkness()async{
+    final SharedPreferences p = await _getPrefs();
+    return p.getInt('darkness')??0;
+  }
+  Future<bool> setDarkness(int darkness)async{
+    final SharedPreferences p = await _getPrefs();
+    return await p.setInt('darkness',darkness);
   }
 
 }
