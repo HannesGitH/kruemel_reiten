@@ -31,6 +31,7 @@ class _DateSettingsState extends State<_DateSettings> {
       child: Column(
         children: <Widget>[
           Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: <Widget>[
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -53,6 +54,8 @@ class _DateSettingsState extends State<_DateSettings> {
                   )
                 ],
               ),
+              Text('(Änderungen hier benötigen ein Neuladen der Hauptseite)', style: TextStyle(fontSize:10),),
+              SizedBox(height:15),
               ToggleButtons(
                 fillColor: Theme.of(context).textTheme.body1.color.withAlpha(90),
                 selectedColor: Theme.of(context).backgroundColor,
