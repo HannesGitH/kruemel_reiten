@@ -76,14 +76,14 @@ class _DateSettingsState extends State<_DateSettings> {
 
 class DateChanger with ChangeNotifier{
   //init stuff
-  factory DateChanger() => _instance;
-  DateChanger._(){
+  //factory DateChanger() => _instance;
+  DateChanger(){
     _getPrefs().then((p){
       setDay(p.getInt('weekDay')??5);
       setIsSecond(p.getBool('isEverySecondWeekday')??true);
     });
   }
-  static final DateChanger _instance = DateChanger._();
+  //static final DateChanger _instance = DateChanger._();
   SharedPreferences _prefs;
   Future<SharedPreferences> _getPrefs()async{
     _prefs ??= await SharedPreferences.getInstance();

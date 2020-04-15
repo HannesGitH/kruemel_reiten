@@ -54,17 +54,17 @@ class _GroupPageState extends State<_GroupPage> {
     return Scaffold(
       appBar: AppBar(
         actions: <Widget>[
-          isEverySecond ? IconButton(icon: Icon(editingGroupName?Icons.cancel: Icons.edit, color: Theme.of(context).canvasColor,), onPressed: (){
+          IconButton(icon: Icon(editingGroupName?Icons.cancel: Icons.edit, color: Theme.of(context).canvasColor,), onPressed: (){
             setState(() {
               editingGroupName ^=true;
             });
-          }):null,
-          IconButton(icon: Icon(isSec?Icons.looks_one: Icons.looks_two, color: Theme.of(context).canvasColor,), onPressed: (){
+          }),
+          isEverySecond ? IconButton(icon: Icon(isSec?Icons.looks_one: Icons.looks_two, color: Theme.of(context).canvasColor,), onPressed: (){
             setState(() {
               isSec ^=true;
               DataHandler().changeGroupsIsSec(groupName: widget.group.name, isSec: isSec);
             });
-          })
+          }):SizedBox(width:1)
         ],
         title: editingGroupName?
           TextField(
