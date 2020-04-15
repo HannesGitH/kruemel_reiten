@@ -12,7 +12,9 @@ class SaturdayCol extends StatelessWidget{
   int groupCount;
   List<Group> groups;
 
-  SaturdayCol(DateTime saturday, {this.width=400, this.estGH, this.groupCount=2,this.groups}){
+  bool isEverySecond;
+
+  SaturdayCol(DateTime saturday, {this.width=400, this.estGH, this.groupCount=2,this.groups,this.isEverySecond}){
     this.saturday=saturday;
   }
 
@@ -55,6 +57,7 @@ class SaturdayCol extends StatelessWidget{
             groupCount: groupCount,
             width: width-50,
             groups: groups,
+            isEverySecond: isEverySecond,
           ),
         ],
       ),
@@ -70,8 +73,9 @@ class _saturdayAppointments extends StatelessWidget{
   double width;
   int groupCount;
   List<Group> groups;
+  bool isEverySecond;
 
-  _saturdayAppointments({@required this.sat,this.estGH=160,this.groupCount=2,this.width=200,this.groups});
+  _saturdayAppointments({@required this.sat,this.estGH=160,this.groupCount=2,this.width=200,this.groups,this.isEverySecond=true});
 
   Future<List<Lesson>> _getLessons()async{return await DataHandler().getLessonsOnDay(sat);}
 
@@ -133,7 +137,7 @@ class _saturdayAppointments extends StatelessWidget{
         }
         return  _design(
           children: List.generate(groupCount, (int i){
-            if(groups[i].isSec!=(sat.millisecondsSinceEpoch/1000/3600/24)%14<8) {//jeder 2ter samstag
+            if(isEverySecond&&(groups[i].isSec!=(sat.millisecondsSinceEpoch/1000/3600/24)%14<8)){//jeder 2ter samstag
               return Center(child: Stack(
                 key: UniqueKey(),
                 alignment: Alignment.bottomLeft,

@@ -1,18 +1,30 @@
 import 'package:flutter/material.dart';
+import 'package:kruemelreiten/Widgets/Settings/DateSettings.dart';
 import 'package:kruemelreiten/homePageWidgets/MainPageChildren/GroupLabels.dart';
 import 'package:kruemelreiten/homePageWidgets/MainPageChildren/saturday.dart';
 import 'package:kruemelreiten/other/Database.dart';
 import 'package:kruemelreiten/other/Persistent.dart';
+import 'package:provider/provider.dart';
 
 import 'MainPageChildren/MainSideBar.dart';
 
-class MainPage extends StatefulWidget{
+class MainPage extends StatelessWidget{
+  @override
+  Widget build(BuildContext context) {
+    return ChangeNotifierProvider<DateChanger>(
+      create: (_)=>DateChanger(),
+      child: _MainPage(),
+    );
+  }
+}
+
+class _MainPage extends StatefulWidget{
 
   @override
   _MainPageState createState() => _MainPageState();
 }
 
-class _MainPageState extends State<MainPage> {
+class _MainPageState extends State<_MainPage> {
   List<int> order;
 @override
   void initState() {
@@ -22,6 +34,10 @@ class _MainPageState extends State<MainPage> {
 
   @override
   Widget build(BuildContext context) {
+    
+    final DateChanger dateMan = Provider.of<DateChanger>(context);
+    bool isEverySecond=dateMan.isSecond()??true;
+    int weekDay=dateMan.getDay()??5;
 
     double estGH = 175;
     double estWidth = 150;
@@ -34,6 +50,7 @@ class _MainPageState extends State<MainPage> {
 
     Future<List<Group>> _allgroups = DataHandler().getAllGroups_noBalance();
 
+        print('isEverySecond: $isEverySecond');
     return Scaffold(
       body: FutureBuilder<int>(
         initialData: 2,
@@ -126,6 +143,7 @@ class _MainPageState extends State<MainPage> {
                           estGH: estGH,
                           groupCount: snap.data,
                           groups: orderedgroups,
+                          isEverySecond: isEverySecond,
                         ),
                       );
                     }
