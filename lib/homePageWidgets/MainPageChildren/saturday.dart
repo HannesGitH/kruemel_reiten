@@ -8,13 +8,14 @@ class SaturdayCol extends StatelessWidget{
   DateTime saturday;
   double width;
   double estGH;
+  double estKH;
 
   int groupCount;
   List<Group> groups;
 
   bool isEverySecond;
 
-  SaturdayCol(DateTime saturday, {this.width=400, this.estGH, this.groupCount=2,this.groups,this.isEverySecond}){
+  SaturdayCol(DateTime saturday, {this.width=400, this.estGH, this.groupCount=2,this.groups,this.isEverySecond,this.estKH}){
     this.saturday=saturday;
   }
 
@@ -54,6 +55,7 @@ class SaturdayCol extends StatelessWidget{
           _saturdayAppointments(
             sat: saturday,
             estGH: estGH,
+            estKH: estKH,
             groupCount: groupCount,
             width: width-50,
             groups: groups,
@@ -70,12 +72,13 @@ class _saturdayAppointments extends StatelessWidget{
   DateTime sat;
 
   double estGH;
+  double estKH;
   double width;
   int groupCount;
   List<Group> groups;
   bool isEverySecond;
 
-  _saturdayAppointments({@required this.sat,this.estGH=160,this.groupCount=2,this.width=200,this.groups,this.isEverySecond=true});
+  _saturdayAppointments({@required this.sat,this.estGH=160,this.groupCount=2,this.width=200,this.groups,this.isEverySecond=true,this.estKH=35});
 
   Future<List<Lesson>> _getLessons()async{return await DataHandler().getLessonsOnDay(sat);}
 
@@ -143,6 +146,7 @@ class _saturdayAppointments extends StatelessWidget{
                 alignment: Alignment.bottomLeft,
                 children: <Widget>[
                   _AppointmentIndicator(
+                    estKH: estKH,
                     lessons: List.generate(groups[i].kids.length,(j){
                       return _getLessonFromKid(lessons: snap.data, name: groups[i].kids[j].name);
                     }),
@@ -165,6 +169,7 @@ class _saturdayAppointments extends StatelessWidget{
             return Center(
               key: UniqueKey(),
               child:_AppointmentIndicator(
+                estKH: estKH,
                 lessons: List.generate(groups[i].kids.length,(j){
                   return _getLessonFromKid(lessons: snap.data, name: (groups[i].kids[j]??Kid(name: '/')).name);
                 }),
@@ -182,7 +187,8 @@ class _AppointmentIndicator extends StatefulWidget{
   //has to be filled cause the kids names are coming from there
   List<Lesson> lessons;
 
-  _AppointmentIndicator({@required this.lessons});
+  _AppointmentIndicator({@required this.lessons,this.estKH});
+  double estKH;
 
   @override
   State<StatefulWidget> createState() => _AppointmentIndicatorState();
@@ -196,11 +202,11 @@ class _AppointmentIndicatorState extends State<_AppointmentIndicator>{
 
     return Column(
       mainAxisSize: MainAxisSize.max,
-      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+      mainAxisAlignment: MainAxisAlignment.start,
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: <Widget>[
         Container(
-          height: 20,
+          height: 30,
           child: Row(
             mainAxisAlignment: MainAxisAlignment.center,
             crossAxisAlignment: CrossAxisAlignment.end,
@@ -214,7 +220,8 @@ class _AppointmentIndicatorState extends State<_AppointmentIndicator>{
         ),
       ]+
         List.generate(widget.lessons.length, (i){
-          return Expanded(
+          return Container(
+            height:widget.estKH,
             child: Card(
               clipBehavior: Clip.antiAlias,
               color: Colors.grey,

@@ -13,13 +13,15 @@ class GrouplabelColumn extends StatelessWidget{
     return orderedgroups;//return groups;
   }
   double estGH;
-  GrouplabelColumn({@required this.estGH});
+  double estKH;
+  GrouplabelColumn({@required this.estGH,this.estKH=35});
 
    @override
   Widget build(BuildContext context) {
 
      Widget kiddo(String name){
        return Container(
+         height: estKH,
          padding: EdgeInsets.only(bottom:18,right: 10),
          child: Align(
            alignment: Alignment.centerRight,

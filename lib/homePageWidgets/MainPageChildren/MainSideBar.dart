@@ -6,10 +6,11 @@ class sideBar extends StatefulWidget{
   double width;
   double height=200;
   double estGH;
+  double estKH;
 
   bool isOut=false;
 
-  sideBar({@required this.height,this.width=160,this.estGH=100});
+  sideBar({@required this.height,this.width=160,this.estGH=100,this.estKH=35});
 
   toggle(){isOut?rin():out();print("sideBar toggled");}
   out(){_c.forward();isOut=true;}
@@ -73,7 +74,7 @@ class _sideBarState extends State<sideBar>  with SingleTickerProviderStateMixin 
                 ),
               ),
             ),
-            Transform.translate(offset: Offset(-50,0),child: GrouplabelColumn(estGH: widget.estGH,)),
+            Transform.translate(offset: Offset(-50,0),child: GrouplabelColumn(estGH: widget.estGH,estKH: widget.estKH,)),
             Transform.translate(
               offset: Offset(0, 0),
                 child: IconButton(

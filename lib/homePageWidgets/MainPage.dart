@@ -39,7 +39,8 @@ class _MainPageState extends State<_MainPage> {
     bool isEverySecond=dateMan.isSecond()??true;
     int weekDay=dateMan.getDay()??5;
 
-    double estGH = 175;/////TODO:OOOOOO depends on groupsize which is now dynamic :/
+    double estGH = 275;/////TODO:OOOOOO depends on groupsize which is now dynamic :/
+    double estKH=40;
     double estWidth = 150;
 
     Future<int> _count()async{
@@ -66,7 +67,7 @@ class _MainPageState extends State<_MainPage> {
 
           double sbW=160;
 
-          sideBar sb = sideBar(height: height,estGH: estGH,width: sbW,);
+          sideBar sb = sideBar(height: height,estGH: estGH,width: sbW,estKH:estKH);
 
           var startDay = DateTime.utc(2020,1,6+weekDay);//has to be a day corresponding to weekday
           var today = DateTime.now();
@@ -93,18 +94,6 @@ class _MainPageState extends State<_MainPage> {
                     padding: EdgeInsets.all(0),
                     scrollDirection: Axis.horizontal,
                     itemBuilder: (context, i) {
-                      List<Widget> container=List.filled(snap.data, Container(
-                        height: estGH,
-                        width: 20,
-                        padding: EdgeInsets.only(bottom:10),
-                        child: Card(
-                          margin: EdgeInsets.symmetric(vertical: 5, horizontal: 0),
-                          color: Theme.of(context).backgroundColor,
-                          elevation: 0,
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.horizontal(right: Radius.circular(10)),
-                          ),
-                        ),),);
                       switch (i){
                         case 0:
                           return Container(
@@ -112,11 +101,23 @@ class _MainPageState extends State<_MainPage> {
                             width: sbW+60,
                             child: Align(
                               alignment: Alignment.bottomLeft,
-                              child: GrouplabelColumn(estGH: estGH,)
+                              child: GrouplabelColumn(estGH: estGH,estKH: estKH,)
                             ),
                           );
                           break;
                         case 1:
+                          List<Widget> container=List.filled(snap.data, Container(
+                          height: estGH,
+                          width: 20,
+                          padding: EdgeInsets.only(bottom:10),
+                          child: Card(
+                            margin: EdgeInsets.symmetric(vertical: 5, horizontal: 0),
+                            color: Theme.of(context).backgroundColor,
+                            elevation: 0,
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.horizontal(right: Radius.circular(10)),
+                            ),
+                          ),),);
                           return Container(
                             width: 35,
                             color: Theme.of(context).cardColor,
@@ -141,6 +142,7 @@ class _MainPageState extends State<_MainPage> {
                         child: SaturdayCol(getNthSaturdaySinceStart(i-2),//da ja 2 cols schon auf die ersten draufgehen
                           width: estWidth,
                           estGH: estGH,
+                          estKH:estKH,
                           groupCount: snap.data,
                           groups: orderedgroups,
                           isEverySecond: isEverySecond,
