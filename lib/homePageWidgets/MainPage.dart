@@ -26,6 +26,8 @@ class _MainPage extends StatefulWidget{
 
 class _MainPageState extends State<_MainPage> {
   List<int> order;
+
+  double height=200;
 @override
   void initState() {
     order=[0,1,2,3,4,5,6,7,8,9,10];
@@ -64,7 +66,7 @@ class _MainPageState extends State<_MainPage> {
 
           double avGH=headHeight+20+(estKH*3);
 
-          double height = snap.data*avGH+15;
+          height = snap.data*avGH+15;
           double screenH = MediaQuery.of(context).size.height;
 
           double sbW=160;
@@ -91,72 +93,75 @@ class _MainPageState extends State<_MainPage> {
                 future: _allgroups,
                 builder: (cantext, AsyncSnapshot<List<Group>> snapSchot){
                   if(snapSchot.connectionState==ConnectionState.done){
-                    height = snapSchot.data.fold(0, (int old,Group g){return old+g.kids.length;}).toDouble()*estKH+snap.data*(20*headHeight);
-                    //print(height);
+                    height = snapSchot.data.fold(0, (int old,Group g){return old+g.kids.length;}).toDouble()*estKH+snap.data*(20+headHeight)+20;
                     sb.height=height;
+                    print('height: ${sb.height}');
                   }
-                  return ListView.builder(
-                    cacheExtent: 10,
-                    controller: horizontalScrollController,
-                    padding: EdgeInsets.all(0),
-                    scrollDirection: Axis.horizontal,
-                    itemBuilder: (context, i) {
-                      switch (i){
-                        case 0:
-                          return Container(
-                            color: Theme.of(context).cardColor,
-                            width: sbW+60,
-                            child: Align(
-                              alignment: Alignment.bottomLeft,
-                              child: GrouplabelColumn(headHeight: headHeight,estKH: estKH,)
-                            ),
-                          );
-                          break;
-                        case 1:
-                          List<Widget> container=List.filled(snap.data, Container(
-                          height: headHeight+estKH*3+20,
-                          width: 20,
-                          padding: EdgeInsets.only(bottom:10),
-                          child: Card(
-                            margin: EdgeInsets.symmetric(vertical: 5, horizontal: 0),
-                            color: Theme.of(context).backgroundColor,
-                            elevation: 0,
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.horizontal(right: Radius.circular(10)),
-                            ),
-                          ),),);
-                          return Container(
-                            width: 35,
-                            color: Theme.of(context).cardColor,
-                            child: Align(
-                              alignment: Alignment.bottomLeft,
-                              child: Column(
-                                mainAxisAlignment: MainAxisAlignment.end,
-                                children: container,
+                  return Container(
+                    height: height+10,
+                    child: ListView.builder(
+                      cacheExtent: 10,
+                      controller: horizontalScrollController,
+                      padding: EdgeInsets.all(0),
+                      scrollDirection: Axis.horizontal,
+                      itemBuilder: (context, i) {
+                        switch (i){
+                          case 0:
+                            return Container(
+                              color: Theme.of(context).cardColor,
+                              width: sbW+60,
+                              child: Align(
+                                alignment: Alignment.bottomLeft,
+                                child: GrouplabelColumn(headHeight: headHeight,estKH: estKH,)
                               ),
-                            ),
-                          );
-                          break;
+                            );
+                            break;
+                          case 1:
+                            List<Widget> container=List.filled(snap.data, Container(
+                            height: headHeight+estKH*3+20,
+                            width: 20,
+                            padding: EdgeInsets.only(bottom:10),
+                            child: Card(
+                              margin: EdgeInsets.symmetric(vertical: 5, horizontal: 0),
+                              color: Theme.of(context).backgroundColor,
+                              elevation: 0,
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.horizontal(right: Radius.circular(10)),
+                              ),
+                            ),),);
+                            return Container(
+                              width: 35,
+                              color: Theme.of(context).cardColor,
+                              child: Align(
+                                alignment: Alignment.bottomLeft,
+                                child: Column(
+                                  mainAxisAlignment: MainAxisAlignment.end,
+                                  children: container,
+                                ),
+                              ),
+                            );
+                            break;
+                        }
+                        List<Group> orderedgroups;
+                        if(snapSchot.hasData){
+                          orderedgroups=List.generate(snap.data, (int i){
+                            return snapSchot.data[order[i]];
+                          });
+                        }
+                        return Align(
+                          alignment: Alignment.bottomLeft,
+                          child: SaturdayCol(getNthSaturdaySinceStart(i-2),//da ja 2 cols schon auf die ersten draufgehen
+                            width: estWidth,
+                            headHeight: headHeight,
+                            estKH:estKH,
+                            groupCount: snap.data,
+                            groups: orderedgroups,
+                            isEverySecond: isEverySecond,
+                          ),
+                        );
                       }
-                      List<Group> orderedgroups;
-                      if(snapSchot.hasData){
-                        orderedgroups=List.generate(snap.data, (int i){
-                          return snapSchot.data[order[i]];
-                        });
-                      }
-                      return Align(
-                        alignment: Alignment.bottomLeft,
-                        child: SaturdayCol(getNthSaturdaySinceStart(i-2),//da ja 2 cols schon auf die ersten draufgehen
-                          width: estWidth,
-                          headHeight: headHeight,
-                          estKH:estKH,
-                          groupCount: snap.data,
-                          groups: orderedgroups,
-                          isEverySecond: isEverySecond,
-                        ),
-                      );
-                    }
-                );
+                ),
+                  );
               }),
               sb,
             ],
@@ -167,9 +172,9 @@ class _MainPageState extends State<_MainPage> {
             return Container(child: _mainPage);
           }
           return SingleChildScrollView(
-            child: Container(
-              height: height+10,
-              child: _mainPage,
+            child: Align(alignment: Alignment.bottomLeft,child: Container(
+              //height: height+10,
+              child:  _mainPage,),
             ),
           );
         },

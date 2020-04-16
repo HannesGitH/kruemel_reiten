@@ -407,6 +407,7 @@ class DataHandler{
         try{
           Kid kid=await _getKidById(map['kid$j']);
           if(kid!=null)kids.add(kid);
+          //else kids.add(Kid(name:'lolol'));//TODO REMOVE
         }
         catch (e){print('ERROR beim GruppenBekommen (_noBalnce): $e');}
       }
