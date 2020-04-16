@@ -169,7 +169,7 @@ class _MainPageState extends State<_MainPage> {
 
 
           if (height<screenH-100){
-            return Container(child: _mainPage);
+            return Align(alignment: Alignment.bottomLeft,child: Container(child: _mainPage));
           }
           return SingleChildScrollView(
             child: Align(alignment: Alignment.bottomLeft,child: Container(
