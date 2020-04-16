@@ -18,16 +18,20 @@ class ThemeChanger with ChangeNotifier{
   static const int themeCount=4;//this has to be the length of both of the following lists
 
   static final List<ThemeData> themeData_DARK = <ThemeData>[
+
+    //red theme
     ThemeData(
       brightness: Brightness.dark,
       backgroundColor: Colors.black,
-      cardColor: Colors.blueGrey[700],
+      cardColor: Color.fromARGB(255, 105, 90, 90),
       primaryColor: Colors.red,
       hintColor: Colors.white70,
       iconTheme: IconThemeData(size:30,color: Colors.red),
       accentColor: Colors.redAccent,
       //highlightColor: Colors.amberAccent,
     ),
+
+    //blue theme
     ThemeData(
       brightness: Brightness.dark,
       backgroundColor: Colors.black,
@@ -37,6 +41,8 @@ class ThemeChanger with ChangeNotifier{
       accentColor: Colors.blueAccent[100],
       //highlightColor: Colors.amberAccent,
     ),
+
+    //teal theme
     ThemeData(
       brightness: Brightness.dark,
       backgroundColor: Colors.black,
@@ -46,6 +52,8 @@ class ThemeChanger with ChangeNotifier{
       hintColor: Colors.white70,
       //highlightColor: Colors.amberAccent,
     ),
+
+    //black theme
     ThemeData(
       brightness: Brightness.dark,
       backgroundColor: Colors.grey[800],
@@ -58,15 +66,20 @@ class ThemeChanger with ChangeNotifier{
     ),
   ];
   static final List<ThemeData> themeData_LIGHT = <ThemeData>[
+
+    //red Theme
     ThemeData(
       brightness: Brightness.light,
       backgroundColor: Colors.white,
-      cardColor: Colors.grey[400],
+      cardColor: Color.fromARGB(255, 105, 90, 90),
       primaryColor: Colors.red,
       hintColor: Colors.white70,
       highlightColor: Colors.amberAccent,
       iconTheme: IconThemeData(size:30,color: Colors.red),
+      accentColor: Colors.redAccent
     ),
+
+    //blue Theme
     ThemeData(
       brightness: Brightness.light,
       backgroundColor: Colors.white,
@@ -75,14 +88,19 @@ class ThemeChanger with ChangeNotifier{
       hintColor: Colors.white70,
       //highlightColor: Colors.amberAccent,
     ),
+
+    //teal Theme
     ThemeData(
       brightness: Brightness.light,
       backgroundColor: Colors.white,
       cardColor: Colors.blueGrey[400],
       primaryColor: Colors.teal,
       hintColor: Colors.white70,
+      accentColor: Colors.tealAccent[700],
       //highlightColor: Colors.amberAccent,
     ),
+
+    //white Theme
     ThemeData(
       brightness: Brightness.light,
       backgroundColor: Colors.white,

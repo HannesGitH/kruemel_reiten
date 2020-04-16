@@ -158,6 +158,8 @@ class __themeChooseButtonState extends State<_themeChooseButton> {
                       gradient:LinearGradient(colors:[
                          widget.theme.primaryColor,
                          widget.theme.canvasColor,
+                         widget.theme.accentColor,
+                         widget.theme.cardColor,
                       ]),
                     ),
                     height: 28-(widget.isDark*10).toDouble(),
@@ -169,6 +171,8 @@ class __themeChooseButtonState extends State<_themeChooseButton> {
                       gradient:LinearGradient(colors:[
                          widget.darkTheme.primaryColor,
                          widget.darkTheme.canvasColor,
+                         widget.darkTheme.accentColor,
+                         widget.darkTheme.cardColor,
                       ]),
                     ),
                     height: 28+(widget.isDark*10).toDouble(),
