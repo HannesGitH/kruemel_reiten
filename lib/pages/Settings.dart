@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:kruemelreiten/Widgets/Settings/GroupSettings.dart';
 import 'package:kruemelreiten/Widgets/Settings/DateSettings.dart';
 import 'package:kruemelreiten/Widgets/Settings/ThemeSettings.dart';
 
@@ -18,6 +19,10 @@ class Settings
           Divider(),
           SizedBox(height: 15),
           DateSettings(),
+          SizedBox(height:15),
+          Divider(),
+          SizedBox(height: 15),
+          GroupSettings(),
         ],
       ),
     );
