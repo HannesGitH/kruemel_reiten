@@ -137,7 +137,7 @@ class _saturdayAppointments extends StatelessWidget{
         }
         return  _design(
           children: List.generate(groupCount, (int i){
-            if(isEverySecond&&(groups[i].isSec!=(sat.millisecondsSinceEpoch/1000/3600/24)%14<8)){//jeder 2ter samstag
+            if(isEverySecond&&(groups[i].isSec!=(sat.millisecondsSinceEpoch/1000/3600/24)%14<7)){//jeder 2ter samstag
               return Center(child: Stack(
                 key: UniqueKey(),
                 alignment: Alignment.bottomLeft,
