@@ -15,7 +15,7 @@ class ThemeChanger with ChangeNotifier{
   static final _ThemeDataHandler _themeDataHandler = _ThemeDataHandler(); 
   static final ThemeChanger _instance = ThemeChanger._();
   
-  static const int themeCount=4;//this has to be the length of both of the following lists
+  static const int themeCount=5;//this has to be the length of both of the following lists
 
   static final List<ThemeData> themeData_DARK = <ThemeData>[
 
@@ -28,6 +28,18 @@ class ThemeChanger with ChangeNotifier{
       hintColor: Colors.white70,
       iconTheme: IconThemeData(size:30,color: Colors.red),
       accentColor: Colors.redAccent,
+      //highlightColor: Colors.amberAccent,
+    ),
+
+    //bordeux theme
+    ThemeData(
+      brightness: Brightness.dark,
+      backgroundColor: Colors.black,
+      cardColor: Color.fromARGB(255, 135, 90, 120),
+      primaryColor: Color.fromARGB(255, 235, 100, 120),
+      hintColor: Colors.white70,
+      iconTheme: IconThemeData(size:30,color: Colors.red),
+      accentColor: Color.fromARGB(255, 255, 100, 120),
       //highlightColor: Colors.amberAccent,
     ),
 
@@ -77,6 +89,18 @@ class ThemeChanger with ChangeNotifier{
       highlightColor: Colors.amberAccent,
       iconTheme: IconThemeData(size:30,color: Colors.red),
       accentColor: Colors.redAccent
+    ),
+
+    //bordeux theme
+    ThemeData(
+      brightness: Brightness.light,
+      backgroundColor: Colors.white,
+      cardColor: Color.fromARGB(255, 135, 90, 120),
+      primaryColor: Color.fromARGB(255, 235, 100, 120),
+      hintColor: Colors.white70,
+      iconTheme: IconThemeData(size:30,color: Colors.red),
+      accentColor: Color.fromARGB(255, 255, 100, 120),
+      //highlightColor: Colors.amberAccent,
     ),
 
     //blue Theme

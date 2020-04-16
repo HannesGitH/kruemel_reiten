@@ -43,10 +43,12 @@ class _ThemeSettingsState extends State<ThemeSettings> {
       );
     });
     
-    return SingleChildScrollView(child:Row(
-    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-    children: chosers,
-  ),);}
+    return SingleChildScrollView(
+      scrollDirection: Axis.horizontal,
+      child:Row(
+      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+      children: chosers,
+    ),);}
 
   @override
   Widget build(BuildContext context) {
