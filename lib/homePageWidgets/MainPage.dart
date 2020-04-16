@@ -90,6 +90,11 @@ class _MainPageState extends State<_MainPage> {
               FutureBuilder(
                 future: _allgroups,
                 builder: (cantext, AsyncSnapshot<List<Group>> snapSchot){
+                  if(snapSchot.connectionState==ConnectionState.done){
+                    height = snapSchot.data.fold(0, (int old,Group g){return old+g.kids.length;}).toDouble()*estKH+snap.data*(20*headHeight);
+                    //print(height);
+                    sb.height=height;
+                  }
                   return ListView.builder(
                     cacheExtent: 10,
                     controller: horizontalScrollController,
