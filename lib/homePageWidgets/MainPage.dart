@@ -68,7 +68,7 @@ class _MainPageState extends State<_MainPage> {
 
           sideBar sb = sideBar(height: height,estGH: estGH,width: sbW,);
 
-          var startDay = DateTime.utc(2020,1,4);//has to be a saturday
+          var startDay = DateTime.utc(2020,1,6+weekDay);//has to be a day corresponding to weekday
           var today = DateTime.now();
           var nthWeek = today.difference(startDay).inDays/7;
 

@@ -82,7 +82,7 @@ class DateChanger with ChangeNotifier{
   //factory DateChanger() => _instance;
   DateChanger(){
     _getPrefs().then((p){
-      setDay(p.getInt('weekDay')??5);
+      setDay(p.getInt('weekday')??5);
       setIsSecond(p.getBool('isEverySecondWeekday')??true);
     });
   }
