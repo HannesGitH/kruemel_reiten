@@ -166,7 +166,7 @@ class _saturdayAppointments extends StatelessWidget{
               key: UniqueKey(),
               child:_AppointmentIndicator(
                 lessons: List.generate(groups[i].kids.length,(j){
-                  return _getLessonFromKid(lessons: snap.data, name: groups[i].kids[j].name);
+                  return _getLessonFromKid(lessons: snap.data, name: (groups[i].kids[j]??Kid(name: '/')).name);
                 }),
               ),
             );

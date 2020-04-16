@@ -39,7 +39,7 @@ class _MainPageState extends State<_MainPage> {
     bool isEverySecond=dateMan.isSecond()??true;
     int weekDay=dateMan.getDay()??5;
 
-    double estGH = 175;
+    double estGH = 175;/////TODO:OOOOOO depends on groupsize which is now dynamic :/
     double estWidth = 150;
 
     Future<int> _count()async{

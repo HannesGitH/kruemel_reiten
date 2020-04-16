@@ -39,8 +39,8 @@ class _GroupSettingsState extends State<_GroupSettings> {
               Slider(
                 activeColor: Theme.of(context).accentColor,
                 min: 1,
-                max: 20,
-                divisions: 20,
+                max: 10,
+                divisions: 10,
                 value: kidCount.toDouble(), 
                 label: kidCount.toString(),
                 onChanged: (double d){setState(() {

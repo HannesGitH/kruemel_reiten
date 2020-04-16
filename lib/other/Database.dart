@@ -26,7 +26,7 @@ class TheDatabase {
   Future<Database> init() async {
     String dbPath = join(await getDatabasesPath(), 'theRealDatabase_T.db');
     var database = openDatabase(
-        dbPath, version: 2, onCreate: _onCreate, onUpgrade: _onUpgrade);
+        dbPath, version: 3, onCreate: _onCreate, onUpgrade: _onUpgrade);
     return database;
   }
 
@@ -44,6 +44,13 @@ class TheDatabase {
       kid1 INTEGER,
       kid2 INTEGER,
       kid3 INTEGER,
+      kid4 INTEGER,
+      kid5 INTEGER,
+      kid6 INTEGER,
+      kid7 INTEGER,
+      kid8 INTEGER,
+      kid9 INTEGER,
+      kid10 INTEGER,
       name TEXT,
       isSec INTEGER)
     ''');
@@ -83,6 +90,14 @@ class TheDatabase {
       ADD COLUMN replacement TEXT
     ''');
     }
+    if ( oldVersion<=3 && newVersion>=3){
+      String alterStatement='''
+      ALTER TABLE groupi
+      ADD COLUMN ''';
+      for(String col in ['kid4','kid5','kid6','kid7','kid8','kid9','kid10']){
+        db.execute(alterStatement+col+' INTEGER');
+      }
+    }
   }
 
 }
@@ -117,26 +132,27 @@ class UserD{
 
 class GroupD{
   final String name;
-  final int kid1;
-  final int kid2;
-  final int kid3;
+  final List<int> kids;
   final bool isSec;
 
-  GroupD({this.name, this.kid1,this.kid2,this.kid3,this.isSec});
+  GroupD({this.name, this.kids,this.isSec});
 
   Map<String, dynamic> toMap() {
-    return {
+    Map<String, int> kiddos={};
+    for (int i=0;i<kids.length;i++){
+      kiddos.addAll({'kid$i':kids[i]});
+    }
+    Map<String, dynamic> map={
       'name': name,
-      'kid1':kid1,
-      'kid2':kid2,
-      'kid3':kid3,
       'isSec':isSec,
     };
+    map.addAll(kiddos);
+    return map;
   }
 
   @override
   String toString() {
-    return 'Gruppe: $name: {rythmus: ${isSec?"1":"2"}, KinderNr: {$kid1,$kid2,$kid3} }';
+    return 'Gruppe: $name: {rythmus: ${isSec?"1":"2"}, KinderNr: ${kids.toString()} }';
   }
 }
 
@@ -299,11 +315,12 @@ class DataHandler{
 //ADD a Group 
   Future<void> addGroup(Group group) async{
     //print("adding group: ${group.toString()}");
-    int id1 = await _addUser(group.kids[0].name);
-    int id2 = await _addUser(group.kids[1].name);
-    int id3 = await _addUser(group.kids[2].name);
+    List<int> kidIds=[];
+    for(Kid kid in group.kids){
+      kidIds.add(await _addUser(kid.name));
+    }
 
-    await _addGroup([id1,id2,id3], name: group.name);
+    await _addGroup(kidIds, name: group.name);
 
     return;
   }
@@ -326,7 +343,7 @@ class DataHandler{
 
     GroupD group = GroupD(
       name: name??'Gruppe ${lastId+1}',
-      kid1: names[0], kid2: names[1], kid3: names[2],
+      kids:names,
       isSec: lastId%2==1
     );
     print(lastId%2==1);
@@ -378,7 +395,7 @@ class DataHandler{
     //print("Getting all Groups..");
     Database db = await _database;
     List<Map<String,dynamic>> allIds = await db.query(tdb.groups,
-      columns: ['kid1','kid2','kid3','name','isSec'],
+      //columns: ['kid1','kid2','kid3','name','isSec'],
     );
     List<Group> groups=[];
     for(int i=0 ; i<allIds.length ; i++){
@@ -387,7 +404,11 @@ class DataHandler{
       List<Kid> kids=[];
     //print("gettin' all those kids: ${map.toString()}");
       for(int j=1 ; j<map.length-1 ; j++){//jep my kids index starts at 1, shame on me
-        kids.add(await _getKidById(map['kid$j']));
+        try{
+          Kid kid=await _getKidById(map['kid$j']);
+          if(kid!=null)kids.add(kid);
+        }
+        catch (e){print('ERROR beim GruppenBekommen (_noBalnce): $e');}
       }
       groups.add(Group(name: groupName, kids: kids,isSec: map['isSec']==1));
     }
@@ -410,7 +431,7 @@ class DataHandler{
     Database db = await _database;
 
     Map<String, dynamic> kidsMap = (await db.query(tdb.groups,
-      columns: ['kid1','kid2','kid3'],
+      //columns: ['kid1','kid2','kid3'],
       where: 'name = ?',
       whereArgs: [groupName??0],
     )).first;
@@ -418,7 +439,9 @@ class DataHandler{
     List<int> kids=[];
 
     void append(String kidid, dynamic kid) {
-      kids.add(kid);
+      if(kidid.substring(0,2)=='kid'&&kid!=null){
+        kids.add(kid);
+      }
     }
 
     kidsMap.forEach(append);
