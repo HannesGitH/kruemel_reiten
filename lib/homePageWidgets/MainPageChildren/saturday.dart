@@ -7,7 +7,7 @@ import 'package:vibration/vibration.dart';
 class SaturdayCol extends StatelessWidget{
   DateTime saturday;
   double width;
-  double estGH;
+  double headHeight;
   double estKH;
 
   int groupCount;
@@ -15,7 +15,7 @@ class SaturdayCol extends StatelessWidget{
 
   bool isEverySecond;
 
-  SaturdayCol(DateTime saturday, {this.width=400, this.estGH, this.groupCount=2,this.groups,this.isEverySecond,this.estKH}){
+  SaturdayCol(DateTime saturday, {this.width=400, this.headHeight, this.groupCount=2,this.groups,this.isEverySecond,this.estKH}){
     this.saturday=saturday;
   }
 
@@ -54,7 +54,7 @@ class SaturdayCol extends StatelessWidget{
           ),
           _saturdayAppointments(
             sat: saturday,
-            estGH: estGH,
+            headHeight: headHeight,
             estKH: estKH,
             groupCount: groupCount,
             width: width-50,
@@ -71,14 +71,14 @@ class SaturdayCol extends StatelessWidget{
 class _saturdayAppointments extends StatelessWidget{
   DateTime sat;
 
-  double estGH;
+  double headHeight;
   double estKH;
   double width;
   int groupCount;
   List<Group> groups;
   bool isEverySecond;
 
-  _saturdayAppointments({@required this.sat,this.estGH=160,this.groupCount=2,this.width=200,this.groups,this.isEverySecond=true,this.estKH=35});
+  _saturdayAppointments({@required this.sat,this.headHeight=160,this.groupCount=2,this.width=200,this.groups,this.isEverySecond=true,this.estKH=35});
 
   Future<List<Lesson>> _getLessons()async{return await DataHandler().getLessonsOnDay(sat);}
 
@@ -98,7 +98,7 @@ class _saturdayAppointments extends StatelessWidget{
     List<Widget> _list = List.generate(children.length, (i){
       return Container(
         padding: EdgeInsets.symmetric(vertical:5),
-        height: estGH,
+        //height: headHeight,
         child: Card(
           margin: EdgeInsets.all(5),
           shape: RoundedRectangleBorder(
@@ -131,9 +131,12 @@ class _saturdayAppointments extends StatelessWidget{
       builder: (BuildContext context, AsyncSnapshot<List<Lesson>> snap){
         if(groups == null){
           return  _design(
-            children: List.filled(groupCount, Center(
-              child: CircularProgressIndicator(
-                backgroundColor: Colors.white,
+            children: List.filled(groupCount, Container(
+              height: estKH*3+headHeight,
+              child: Center(
+                child: CircularProgressIndicator(
+                  backgroundColor: Colors.white,
+                ),
               ),
             )),
           );
@@ -146,6 +149,7 @@ class _saturdayAppointments extends StatelessWidget{
                 alignment: Alignment.bottomLeft,
                 children: <Widget>[
                   _AppointmentIndicator(
+                    headH:headHeight,
                     estKH: estKH,
                     lessons: List.generate(groups[i].kids.length,(j){
                       return _getLessonFromKid(lessons: snap.data, name: groups[i].kids[j].name);
@@ -169,6 +173,7 @@ class _saturdayAppointments extends StatelessWidget{
             return Center(
               key: UniqueKey(),
               child:_AppointmentIndicator(
+                headH:headHeight,
                 estKH: estKH,
                 lessons: List.generate(groups[i].kids.length,(j){
                   return _getLessonFromKid(lessons: snap.data, name: (groups[i].kids[j]??Kid(name: '/')).name);
@@ -187,8 +192,9 @@ class _AppointmentIndicator extends StatefulWidget{
   //has to be filled cause the kids names are coming from there
   List<Lesson> lessons;
 
-  _AppointmentIndicator({@required this.lessons,this.estKH});
+  _AppointmentIndicator({@required this.lessons,this.estKH,this.headH});
   double estKH;
+  double headH;
 
   @override
   State<StatefulWidget> createState() => _AppointmentIndicatorState();
@@ -206,7 +212,7 @@ class _AppointmentIndicatorState extends State<_AppointmentIndicator>{
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: <Widget>[
         Container(
-          height: 30,
+          height: widget.headH,
           child: Row(
             mainAxisAlignment: MainAxisAlignment.center,
             crossAxisAlignment: CrossAxisAlignment.end,

@@ -39,7 +39,7 @@ class _MainPageState extends State<_MainPage> {
     bool isEverySecond=dateMan.isSecond()??true;
     int weekDay=dateMan.getDay()??5;
 
-    double estGH = 275;/////TODO:OOOOOO depends on groupsize which is now dynamic :/
+    double headHeight = 30;
     double estKH=40;
     double estWidth = 150;
 
@@ -62,12 +62,14 @@ class _MainPageState extends State<_MainPage> {
             return Center(child: Container(padding: EdgeInsets.all(30),child: Text("Füg doch unten links bitte mindestens 2 Gruppen hinzu")));
           }
 
-          double height = snap.data*estGH+15;
+          double avGH=headHeight+20+(estKH*3);
+
+          double height = snap.data*avGH+15;
           double screenH = MediaQuery.of(context).size.height;
 
           double sbW=160;
 
-          sideBar sb = sideBar(height: height,estGH: estGH,width: sbW,estKH:estKH);
+          sideBar sb = sideBar(height: height,headHeight: headHeight,width: sbW,estKH:estKH);
 
           var startDay = DateTime.utc(2020,1,6+weekDay);//has to be a day corresponding to weekday
           var today = DateTime.now();
@@ -101,13 +103,13 @@ class _MainPageState extends State<_MainPage> {
                             width: sbW+60,
                             child: Align(
                               alignment: Alignment.bottomLeft,
-                              child: GrouplabelColumn(estGH: estGH,estKH: estKH,)
+                              child: GrouplabelColumn(headHeight: headHeight,estKH: estKH,)
                             ),
                           );
                           break;
                         case 1:
                           List<Widget> container=List.filled(snap.data, Container(
-                          height: estGH,
+                          height: headHeight+estKH*3+20,
                           width: 20,
                           padding: EdgeInsets.only(bottom:10),
                           child: Card(
@@ -141,7 +143,7 @@ class _MainPageState extends State<_MainPage> {
                         alignment: Alignment.bottomLeft,
                         child: SaturdayCol(getNthSaturdaySinceStart(i-2),//da ja 2 cols schon auf die ersten draufgehen
                           width: estWidth,
-                          estGH: estGH,
+                          headHeight: headHeight,
                           estKH:estKH,
                           groupCount: snap.data,
                           groups: orderedgroups,

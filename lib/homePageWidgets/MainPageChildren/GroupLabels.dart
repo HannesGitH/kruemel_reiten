@@ -12,17 +12,23 @@ class GrouplabelColumn extends StatelessWidget{
     });
     return orderedgroups;//return groups;
   }
-  double estGH;
+  double headHeight;
   double estKH;
-  GrouplabelColumn({@required this.estGH,this.estKH=35});
+  GrouplabelColumn({@required this.headHeight,this.estKH=35});
 
    @override
   Widget build(BuildContext context) {
+    double kiddoOff=2;
+    double groupOff=5;
+    double groupMargin=5;
+    double headlineOff=10;
+    double headlineHeight=headHeight-headlineOff-2;
+    double mainPadding=5;
 
      Widget kiddo(String name){
        return Container(
          height: estKH,
-         padding: EdgeInsets.only(bottom:18,right: 10),
+         padding: EdgeInsets.only(bottom:kiddoOff,right: 10),
          child: Align(
            alignment: Alignment.centerRight,
            child: Text("$name : ",style: TextStyle(fontWeight: FontWeight.w600,fontSize: 16),),
@@ -34,9 +40,9 @@ class GrouplabelColumn extends StatelessWidget{
        return Transform.translate(
          offset: Offset(5,0),
          child: Container(
-           padding: EdgeInsets.only(left:5,bottom:10),
+           padding: EdgeInsets.only(left:5,bottom:groupOff),
            child: Card(
-             margin: EdgeInsets.all(5),
+             margin: EdgeInsets.all(groupMargin),
              color: Theme.of(context).backgroundColor,
              elevation: 10,
              shape: RoundedRectangleBorder(
@@ -46,21 +52,17 @@ class GrouplabelColumn extends StatelessWidget{
                mainAxisSize: MainAxisSize.max,
                children: <Widget>[
                  Container(
-                   padding: EdgeInsets.only(left:10,top:10),
+                   padding: EdgeInsets.only(left:10,top:headlineOff),
                    child: Align(
                      alignment: Alignment.centerLeft,
-                       child: Text(group.name),
+                       child: Container(height: headlineHeight, child: Text(group.name)),
                    ),
                  ),
-                 Divider(),
+                 Divider(height: 2,),
                  Column(
                    mainAxisAlignment: MainAxisAlignment.spaceAround,
                    mainAxisSize: MainAxisSize.max,
-                   children: <Widget>[
-                     kiddo(group.kids[0].name),
-                     kiddo(group.kids[1].name),
-                     kiddo(group.kids[2].name),
-                   ],
+                   children: group.kids.map((Kid kid){return kiddo(kid.name);}).toList(),
                  ),
                ],
              ),
@@ -77,7 +79,7 @@ class GrouplabelColumn extends StatelessWidget{
             List<Widget> groups = List.generate(snap.data.length, (i){
               return Container(
                 //color: Colors.red,
-                height: estGH,
+                padding: EdgeInsets.only(bottom:mainPadding),
                 child: group(snap.data[i]),
               );
             });
