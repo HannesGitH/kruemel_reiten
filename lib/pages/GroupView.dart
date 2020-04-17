@@ -104,10 +104,8 @@ class _GroupPageState extends State<_GroupPage> {
               return ListView(
                 reverse: true,
                 children: <Widget>[
-                  Container(height: 10,),
-                  _kidView(kids[2]),
-                  _kidView(kids[1]),
-                  _kidView(kids[0]),
+                  Container(height: 70,),
+                  ...kids.map((Kid kid){return _kidView(kid);}).toList(),
                   Container(height: MediaQuery.of(context).size.height/2,),
                 ],
             
@@ -117,10 +115,8 @@ class _GroupPageState extends State<_GroupPage> {
             controller: scrollie,
             reverse: true,
             children: <Widget>[
-              Container(height: 10,),
-              _kidView(kids[2]),
-              _kidView(kids[1]),
-              _kidView(kids[0]),
+              Container(height: 70,),
+              ...kids.map((Kid kid){return _kidView(kid);}).toList(),
               Container(height: MediaQuery.of(context).size.height/2,),
             ],
           );
@@ -158,7 +154,7 @@ class _kidView extends StatelessWidget{
         return Text(tel??"keine Nummer..",
           style: TextStyle(
             decoration: TextDecoration.underline,
-            color: Theme.of(context).primaryColor,
+            color: Colors.blue,
           ),
         );
       }

@@ -252,7 +252,7 @@ class AddGroupActionbuttonState extends State<AddGroupActionbutton> {
           boxShadow: isClicked?
           [BoxShadow(color: Theme.of(context).backgroundColor, blurRadius: 25 ,spreadRadius: 10)]:
           [BoxShadow(color: Colors.black, blurRadius: 15, offset: Offset.fromDirection(1.3,7),spreadRadius: -4)],
-          color: isClicked?Colors.blueGrey[500]:Theme.of(context).primaryColor,
+          color: isClicked?Theme.of(context).cardColor:Theme.of(context).accentColor,
           borderRadius: isClicked?BorderRadius.circular(20):BorderRadius.circular(30),
         ),
         curve: Curves.easeInOutCubic,
