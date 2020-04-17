@@ -168,15 +168,15 @@ class _MainPageState extends State<_MainPage> {
           );
 
 
-          if (height<screenH-100){
+          /*if (height<screenH-100){
             return Align(alignment: Alignment.bottomLeft,child: Container(child: _mainPage));
-          }
-          return SingleChildScrollView(
+          }*/
+          return Align(alignment: Alignment.bottomLeft,child:SingleChildScrollView(
             child: Align(alignment: Alignment.bottomLeft,child: Container(
               //height: height+10,
               child:  _mainPage,),
             ),
-          );
+          ),);
         },
       ),
       /*floatingActionButton: FloatingActionButton(

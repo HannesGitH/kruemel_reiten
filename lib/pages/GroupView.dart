@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:kruemelreiten/Widgets/Settings/DateSettings.dart';
 import 'package:kruemelreiten/other/Database.dart';
@@ -47,6 +49,9 @@ class _GroupPageState extends State<_GroupPage> {
     super.initState();
   }
 
+  bool isThereANewOne=false; //TODO: make an actually good working solution
+  bool isDirty=false;
+
   @override
   Widget build(BuildContext context) {
   final DateChanger dateMan = Provider.of<DateChanger>(context);
@@ -94,7 +99,7 @@ class _GroupPageState extends State<_GroupPage> {
           )        
          :Text(group.name??"neue Gruppe"),
       ),
-      body: FutureBuilder<Group>(
+      body: isDirty?CircularProgressIndicator():FutureBuilder<Group>(
         initialData: widget.group,
         future: _getCurrentGroup(),
         builder: (BuildContext context, AsyncSnapshot<Group> snapshot) {
@@ -106,25 +111,52 @@ class _GroupPageState extends State<_GroupPage> {
                 children: <Widget>[
                   Container(height: 70,),
                   ...kids.map((Kid kid){return _kidView(kid);}).toList(),
+                  if(isThereANewOne)_kidView(Kid(name: 'das neue Kind')),
                   Container(height: MediaQuery.of(context).size.height/2,),
                 ],
             
               );
           }
           return ListView(
+            cacheExtent: 1000,
             controller: scrollie,
             reverse: true,
             children: <Widget>[
               Container(height: 70,),
-              ...kids.map((Kid kid){return _kidView(kid);}).toList(),
+              ...kids.map((Kid kid){return _kidView(kid,onRemove: (Kid kid){
+                setState(() {
+                  List<Kid> kids = group.kids;
+                  print(kids.length);
+                  kids.removeWhere((kid2)=>kid2.name==kid.name);
+                  print(kids.length);
+                  group.kids=kids;
+                  dataman.updateGroup(group:group);
+                  /*isDirty=true;
+                  Future.delayed(Duration(milliseconds: 200)).then((t){setState(() {
+                    isDirty=false;
+                  });}); */
+                });
+                return;
+              },);}).toList(),
+              if(isThereANewOne)_kidView(Kid(name: 'das neue Kind')),
               Container(height: MediaQuery.of(context).size.height/2,),
             ],
           );
         },
       ),
-      floatingActionButton: TextFieldButton(onSubmit: (String kidName){
-        //TODO add kid to group
-      },),
+      floatingActionButton:group.kids.length<10? TextFieldButton(onSubmit: (String kidName){
+        setState(() {
+          List<Kid> kids = group.kids;
+          kids.add(Kid(name: kidName));
+          group.kids=kids;
+          dataman.updateGroup(group:group);
+          isDirty=true;
+          Future.delayed(Duration(milliseconds: 200)).then((t){setState(() {
+            isDirty=false;
+          });}) ;
+        });
+        // 
+      },):null,
     );
   }
 }
@@ -181,6 +213,9 @@ class _TextFieldButtonState extends State<TextFieldButton> {
                   ),
                   onSubmitted: (String text){
                     widget.onSubmit(text);
+                    setState(() {
+                      isClicked=false;
+                    });
                   },
                 ),
               ),
@@ -202,13 +237,20 @@ class _TextFieldButtonState extends State<TextFieldButton> {
   }
 }
 
-class _kidView extends StatelessWidget{
+class _kidView extends StatefulWidget{
+  Function(Kid) onRemove;
 
   Kid kid;
 
-  _kidView(this.kid);
+  _kidView(this.kid,{this.onRemove});
 
-  
+  @override
+  __kidViewState createState() => __kidViewState();
+}
+
+class __kidViewState extends State<_kidView> {
+  bool isDeleted=false;
+
   @override
   Widget build(BuildContext context) {
 
@@ -237,7 +279,7 @@ class _kidView extends StatelessWidget{
       Widget balance(String val){
         int bal = int.tryParse(val??'0')??0;
         double balInEur=bal/100;
-        return new Text(balInEur.toString()+" €", //TODO: make all payments showable
+        return Text(balInEur.toString()+" €", //TODO: make all payments showable
           style: TextStyle(
             color: (bal??0)<0 ? Colors.red[400]: (Theme.of(context).brightness==Brightness.light ? Colors.green[800] : Colors.greenAccent[400]),
           ),
@@ -245,25 +287,26 @@ class _kidView extends StatelessWidget{
       }
 
       List<Widget> _editrows(){return[
-        Divider(),
+        Divider(height: 2,),
         GestureDetector(
+          key: UniqueKey(),
           onTap: (){
-            _callTel(kid.tel);
+            _callTel(widget.kid.tel);
           },
           child: _editRow(
             icon: Icons.phone,
-            child: number(kid.tel),
+            child: number(widget.kid.tel),
             onValue: (val){
-              DataHandler().changeKidsTel(name: kid.name, tel: val);
+              DataHandler().changeKidsTel(name: widget.kid.name, tel: val);
               return number(val);
             },
             keyboardType: TextInputType.phone,
           ),
         ),
-        Divider(),
+        Divider(height: 2,),
         _editRow(
           icon: Icons.euro_symbol,
-          child: balance((kid.balance).toString()),
+          child: balance((widget.kid.balance).toString()),
           onValue: (val){
             bool add=false;
             bool substract=false;
@@ -282,12 +325,12 @@ class _kidView extends StatelessWidget{
             double newVal = double.parse(val)??0;
             newVal *=100;//Euro to cents
             int nVal = newVal.floor();
-            int cBal=kid.balance??0;
+            int cBal=widget.kid.balance??0;
 
             DataHandler dataman= DataHandler();
             if(add) {
               dataman.addPayment(Payment(
-                kid:kid,
+                kid:widget.kid,
                 cents:nVal,
                 date:DateTime.now(),
                 //TODO: add description
@@ -296,7 +339,7 @@ class _kidView extends StatelessWidget{
             }
             if(substract) {
               dataman.addPayment(Payment(
-                kid:kid,
+                kid:widget.kid,
                 cents:-nVal,
                 date:DateTime.now(),
                 description: "geld ausgezahlt",//TODO: add description
@@ -305,7 +348,7 @@ class _kidView extends StatelessWidget{
             }
 
             dataman.addPayment(Payment(
-                kid:kid,
+                kid:widget.kid,
                 cents:nVal-cBal,
                 date:DateTime.now(),
                 description: "fehler behoben",//TODO: add description
@@ -316,30 +359,54 @@ class _kidView extends StatelessWidget{
         ),
       ];}
     
-    return Card(
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(20.0),
-        ),
-        elevation: 8.0,
-        margin: EdgeInsets.all(15),
-        child: Card(
-          color: Theme.of(context).canvasColor,
+    return Stack(
+      alignment: Alignment.topRight,
+      children: <Widget>[
+        Card(
+          color: isDeleted?Colors.redAccent:Theme.of(context).cardColor,
           shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(10.0),
+            borderRadius: BorderRadius.circular(20.0),
           ),
-          elevation: 0.0,
+          elevation: 8.0,
           margin: EdgeInsets.all(10),
-          child: Column(
-            children: <Widget>[
-              _KidNameTextField(kidsName: kid.name,),
-              ...
-              _editrows(),
-            ],
+          child: Card(
+            color: Theme.of(context).canvasColor,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(10.0),
+            ),
+            elevation: 0.0,
+            margin: EdgeInsets.all(10),
+            child: Column(
+              children: <Widget>[
+                _KidNameTextField(kidsName: widget.kid.name,),
+                if(!isDeleted)..._editrows(),
+              ],
+            ),
           ),
-        )
+        ),
+        if(!isDeleted)Container(
+          padding: EdgeInsets.only(right:10,top:10),
+          child: ClipRRect(
+            borderRadius: BorderRadius.only(bottomLeft: Radius.circular(20),topRight: Radius.circular(20)),
+            child: Container(
+              color: Theme.of(context).cardColor,
+              width:50,
+              height: 50,
+              child: IconButton(
+                icon: Icon(Icons.delete), 
+                onPressed: (){
+                  setState(() {
+                    isDeleted=true;
+                  });
+                  if(widget.onRemove!=null)widget.onRemove(widget.kid);
+                },
+              ),
+            ),
+          ),
+        ),
+      ],
     );
   }
-  
 }
 
 class _KidNameTextField extends StatefulWidget{

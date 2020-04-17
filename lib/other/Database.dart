@@ -146,6 +146,9 @@ class GroupD{
     for (int i=0;i<kids.length;i++){
       kiddos.addAll({'kid${i+1}':kids[i]});
     }
+    for (int i=kids.length;i<10;i++){
+      kiddos.addAll({'kid${i+1}':null});
+    }
     Map<String, dynamic> map={
       'name': name,
       'isSec':isSec,
@@ -441,6 +444,8 @@ class DataHandler{
   Future<List<int>> _getGroupMembersByName_id(groupName) async{
     //print("getting Groupmembers from Group $groupName");
     Database db = await _database;
+
+    if(groupName=='gruppe ohne Namen'||groupName==null)return [];
 
     Map<String, dynamic> kidsMap = (await db.query(tdb.groups,
       //columns: ['kid1','kid2','kid3'],
@@ -752,6 +757,8 @@ class DataHandler{
 /// update a group in general (shouldn't change its name)
 Future<void> updateGroup({@required Group group})async{
   Database db = await _database;
+
+  print('kids (updateGroup) :  ${group.kids.length}');
 
   List<int> kidIDs=[];
   void getKid (Kid kid) async{
