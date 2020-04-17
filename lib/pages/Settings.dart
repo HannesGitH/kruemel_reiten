@@ -20,9 +20,9 @@ class Settings
           SizedBox(height: 15),
           DateSettings(),
           SizedBox(height:15),
-          Divider(),
+          /*Divider(),
           SizedBox(height: 15),
-          GroupSettings(),
+          GroupSettings(),*/
         ],
       ),
     );

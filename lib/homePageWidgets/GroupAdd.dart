@@ -269,6 +269,8 @@ class AddGroupActionbuttonState extends State<AddGroupActionbutton> {
   }
 }
 
+
+//TODO: nicht nur 3 namen sondern wie eingestellt
 class GroupEditor extends StatelessWidget {
 
   final FocusNode name2 = FocusNode();
