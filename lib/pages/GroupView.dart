@@ -122,7 +122,82 @@ class _GroupPageState extends State<_GroupPage> {
           );
         },
       ),
-      floatingActionButton: FloatingActionButton(onPressed: null),
+      floatingActionButton: TextFieldButton(onSubmit: (String kidName){
+        //TODO add kid to group
+      },),
+    );
+  }
+}
+
+class TextFieldButton extends StatefulWidget{
+  void Function(String) onSubmit;
+
+  TextFieldButton({@required this.onSubmit});
+
+  @override
+  _TextFieldButtonState createState() => _TextFieldButtonState();
+}
+
+class _TextFieldButtonState extends State<TextFieldButton> {
+  bool isClicked=false;
+
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      onTap: (){setState(() {
+        isClicked^=true;
+      });},
+      child: AnimatedContainer(
+        decoration: BoxDecoration(
+          boxShadow: isClicked?
+          [BoxShadow(color: Theme.of(context).backgroundColor, blurRadius: 25 ,spreadRadius: 10)]:
+          [BoxShadow(color: Colors.black, blurRadius: 15, offset: Offset.fromDirection(1.3,7),spreadRadius: -4)],
+          color: isClicked?Theme.of(context).cardColor:Theme.of(context).accentColor,
+          borderRadius: isClicked?BorderRadius.circular(20):BorderRadius.circular(30),
+        ),
+        curve: Curves.easeInOutCubic,
+        duration: Duration(milliseconds: 400),
+        height: isClicked? 70: 60,
+        width: isClicked? MediaQuery.of(context).size.width-30: 60,
+        child: isClicked?
+        Row(
+          children: <Widget>[
+            Expanded(
+              child: Container(
+                padding: EdgeInsets.only(left:15),
+                child: TextField(
+                  autofocus: true,
+                  maxLength: 15,
+                  style: TextStyle(fontSize:22,fontWeight: FontWeight.w500),
+                  decoration: InputDecoration(
+                    counterText: '',
+                    border: InputBorder.none, 
+                    hintText: 'neues Kind',
+                    hintStyle: TextStyle(
+                      color: Theme.of(context).backgroundColor,
+                      fontWeight: FontWeight.w300,
+                      fontSize: 19,
+                    ),
+                  ),
+                  onSubmitted: (String text){
+                    widget.onSubmit(text);
+                  },
+                ),
+              ),
+            ),
+            Container(
+              padding: EdgeInsets.all(5),
+              child: FloatingActionButton(
+                child: Icon(Icons.cancel),
+                onPressed: (){setState(() {
+                  isClicked^=true;
+                });},
+              ),
+            ),
+          ],
+        ):
+        Icon(Icons.person_add,color: Theme.of(context).backgroundColor,),
+      ),
     );
   }
 }
