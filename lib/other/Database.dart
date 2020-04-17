@@ -137,10 +137,14 @@ class GroupD{
 
   GroupD({this.name, this.kids,this.isSec});
 
+  factory GroupD.fromGroupAndKidIds({@required Group group, @required List<int> kidIDs}){
+    return GroupD(isSec: group.isSec,kids: kidIDs,name: group.name);
+  }
+
   Map<String, dynamic> toMap() {
     Map<String, int> kiddos={};
     for (int i=0;i<kids.length;i++){
-      kiddos.addAll({'kid$i':kids[i]});
+      kiddos.addAll({'kid${i+1}':kids[i]});
     }
     Map<String, dynamic> map={
       'name': name,
@@ -298,10 +302,17 @@ class DataHandler{
 
 
 //ADD a single user
-  Future<int> _addUser(name) async{
+  Future<int> _addUser({String name, Kid kid}) async{
     Database db = await _database;
 
-    UserD user = new UserD(name: name, tel: "noch keine Nummer");
+    if(name==null && kid==null){
+      throw Exception('dafuq yo kein user den man hinzufügen könnte');
+    }
+
+    UserD user = UserD(name: name, tel: "noch keine Nummer");
+    if(kid!=null){
+      user= UserD(name: kid.name, tel:kid.tel);
+    }
 
     int id = await db.insert(tdb.users, 
       user.toMap(),
@@ -317,7 +328,7 @@ class DataHandler{
     //print("adding group: ${group.toString()}");
     List<int> kidIds=[];
     for(Kid kid in group.kids){
-      kidIds.add(await _addUser(kid.name));
+      kidIds.add(await _addUser(name:kid.name));
     }
 
     await _addGroup(kidIds, name: group.name);
@@ -440,7 +451,7 @@ class DataHandler{
     List<int> kids=[];
 
     void append(String kidid, dynamic kid) {
-      if(kidid.substring(0,2)=='kid'&&kid!=null){
+      if(kidid.substring(0,2)=='ki'&&kid!=null){
         kids.add(kid);
       }
     }
@@ -460,7 +471,6 @@ class DataHandler{
 
   Future<List<Kid>> getGroupMembersByName_noBalance(groupName) async{
     List<int> kidIDs = await _getGroupMembersByName_id(groupName);
-
     List<Kid> kids=[];
     void getKid (kidID) async{
       kids.add(
@@ -475,7 +485,6 @@ class DataHandler{
     List<Kid> kids = await getGroupMembersByName_noBalance(groupName);
     List<int> kidIDs = await _getGroupMembersByName_id(groupName);
     //ich hab iwie sorge dass die groupmembers nach aufruf von ..._nobalance aufgrund das async forEach nicht mehr sortiert sind ; wird sich in testcases herausfinden
-
     List<Kid> newKids=[];
     for(int i=0;i<kids.length;i++){
       newKids.add(
@@ -728,15 +737,38 @@ class DataHandler{
   }
   Future<int> _getKidsIdfromName(String name)async{
     Database db = await _database;
-
+    try{
     int id = (await db.query(tdb.users,
       columns: ['id'],
       where: 'name = ?',
       whereArgs: [name],
     )).first['id'];
-
     return id;
+    }catch(e){
+      return null;
+    }
   }
+
+/// update a group in general (shouldn't change its name)
+Future<void> updateGroup({@required Group group})async{
+  Database db = await _database;
+
+  List<int> kidIDs=[];
+  void getKid (Kid kid) async{
+    kidIDs.add(
+      (await _getKidsIdfromName(kid.name))??(await _addUser(kid:kid))
+    );
+  }
+  await Future.forEach(group.kids,getKid);
+
+  await db.update(tdb.groups, 
+    GroupD.fromGroupAndKidIds(group: group,kidIDs:kidIDs).toMap(),
+    where: 'name = ?',
+    whereArgs: [group.name],
+  );
+  return;
+}
+
 
 //update a groups isSec
 Future<void> changeGroupsIsSec({@required String groupName,@required bool isSec})async{

@@ -30,6 +30,7 @@ class _GroupPageState extends State<_GroupPage> {
 
   Future<Group>_getCurrentGroup() async{
     List<Kid> kids= await dataman.getGroupMembersByName_complete(widget.group.name);
+    print('kidsFromDataBase $kids');
     return Group(name: widget.group.name, kids:kids);
   }
 
@@ -99,6 +100,7 @@ class _GroupPageState extends State<_GroupPage> {
         builder: (BuildContext context, AsyncSnapshot<Group> snapshot) {
           List<Kid>kids=snapshot.data.kids;
           if(snapshot.connectionState==ConnectionState.waiting){
+            print('widget.group: $kids');
               return ListView(
                 reverse: true,
                 children: <Widget>[
@@ -124,6 +126,7 @@ class _GroupPageState extends State<_GroupPage> {
           );
         },
       ),
+      floatingActionButton: FloatingActionButton(onPressed: null),
     );
   }
 }
