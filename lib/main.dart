@@ -3,6 +3,7 @@ import 'package:kruemelreiten/Widgets/MainDrawer.dart';
 import 'package:kruemelreiten/homePageWidgets/GroupAdd.dart';
 import 'package:kruemelreiten/homePageWidgets/MainPage.dart';
 import 'package:kruemelreiten/other/ThemeManager.dart';
+import 'package:kruemelreiten/pages/MoneyPage/MoneyPageMain.dart';
 import 'package:kruemelreiten/pages/Settings.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'dart:async';
@@ -53,8 +54,8 @@ class MyHomePage extends StatefulWidget {
       title: Text('Home'),
     ),
     BottomNavigationBarItem(
-      icon: Icon(Icons.group_work),
-      title: Text('NYI'),
+      icon: Icon(Icons.euro_symbol),
+      title: Text('Zahlungen'),
     ),
   ];
 
@@ -91,25 +92,14 @@ class _MyHomePageState extends State<MyHomePage> {
       case 1:
         return Text("Krümel Reiten");
       default:
-        return Text("--in arbeit--");
+        return Text("Zahlungsübersicht");
     }
   }
 
   List<Widget> Pages() {return <Widget>[
     groupPage,
     MainPage(),
-    Container(
-      padding: EdgeInsets.all(30),
-      child: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.spaceAround,
-          children: <Widget>[
-            Text("hier werden später Zahlungsübersichten zu sehen sein"),
-            Text("bis dahin befinden sich die Zahlungsbilanzen auf der Gruppen-Seite"),
-          ],
-        ),
-      ),
-    ),
+    MoneyPage(),
   ];}
 
   void _onItemTapped(int index) {
