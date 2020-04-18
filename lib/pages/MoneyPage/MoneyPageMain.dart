@@ -42,8 +42,8 @@ class _MoneyPageSlideWrapState extends State<MoneyPageSlideWrap> with SingleTick
   }
   void endSwipe(double swipeEndVel){
     print('swipeEnded');
-    double begin=swipePercent;//>=widget.swipeThreshHold?swipePercent:100;
-    double end=swipeLength>=widget.swipeThreshHold?100:0;
+    double begin=swipePercent;
+    double end=swipeLength.abs()>=widget.swipeThreshHold?(swipeLength.isNegative?-1.0:1.0)*100:0;
     animation = Tween<double>(begin: begin, end: end).animate(
       CurvedAnimation(parent: controller, curve: Curves.fastOutSlowIn))
       ..addListener(() {
@@ -88,6 +88,30 @@ class _MoneyPageSlideWrapState extends State<MoneyPageSlideWrap> with SingleTick
               width:300,
               height:300,
               color:Colors.red,
+            ),
+          ),
+          Transform.translate(
+            offset: Offset(swipePercent*11-300,100),
+            child: Container(
+              width:230,
+              height:230,
+              color:Colors.green,
+            ),
+          ),
+          Transform.translate(
+            offset: Offset(swipePercent*8+500,0),
+            child: Container(
+              width:300,
+              height:300,
+              color:Colors.red,
+            ),
+          ),
+          Transform.translate(
+            offset: Offset(swipePercent*11+500,100),
+            child: Container(
+              width:230,
+              height:230,
+              color:Colors.green,
             ),
           ),
         ],
