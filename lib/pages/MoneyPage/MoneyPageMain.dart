@@ -3,18 +3,28 @@ import 'package:flutter/material.dart';
 class MoneyPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return MoneyPageSlideWrap();
+    return SlideWrap();
   }
 }
 
-class MoneyPageSlideWrap extends StatefulWidget {
-  MoneyPageSlideWrap({this.swipeThreshHold=150.0});
+///animates its children depending on slides
+class SlideWrap extends StatefulWidget {
+  SlideWrap({this.swipeThreshHold=150.0,this.renderExtend,@required this.children});
+
+  ///how far the user has to swipe to complete it
   double swipeThreshHold;
+
+  ///how many widgets are rendered
+  int renderExtend;
+
+  ///the children need to implement a percent value
+  List<PercentWidget> children;
+
   @override
-  _MoneyPageSlideWrapState createState() => _MoneyPageSlideWrapState();
+  _SlideWrapState createState() => _SlideWrapState();
 }
 
-class _MoneyPageSlideWrapState extends State<MoneyPageSlideWrap> with SingleTickerProviderStateMixin {
+class _SlideWrapState extends State<SlideWrap> with SingleTickerProviderStateMixin {
   Animation<double> animation;
   AnimationController controller;
 
@@ -119,3 +129,8 @@ class _MoneyPageSlideWrapState extends State<MoneyPageSlideWrap> with SingleTick
     );
   }
 }
+
+abstract class PercentWidget extends StatefulWidget {
+  double percent;
+}
+
